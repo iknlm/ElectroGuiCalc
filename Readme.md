@@ -4,6 +4,8 @@
 
 Написан на C++ с Dear ImGui и DirectX 11. Интерфейс на русском и английском.
 
+Готовая программа: [скачать последнюю версию](https://github.com/iknlm/ElectroGuiCalc/releases/latest)
+
 ---
 
 ## Возможности

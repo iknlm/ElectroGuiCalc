@@ -1,0 +1,20 @@
+# Папки сборки Visual Studio
+.vs/
+x64/
+x86/
+Debug/
+Release/
+*.obj
+*.pdb
+*.ilk
+*.idb
+*.ipch
+*.tlog
+*.log
+*.iobj
+*.ipdb
+
+# Личные файлы и настройки, создаются программой сами
+*.vcxproj.user
+imgui.ini
+settings.ini

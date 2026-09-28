@@ -56,7 +56,7 @@ lectures\*.pdf             (лекции, необязательно)
 
 ## Технологии
 
-C++17 · Dear ImGui · DirectX 11 · WinAPI
+C++20 · Dear ImGui · DirectX 11 · WinAPI
 
 ---
 

@@ -119,6 +119,12 @@ struct ThemeSettings {
     bool   button_glow = true;                                // свечение при наведении
     bool   bg_animated = true;                                // анимированный фон (сетка точек)
 
+    // === NEW: цвета результатов расчётов ===
+    ImVec4 res_good = ImVec4(0.40f, 1.00f, 0.40f, 1.00f);    // результаты, "Норма"
+    ImVec4 res_bad = ImVec4(1.00f, 0.40f, 0.40f, 1.00f);     // "Не проходит", ошибки
+    ImVec4 res_warn = ImVec4(1.00f, 0.80f, 0.40f, 1.00f);    // промежуточные значения, примечания
+    ImVec4 res_info = ImVec4(0.60f, 0.85f, 1.00f, 1.00f);    // пояснения (критерий, способ пуска)
+
     ImVec4 scrollbar_idle = ImVec4(1.00f, 1.00f, 1.00f, 0.05f);
     ImVec4 scrollbar_hovered = ImVec4(0.50f, 0.50f, 0.50f, 0.65f);
     ImVec4 scrollbar_active = ImVec4(0.70f, 0.70f, 0.70f, 0.90f);
@@ -780,6 +786,12 @@ namespace i18n {
         { "S sphere =",                 "S шара =" },
         { "Angles",                     "Углы" },
         { "angle, deg:",                "угол, град:" },
+        // ─── Settings: цвета результатов ───
+        { "RESULT COLORS",              "ЦВЕТА РЕЗУЛЬТАТОВ" },
+        { "Results / OK",               "Результаты / норма" },
+        { "Errors / FAIL",              "Ошибки / не проходит" },
+        { "Intermediate values, notes", "Промежуточные значения, примечания" },
+        { "Info values",                "Пояснения" },
       { "Glow on hover",             "Свечение при наведении" },
       { "Danger",                    "Опасно" },
       { "Success",                   "Успех" },
@@ -1354,6 +1366,10 @@ namespace config {
         WriteColor(f, "btn_warning", g_theme.btn_warning);
         fprintf(f, "button_glow=%d\n", g_theme.button_glow ? 1 : 0);
         fprintf(f, "bg_animated=%d\n", g_theme.bg_animated ? 1 : 0);
+        WriteColor(f, "res_good", g_theme.res_good);
+        WriteColor(f, "res_bad", g_theme.res_bad);
+        WriteColor(f, "res_warn", g_theme.res_warn);
+        WriteColor(f, "res_info", g_theme.res_info);
         fprintf(f, "card_rounding=%.2f\n", g_theme.card_rounding);
         fprintf(f, "scrollbar_width=%.2f\n", g_theme.scrollbar_width);
         fprintf(f, "show_clock=%d\n", g_theme.show_clock ? 1 : 0);
@@ -1432,6 +1448,10 @@ namespace config {
             else if (key == "btn_warning")        ReadColorValue(val.c_str(), g_theme.btn_warning);
             else if (key == "button_glow")        g_theme.button_glow = (atoi(val.c_str()) != 0);
             else if (key == "bg_animated")        g_theme.bg_animated = (atoi(val.c_str()) != 0);
+            else if (key == "res_good")           ReadColorValue(val.c_str(), g_theme.res_good);
+            else if (key == "res_bad")            ReadColorValue(val.c_str(), g_theme.res_bad);
+            else if (key == "res_warn")           ReadColorValue(val.c_str(), g_theme.res_warn);
+            else if (key == "res_info")           ReadColorValue(val.c_str(), g_theme.res_info);
             else if (key == "card_rounding")      g_theme.card_rounding = (float)atof(val.c_str());
             else if (key == "scrollbar_width")    g_theme.scrollbar_width = (float)atof(val.c_str());
             else if (key == "show_clock")         g_theme.show_clock = atoi(val.c_str()) != 0;
@@ -2487,7 +2507,7 @@ namespace menu {
         const ImU32 brd_col = ImGui::ColorConvertFloat4ToU32(g_theme.card_border);
         const ImU32 wire_col = ImGui::ColorConvertFloat4ToU32(ImVec4(0.75f, 0.80f, 0.90f, 1.0f));
         const ImU32 node_col = ImGui::ColorConvertFloat4ToU32(g_theme.accent);
-        const ImU32 term_col = ImGui::ColorConvertFloat4ToU32(ImVec4(1.0f, 0.8f, 0.4f, 1.0f));
+        const ImU32 term_col = ImGui::ColorConvertFloat4ToU32(g_theme.res_warn);
         const ImU32 dim_col = ImGui::ColorConvertFloat4ToU32(g_theme.text_dim);
 
         dl->AddRectFilled(p, p_max, bg_col, 6.0f);
@@ -2893,11 +2913,11 @@ namespace menu {
         gui.group_box(T("RESULT"), ImVec2(side_w, 460)); {
             RecalcMotor();
 
-            const ImVec4 col_ok(0.4f, 1.0f, 0.4f, 1.0f);
+            const ImVec4 col_ok = g_theme.res_good;
             char buf[64];
 
             snprintf(buf, sizeof(buf), "%.2f kW", calc_data::result_motor_input_kw);
-            ResultRow(T("Input power:"), buf, ImVec4(1.0f, 0.8f, 0.4f, 1.0f));
+            ResultRow(T("Input power:"), buf, g_theme.res_warn);
 
             if (calc_data::motor_mode == 0) {
                 snprintf(buf, sizeof(buf), "%.2f A", calc_data::result_motor_flc);
@@ -2909,10 +2929,10 @@ namespace menu {
             }
 
             snprintf(buf, sizeof(buf), "%.2f A", calc_data::result_motor_start);
-            ResultRow(T("Starting current:"), buf, ImVec4(1.0f, 0.5f, 0.5f, 1.0f));
+            ResultRow(T("Starting current:"), buf, g_theme.res_bad);
 
             ResultRow(T("Start method:"), T(MotorStartName(calc_data::motor_start_type)),
-                ImVec4(0.6f, 0.85f, 1.0f, 1.0f));
+                g_theme.res_info);
 
             ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
 
@@ -2997,7 +3017,7 @@ namespace menu {
         constexpr float COL_W = 380.0f;
         constexpr float COL_H = 1340.0f;
         constexpr float GAP = 12.0f;
-        const ImVec4 note_col(1.0f, 0.8f, 0.4f, 1.0f);
+        const ImVec4 note_col = g_theme.res_warn;
 
         // ==================== КОЛОНКА 1: WIRE COLORS ====================
         gui.group_box(T("WIRE COLORS"), ImVec2(COL_W, COL_H)); {
@@ -3460,8 +3480,8 @@ namespace menu {
 
         // ==================== RESULT ====================
         gui.group_box(T("RESULT"), ImVec2(CARD_W_HALF, 960)); {
-            const ImVec4 col_ok(0.4f, 1.0f, 0.4f, 1.0f);
-            const ImVec4 col_fail(1.0f, 0.4f, 0.4f, 1.0f);
+            const ImVec4 col_ok = g_theme.res_good;
+            const ImVec4 col_fail = g_theme.res_bad;
             char buf[64];
 
             snprintf(buf, sizeof(buf), "%.2f A", calc_data::result_current);
@@ -3479,7 +3499,7 @@ namespace menu {
                     "no suitable section in PUE tables" };
                 int c = calc_data::result_criterion;
                 if (c < 0 || c > 4) c = 0;
-                ResultRow(T("Chosen:"), T(crit_names[c]), c == 4 ? col_fail : ImVec4(0.6f, 0.85f, 1.0f, 1.0f));
+                ResultRow(T("Chosen:"), T(crit_names[c]), c == 4 ? col_fail : g_theme.res_info);
             }
             snprintf(buf, sizeof(buf), "%.0f A", calc_data::result_i_allow);
             ResultRow(T("Allowable current:"), buf,
@@ -3487,7 +3507,7 @@ namespace menu {
 
             if (calc_data::use_manual_section) {
                 snprintf(buf, sizeof(buf), "%.1f mm^2", calc_data::manual_section);
-                ResultRow(T("Manual section:"), buf, ImVec4(1.0f, 0.8f, 0.4f, 1.0f));
+                ResultRow(T("Manual section:"), buf, g_theme.res_warn);
                 const bool sec_ok = (calc_data::result_criterion != 4) &&
                     (calc_data::manual_section >= calc_data::result_required_section - 0.001f);
                 ResultRow(T("Section check:"),
@@ -3498,14 +3518,14 @@ namespace menu {
             ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
 
             snprintf(buf, sizeof(buf), "%.2f", calc_data::result_k_temp);
-            ResultRow(T("Temp factor:"), buf, ImVec4(1.0f, 0.7f, 0.4f, 1.0f));
+            ResultRow(T("Temp factor:"), buf, g_theme.res_warn);
             ResultRow(T("Insulation:"), T(InsulationName(calc_data::insulation_type)),
-                ImVec4(1.0f, 0.7f, 0.4f, 1.0f));
+                g_theme.res_warn);
 
             ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
 
             snprintf(buf, sizeof(buf), "%.2f V", calc_data::result_drop_v);
-            ResultRow(T("Voltage drop:"), buf, ImVec4(1.0f, 0.8f, 0.4f, 1.0f));
+            ResultRow(T("Voltage drop:"), buf, g_theme.res_warn);
             snprintf(buf, sizeof(buf), "%.2f %%", calc_data::result_drop_pct);
             ResultRow(T("Drop percent:"), buf,
                 calc_data::result_drop_pct <= 5.0f ? col_ok : col_fail);
@@ -3587,7 +3607,7 @@ namespace menu {
             }
 
             ImGui::Spacing();
-            ImGui::TextColored(ImVec4(1.0f, 0.8f, 0.4f, 1.0f), "%s, %s %.2f A, U = %.0f V",
+            ImGui::TextColored(g_theme.res_warn, "%s, %s %.2f A, U = %.0f V",
                 T(calc_data::cable_material == 0 ? "Copper" : "Aluminum"),
                 T("at current"), calc_data::result_current, U);
         } gui.end_group_box();
@@ -3619,7 +3639,7 @@ namespace menu {
             snprintf(buf, sizeof(buf), "%.2f kWh/day", calc_data::total_energy_kwh);
             ImGui::TextColored(g_theme.text_main, "%s", T("Daily energy:"));
             ImGui::SameLine();
-            ImGui::TextColored(ImVec4(0.4f, 1.0f, 0.4f, 1.0f), "%s", buf);
+            ImGui::TextColored(g_theme.res_good, "%s", buf);
 
             ImGui::Spacing();
             if (OutlineButton(L("Recalculate Load"), ImVec2(-1, 36))) {
@@ -3668,14 +3688,14 @@ namespace menu {
 
             RecalcGround();
             char buf[64];
-            const ImVec4 col_ok(0.4f, 1.0f, 0.4f, 1.0f);
-            const ImVec4 col_fail(1.0f, 0.4f, 0.4f, 1.0f);
+            const ImVec4 col_ok = g_theme.res_good;
+            const ImVec4 col_fail = g_theme.res_bad;
             const float norm = GroundNorm();
 
             snprintf(buf, sizeof(buf), "%.2f Ohm", calc_data::result_ground_single);
             ResultRow(T("One rod:"), buf, g_theme.text_main);
             snprintf(buf, sizeof(buf), "%.2f", calc_data::result_ground_eta);
-            ResultRow(T("Utilization factor:"), buf, ImVec4(1.0f, 0.7f, 0.4f, 1.0f));
+            ResultRow(T("Utilization factor:"), buf, g_theme.res_warn);
             snprintf(buf, sizeof(buf), "%.2f Ohm", calc_data::result_ground);
             ResultRow(T("Resistance:"), buf, calc_data::result_ground <= norm ? col_ok : col_fail);
 
@@ -3724,7 +3744,7 @@ namespace menu {
 
             const float target = display_I * calc_data::breaker_margin;
             snprintf(ibuf, sizeof(ibuf), "%.2f A", target);
-            ResultRow(T("Target current:"), ibuf, ImVec4(1.0f, 0.8f, 0.4f, 1.0f));
+            ResultRow(T("Target current:"), ibuf, g_theme.res_warn);
 
             ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
             ImGui::TextColored(g_theme.text_dim, "%s", T("Curve type:"));
@@ -3760,7 +3780,7 @@ namespace menu {
                 snprintf(buf, sizeof(buf), "%s%d", prefix, calc_data::breaker_rating);
                 ImGui::TextColored(g_theme.text_main, "%s", T("Recommended Breaker:"));
                 ImGui::SameLine();
-                ImGui::TextColored(ImVec4(0.4f, 1.0f, 0.4f, 1.0f), "%s", buf);
+                ImGui::TextColored(g_theme.res_good, "%s", buf);
             }
             else {
                 ImGui::TextColored(g_theme.text_dim, "%s", T("Click button to select breaker rating"));
@@ -3853,7 +3873,7 @@ namespace menu {
             ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
 
             if (err && strlen(err) > 0) {
-                ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f), "%s %s", T("Error:"), T(err));
+                ImGui::TextColored(g_theme.res_bad, "%s %s", T("Error:"), T(err));
             }
             else if (hasResult) {
                 char nb[64];
@@ -3948,7 +3968,7 @@ namespace menu {
             FormatNumber(buf, sizeof(buf), value);
             ImGui::TextColored(g_theme.text_dim, "%s", label);
             ImGui::SameLine();
-            ImGui::TextColored(ImVec4(0.4f, 1.0f, 0.4f, 1.0f), "%s %s", buf, unit);
+            ImGui::TextColored(g_theme.res_good, "%s %s", buf, unit);
             };
         auto ShowResult2 = [](const char* l1, double v1, const char* u1,
             const char* l2, double v2, const char* u2) {
@@ -3957,11 +3977,11 @@ namespace menu {
                 FormatNumber(b2, sizeof(b2), v2);
                 ImGui::TextColored(g_theme.text_dim, "%s", l1);
                 ImGui::SameLine();
-                ImGui::TextColored(ImVec4(0.4f, 1.0f, 0.4f, 1.0f), "%s %s", b1, u1);
+                ImGui::TextColored(g_theme.res_good, "%s %s", b1, u1);
                 ImGui::SameLine(0.0f, 30.0f);
                 ImGui::TextColored(g_theme.text_dim, "%s", l2);
                 ImGui::SameLine();
-                ImGui::TextColored(ImVec4(0.4f, 1.0f, 0.4f, 1.0f), "%s %s", b2, u2);
+                ImGui::TextColored(g_theme.res_good, "%s %s", b2, u2);
             };
 
         static float s_formulas_h = 1680.0f;   // высота по содержимому (секции сворачиваются)
@@ -4162,7 +4182,7 @@ namespace menu {
                     const bool ok = ik >= kc * f_In;
                     ImGui::TextColored(g_theme.text_dim, "%s", T("Ik check:"));
                     ImGui::SameLine();
-                    ImGui::TextColored(ok ? ImVec4(0.4f, 1.0f, 0.4f, 1.0f) : ImVec4(1.0f, 0.4f, 0.4f, 1.0f),
+                    ImGui::TextColored(ok ? g_theme.res_good : g_theme.res_bad,
                         "%s (%.0f A >= %.0f A)", ok ? T("OK") : T("FAIL"), ik, kc * f_In);
                 }
                 Note(T("Zt/3 for Y/Yn transformers: 100 kVA 0.26; 160 kVA 0.162; 250 kVA 0.104; 400 kVA 0.065; 630 kVA 0.043; 1000 kVA 0.027 Ohm."));
@@ -4241,7 +4261,7 @@ namespace menu {
                         if (qb != 0.0) ShowResult("x =", -qc / qb, "");
                     }
                     else if (D < 0.0) {
-                        ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "%s", T("No real roots"));
+                        ImGui::TextColored(g_theme.res_bad, "%s", T("No real roots"));
                     }
                     else if (D == 0.0) {
                         ShowResult("x =", -qb / (2.0 * qa), "");
@@ -4257,7 +4277,7 @@ namespace menu {
                 Field("a:", "##a_la", &a_la); Gap();
                 Field("b:", "##a_lb", &a_lb);
                 if (a_la != 0.0) ShowResult("x =", -a_lb / a_la, "");
-                else ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "%s", T("a must not be 0"));
+                else ImGui::TextColored(g_theme.res_bad, "%s", T("a must not be 0"));
 
                 Sub(T("System of two equations (Cramer's rule)"));
                 Formula("a1*x + b1*y = c1,  a2*x + b2*y = c2        D = a1*b2 - a2*b1,  x = Dx/D,  y = Dy/D");
@@ -4272,7 +4292,7 @@ namespace menu {
                     if (D != 0.0)
                         ShowResult2("x =", (a_c1 * a_b2 - a_c2 * a_b1) / D, "", "y =", (a_a1 * a_c2 - a_a2 * a_c1) / D, "");
                     else
-                        ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "%s", T("D = 0: no single solution"));
+                        ImGui::TextColored(g_theme.res_bad, "%s", T("D = 0: no single solution"));
                 }
 
                 Sub(T("Percentages"));
@@ -4346,7 +4366,7 @@ namespace menu {
                     const double pp = (g_ta + g_tb + g_tc) / 2.0;
                     const double h2 = pp * (pp - g_ta) * (pp - g_tb) * (pp - g_tc);
                     if (h2 > 0.0) ShowResult2(T("Perimeter ="), 2.0 * pp, "", "S =", sqrt(h2), "");
-                    else ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "%s", T("Such a triangle does not exist"));
+                    else ImGui::TextColored(g_theme.res_bad, "%s", T("Such a triangle does not exist"));
                 }
 
                 Sub(T("Law of cosines and law of sines"));
@@ -4719,7 +4739,7 @@ namespace menu {
             ImGui::EndChild();
 
             ImGui::Spacing();
-            if (g_target) ImGui::TextColored(ImVec4(0.4f, 1.0f, 0.4f, 1.0f),
+            if (g_target) ImGui::TextColored(g_theme.res_good,
                 "%s HWND 0x%p", T("Target:"), (void*)g_target);
             else ImGui::TextColored(g_theme.text_dim, "%s", T("No target selected"));
 
@@ -5048,6 +5068,24 @@ namespace menu {
 
         ImGui::Spacing();
 
+        gui.group_box(T("RESULT COLORS"), ImVec2(CARD_W_FULL, 300)); {
+            ColorEditHSB("Results / OK", &g_theme.res_good);
+            ColorEditHSB("Errors / FAIL", &g_theme.res_bad);
+            ColorEditHSB("Intermediate values, notes", &g_theme.res_warn);
+            ColorEditHSB("Info values", &g_theme.res_info);
+
+            ImGui::Spacing();
+            ImGui::TextColored(g_theme.text_dim, "%s", T("Preview:"));
+            ImGui::TextColored(g_theme.text_dim, "I ="); ImGui::SameLine();
+            ImGui::TextColored(g_theme.res_good, "15000 J"); ImGui::SameLine(0.0f, 30.0f);
+            ImGui::TextColored(g_theme.res_good, "%s", T("OK")); ImGui::SameLine(0.0f, 30.0f);
+            ImGui::TextColored(g_theme.res_bad, "%s", T("FAIL")); ImGui::SameLine(0.0f, 30.0f);
+            ImGui::TextColored(g_theme.res_warn, "2.35 %%"); ImGui::SameLine(0.0f, 30.0f);
+            ImGui::TextColored(g_theme.res_info, "%s", T("by heating"));
+        } gui.end_group_box();
+
+        ImGui::Spacing();
+
         gui.group_box(T("BUTTONS"), ImVec2(CARD_W_FULL, 320)); {
             ColorEditHSB("Danger (delete, reset)", &g_theme.btn_danger);
             ColorEditHSB("Success (save, export)", &g_theme.btn_success);
@@ -5118,6 +5156,10 @@ namespace menu {
                 g_theme.intro_scale_min = 0.92f;
                 g_theme.minimize_animation = true;
                 g_theme.bg_animated = true;
+                g_theme.res_good = ImVec4(0.40f, 1.00f, 0.40f, 1.00f);
+                g_theme.res_bad = ImVec4(1.00f, 0.40f, 0.40f, 1.00f);
+                g_theme.res_warn = ImVec4(1.00f, 0.80f, 0.40f, 1.00f);
+                g_theme.res_info = ImVec4(0.60f, 0.85f, 1.00f, 1.00f);
                 ApplyThemeStyle();
             }
         } gui.end_group_box();
@@ -5358,7 +5400,7 @@ namespace menu {
                 }
 
                 if (lectures::g_status[0] != '\0')
-                    ImGui::TextColored(ImVec4(1.0f, 0.4f, 0.4f, 1.0f), "%s", T(lectures::g_status));
+                    ImGui::TextColored(g_theme.res_bad, "%s", T(lectures::g_status));
             }
 
             // Запоминаем, где закончилось содержимое (+ нижний отступ карточки)

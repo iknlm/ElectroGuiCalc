@@ -1735,6 +1735,30 @@ inline const char* InputUnit(const char* id) {
     return nullptr;
 }
 
+// === NEW: удобный ввод чисел ===
+// - "0" + цифра -> цифра (не "08", а "8")
+// - "." в начале -> "0." (набираешь ".1" - получается "0.1")
+// - запятая с русской раскладки превращается в точку
+static int NumberInputCallback(ImGuiInputTextCallbackData* d) {
+    if (d->EventFlag == ImGuiInputTextFlags_CallbackCharFilter) {
+        const ImWchar c = d->EventChar;
+        if (c == ',') { d->EventChar = '.'; return 0; }
+        if ((c >= '0' && c <= '9') || c == '.' || c == '-' || c == '+' || c == 'e' || c == 'E') return 0;
+        return 1;   // остальные символы не пропускаем
+    }
+    if (d->EventFlag == ImGuiInputTextFlags_CallbackEdit) {
+        const int sign = (d->BufTextLen > 0 && (d->Buf[0] == '-' || d->Buf[0] == '+')) ? 1 : 0;
+        // лишние нули в начале: "08" -> "8", "-007" -> "-7"
+        while (d->BufTextLen > sign + 1 && d->Buf[sign] == '0' &&
+            d->Buf[sign + 1] >= '0' && d->Buf[sign + 1] <= '9')
+            d->DeleteChars(sign, 1);
+        // точка в начале: ".5" -> "0.5"
+        if (d->BufTextLen > sign && d->Buf[sign] == '.')
+            d->InsertChars(sign, "0");
+    }
+    return 0;
+}
+
 inline bool TextInputDouble(const char* id, double* value, float width = -1.0f) {
     char buf[64];
     snprintf(buf, sizeof(buf), "%g", *value);
@@ -1743,7 +1767,8 @@ inline bool TextInputDouble(const char* id, double* value, float width = -1.0f) 
     ImGui::PushItemWidth(width > 0 ? width : -FLT_MIN);
     char label[96];
     snprintf(label, sizeof(label), "##%s", (id[0] == '#' && id[1] == '#') ? id + 2 : id);
-    bool changed = ImGui::InputText(label, buf, sizeof(buf), ImGuiInputTextFlags_CharsScientific);
+    bool changed = ImGui::InputText(label, buf, sizeof(buf),
+        ImGuiInputTextFlags_CallbackCharFilter | ImGuiInputTextFlags_CallbackEdit, NumberInputCallback);
     if (ImGui::IsItemDeactivatedAfterEdit() || ImGui::IsItemEdited()) {
         char* end = nullptr;
         double v = strtod(buf, &end);

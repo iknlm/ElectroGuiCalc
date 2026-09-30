@@ -45,6 +45,11 @@ jobs:
           Copy-Item "x64/Release/ElectroGuiCalc.exe" $out
           Copy-Item "fonts/fa-solid-900.ttf" "$out/fonts"
           Copy-Item "lectures/*.pdf" "$out/lectures"
+          # d3dcompiler_47.dll - нужен ImGui для DirectX 11. В Windows 8.1-11 он встроен,
+          # а в Windows 7 бывает только с обновлениями - кладём рядом с программой.
+          $dll = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\Redist\D3D\x64\d3dcompiler_47.dll" -ErrorAction SilentlyContinue | Select-Object -First 1
+          if (-not $dll) { $dll = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\Redist" -Recurse -Filter d3dcompiler_47.dll -ErrorAction SilentlyContinue | Where-Object { $_.FullName -match "x64" } | Select-Object -First 1 }
+          if ($dll) { Copy-Item $dll.FullName $out; Write-Host "added $($dll.FullName)" } else { Write-Warning "d3dcompiler_47.dll not found in Windows SDK" }
           Compress-Archive -Path $out -DestinationPath "ElectroGuiCalc-${{ steps.ver.outputs.version }}.zip"
 
       - name: Upload build

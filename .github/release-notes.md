@@ -12,4 +12,5 @@
 2. Распакуйте в любую папку
 3. Запустите ElectroGuiCalc.exe
 
-Папки fonts и lectures должны лежать рядом с .exe. Windows 10 и 11 (64-бит).
+Папки fonts и lectures и файл d3dcompiler_47.dll должны лежать рядом с .exe.
+Windows 7 SP1, 8.1, 10, 11 (только 64-бит). Windows XP не поддерживается.

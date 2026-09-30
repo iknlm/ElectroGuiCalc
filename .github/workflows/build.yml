@@ -1,0 +1,47 @@
+name: Build
+
+# Сборка на каждый push в main (проверка, что код компилируется)
+# и публикация релиза при создании тега вида v1.1
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: microsoft/setup-msbuild@v2
+
+      - name: Build Release x64
+        run: msbuild ElectroGuiCalc.sln /p:Configuration=Release /p:Platform=x64 /m
+
+      - name: Package
+        shell: pwsh
+        run: |
+          $out = "ElectroGuiCalc"
+          New-Item -ItemType Directory -Force -Path $out, "$out/fonts", "$out/lectures" | Out-Null
+          Copy-Item "x64/Release/ElectroGuiCalc.exe" $out
+          Copy-Item "fonts/fa-solid-900.ttf" "$out/fonts"
+          Copy-Item "lectures/*.pdf" "$out/lectures"
+          Compress-Archive -Path $out -DestinationPath "ElectroGuiCalc-${{ github.ref_name }}.zip"
+
+      - name: Upload build
+        uses: actions/upload-artifact@v4
+        with:
+          name: ElectroGuiCalc
+          path: ElectroGuiCalc-*.zip
+
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ElectroGuiCalc ${{ github.ref_name }}
+          body_path: .github/release-notes.md
+          files: ElectroGuiCalc-*.zip

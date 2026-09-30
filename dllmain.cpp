@@ -661,6 +661,39 @@ namespace i18n {
         { "Option 1",                  "Вариант 1" },
         { "Option 2",                  "Вариант 2" },
         { "Checkbox",                  "Флажок" },
+        // ─── Расчёты по ПУЭ ───
+        { "Supply transformer (Y/Yn):", "Трансформатор ТП (Y/Yн):" },
+        { "Not considered",            "Не учитывать" },
+        { "kVA",                       "кВА" },
+        { "Section (PUE):",            "Сечение по ПУЭ:" },
+        { "Chosen:",                   "Выбрано:" },
+        { "by heating",                "по нагреву" },
+        { "by breaker protection",     "по защите автоматом" },
+        { "by voltage drop",           "по падению напряжения" },
+        { "by short-circuit current",  "по току КЗ" },
+        { "no suitable section in PUE tables", "нет подходящего сечения в таблицах ПУЭ" },
+        { "Allowable current:",        "Допустимый ток:" },
+        { "Manual section:",           "Ручное сечение:" },
+        { "Transformer Zt/3:",         "Трансформатор Zт/3:" },
+        { "Line loop Z:",              "Петля линии Z:" },
+        { "Per PUE tables 1.3.4-1.3.7, temperature per table 1.3.3. Contacts 0.03 Ohm included.",
+          "По таблицам ПУЭ 1.3.4-1.3.7, температура по табл. 1.3.3. Учтены контакты 0,03 Ом." },
+        { "Distance between rods, m:", "Расстояние между электродами, м:" },
+        { "Depth of rod top, m:",      "Глубина верха электрода, м:" },
+        { "Electrode:",                "Электрод:" },
+        { "Round bar d16",             "Круг d16" },
+        { "Angle 50x50",               "Уголок 50x50" },
+        { "Required resistance:",      "Требуемое сопротивление:" },
+        { "4 Ohm (TP neutral)",        "4 Ом (нейтраль ТП)" },
+        { "10 Ohm",                    "10 Ом" },
+        { "30 Ohm (repeated)",         "30 Ом (повторное)" },
+        { "One rod:",                  "Один электрод:" },
+        { "Utilization factor:",       "Коэф. использования:" },
+        { "Norm check:",               "Проверка нормы:" },
+        { "Rods needed for norm:",     "Нужно электродов для нормы:" },
+        { "Vertical rods in a row, without the connecting strip (with margin). Utilization factors are approximate table values.",
+          "Вертикальные электроды в ряд, без учёта соединительной полосы (с запасом). Коэффициенты использования - ориентировочные табличные." },
+        { "Soft starter current limit, x In:", "Ограничение тока УПП, x Iн:" },
       { "Glow on hover",             "Свечение при наведении" },
       { "Danger",                    "Опасно" },
       { "Success",                   "Успех" },
@@ -890,27 +923,16 @@ namespace win_visuals {
         ::ReleaseDC(nullptr, hdc_screen);
 
         // ==== Проверка: не пустое ли превью (всё чёрное) ====
-        long long sum = 0;
         int nonblack = 0;
         for (int i = 0; i < w * h; ++i) {
-            int r = pixels[i * 4], g = pixels[i * 4 + 1], b = pixels[i * 4 + 2];
+            const int r = pixels[i * 4], g = pixels[i * 4 + 1], b = pixels[i * 4 + 2];
             if (r + g + b > 30) nonblack++;
-            sum += r + g + b;
         }
         // Если меньше 1% пикселей не-чёрных — превью пустое
         float ratio = (float)nonblack / (float)(w * h);
         if (ratio < 0.01f) {
             return false;   // ← отдаём "не удалось"
         }
-
-        *out_srv = MakeSRV(pixels.data(), w, h);
-        *out_w = w; *out_h = h;
-        return *out_srv != nullptr;
-
-        ::SelectObject(hdc_mem, old);
-        ::DeleteObject(hbm);
-        ::DeleteDC(hdc_mem);
-        ::ReleaseDC(nullptr, hdc_screen);
 
         *out_srv = MakeSRV(pixels.data(), w, h);
         *out_w = w; *out_h = h;
@@ -1150,6 +1172,28 @@ namespace calc_data {
     int   motor_mode = 0;                // 0=Forward, 1=Reverse
     float motor_flc_input = 10.0f;       // вводимый ток (для reverse)
     float result_motor_shaft_kw = 0.0f;  // вычисляемая мощность на валу (для reverse)
+
+    // === NEW: расчёты по ПУЭ ===
+    // Кабель
+    int   trafo_index = 0;               // трансформатор ТП: 0 = не учитывать
+    float result_i_allow = 0.0f;         // допустимый ток сечения с учётом температуры, А
+    int   result_criterion = 0;          // 0 нагрев, 1 защита, 2 падение, 3 ток КЗ, 4 нет сечения
+    float result_z_trafo = 0.0f;         // Zт/3, Ом
+    float result_z_loop = 0.0f;          // сопротивление петли линии, Ом
+    int   result_breaker_in = 0;         // номинал автомата, по которому проверяли
+    // Заземление
+    float ground_spacing = 3.0f;         // расстояние между электродами, м
+    float ground_depth = 0.7f;           // глубина верха электрода, м
+    int   ground_electrode = 0;          // 0 = круг d16, 1 = уголок 50x50
+    int   ground_norm = 0;               // 0 = 4 Ом, 1 = 10 Ом, 2 = 30 Ом
+    float result_ground_single = 0.0f;   // сопротивление одного электрода, Ом
+    float result_ground_eta = 1.0f;      // коэффициент использования
+    int   result_ground_need = 0;        // сколько электродов нужно для нормы (0 = не хватит 100)
+    // Двигатель
+    float motor_soft_limit = 3.0f;       // ограничение тока УПП, x Iн
+    int   result_motor_breaker = 0;      // номинал автомата
+    int   result_motor_curve = 1;        // 1 = C, 2 = D
+    int   result_motor_contactor = 0;    // контактор AC-3, А
 }
 
 // ======================= CONFIG (.ini) =======================
@@ -1536,6 +1580,7 @@ inline const char* InputUnit(const char* id) {
         { "ambient", "°C", "°C" },       { "hours", "h/day", "ч/сут" },   { "rods", "pcs", "шт" },
         { "soil", "Ohm·m", "Ом·м" },     { "mansec", "mm²", "мм²" },      { "motor_flc_in", "A", "А" },
         { "motor_sr", "×In", "×Iн" },    { "motor_eff", "eff", "КПД" },
+        { "rodspace", "m", "м" },         { "roddepth", "m", "м" },        { "motor_soft", "×In", "×Iн" },
         { "cosphi", "cos", "cos" },      { "load_cosphi", "cos", "cos" }, { "motor_cos", "cos", "cos" },
         { "##el_q", "C", "Кл" },         { "##el_t", "s", "с" },          { "##jl_t", "s", "с" },
         { "##el_R", "Ohm", "Ом" },       { "##jl_R", "Ohm", "Ом" },       { "##el_P", "W", "Вт" },
@@ -1841,12 +1886,11 @@ inline bool ToggleSwitch(const char* label, bool* value, float width = 46.0f, fl
     ImGui::ItemSize(row_size, 6.0f);
     if (!ImGui::ItemAdd(row_bb, id)) return false;
 
-    ImGui::SetCursorScreenPos(row_bb.Min);
-    ImGui::InvisibleButton(label, row_bb.GetSize(), ImGuiButtonFlags_MouseButtonLeft);
-
-    bool hovered = ImGui::IsItemHovered();
-    bool clicked = ImGui::IsItemClicked(ImGuiMouseButton_Left);
+    // Один элемент с одним ID (раньше поверх рисовалась ещё InvisibleButton с тем же ID)
+    bool hovered = false, held = false;
+    const bool clicked = ImGui::ButtonBehavior(row_bb, id, &hovered, &held, ImGuiButtonFlags_MouseButtonLeft);
     if (clicked) *value = !*value;
+    if (hovered) ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
 
     float t_hover = AnimateTo(id ^ 0xAA, hovered, 14.0f);
     float t_active = AnimateTo(id, *value, 16.0f);
@@ -2458,27 +2502,6 @@ namespace menu {
         ImGui::Dummy(ImVec2(W, H));
     }
 
-    inline float TempDeratingFactor(int insulation, float ambient) {
-        // Базовые температуры: PVC=70, XLPE=90, Rubber=60
-        float base = 70.0f;
-        if (insulation == 1) base = 90.0f;
-        else if (insulation == 2) base = 60.0f;
-
-        // Если ambient ниже эталонных 30°C — коэффициент >1 (кабель "холоднее")
-        // Если выше — коэффициент <1.
-        // Простая линейная аппроксимация, близкая к таблицам ПУЭ/IEC 60364-5-52.
-        if (ambient <= 30.0f) {
-            // лёгкий бонус за холод, но не больше 1.15
-            float bonus = 1.0f + (30.0f - ambient) * 0.005f;
-            return (bonus > 1.15f) ? 1.15f : bonus;
-        }
-
-        // Выше 30°C — падение примерно на 1.5% на каждый градус (усреднённо)
-        float k = 1.0f - (ambient - 30.0f) * 0.015f;
-        if (k < 0.5f) k = 0.5f;
-        return k;
-    }
-
     inline const char* InsulationName(int t) {
         switch (t) {
         case 0: return "PVC 70C";
@@ -2492,15 +2515,6 @@ namespace menu {
     constexpr float CARD_W_FULL = 900.0f;
     constexpr double PI = 3.14159265358979323846;
 
-    inline float InstallFactor(int mode) {
-        switch (mode) {
-        case 0: return 1.00f;
-        case 1: return 0.90f;
-        case 2: return 0.85f;
-        case 3: return 0.75f;
-        default: return 1.00f;
-        }
-    }
     inline const char* InstallName(int mode) {
         switch (mode) {
         case 0: return "Air";
@@ -2511,66 +2525,176 @@ namespace menu {
         }
     }
 
+    // =====================================================================
+    // === NEW: выбор сечения по ПУЭ (7-е изд.) ===
+    // Допустимые длительные токи, А. 0 = такого сечения в таблице нет.
+    // Табл. 1.3.4 (медь) и 1.3.5 (алюминий): провода с резиновой и ПВХ изоляцией,
+    // Табл. 1.3.6 (медь) и 1.3.7 (алюминий): кабели в земле.
+    // Таблицы даны для жилы +65 °C, воздуха +25 °C, земли +15 °C.
+    static const float PUE_S[] = { 1.5f, 2.5f, 4.0f, 6.0f, 10.0f, 16.0f, 25.0f, 35.0f, 50.0f, 70.0f, 95.0f, 120.0f, 150.0f };
+    constexpr int PUE_N = 13;
+    static const float CU_OPEN[PUE_N]   = { 23, 30, 41, 50, 80, 100, 140, 170, 215, 270, 330, 385, 440 };
+    static const float CU_PIPE2[PUE_N]  = { 19, 27, 38, 46, 70,  85, 115, 135, 185, 225, 275, 315, 360 };
+    static const float CU_PIPE3[PUE_N]  = { 17, 25, 35, 42, 60,  80, 100, 125, 170, 210, 255, 290, 330 };
+    static const float CU_EARTH2[PUE_N] = { 33, 44, 55, 70, 105, 135, 175, 210, 265, 320, 385, 445, 505 };
+    static const float CU_EARTH3[PUE_N] = { 27, 38, 49, 60, 90, 115, 150, 180, 225, 275, 330, 385, 435 };
+    static const float AL_OPEN[PUE_N]   = { 0, 24, 32, 39, 60, 75, 105, 130, 165, 210, 255, 295, 340 };
+    static const float AL_PIPE2[PUE_N]  = { 0, 20, 28, 36, 50, 60,  85, 100, 140, 175, 215, 245, 275 };
+    static const float AL_PIPE3[PUE_N]  = { 0, 19, 28, 32, 47, 60,  80,  95, 130, 165, 200, 220, 255 };
+    static const float AL_EARTH2[PUE_N] = { 0, 34, 42, 55, 80, 105, 135, 160, 205, 245, 295, 340, 390 };
+    static const float AL_EARTH3[PUE_N] = { 0, 29, 38, 46, 70,  90, 115, 140, 175, 210, 255, 295, 335 };
+
+    // Трансформаторы ТП (схема Y/Yн-0): полное сопротивление при однофазном КЗ, Zт/3, Ом
+    static const int   TRAFO_KVA[] = { 0, 100, 160, 250, 400, 630, 1000 };
+    static const float TRAFO_Z3[]  = { 0.0f, 0.26f, 0.162f, 0.104f, 0.065f, 0.043f, 0.027f };
+    constexpr int TRAFO_N = 7;
+
+    constexpr float R_CONTACTS = 0.03f;   // переходные сопротивления контактов и аппаратов, Ом
+    constexpr float X0_LINE = 0.00008f;   // индуктивное сопротивление жилы, Ом/м (0,08 Ом/км)
+
+    // Допустимый ток по таблице для индекса сечения (0 = нет в таблице)
+    inline float PueTableCurrent(int i) {
+        const bool cu = (calc_data::cable_material == 0);
+        const bool three = (calc_data::phases == 3);
+        switch (calc_data::cable_install) {
+        case 0:  return cu ? CU_OPEN[i] : AL_OPEN[i];                                   // открыто (воздух)
+        case 1:  return cu ? (three ? CU_PIPE3[i] : CU_PIPE2[i]) : (three ? AL_PIPE3[i] : AL_PIPE2[i]); // в трубе
+        case 2:                                                                          // в земле
+        case 3:  return cu ? (three ? CU_EARTH3[i] : CU_EARTH2[i]) : (three ? AL_EARTH3[i] : AL_EARTH2[i]); // вода: как в земле (с запасом)
+        default: return cu ? CU_OPEN[i] : AL_OPEN[i];
+        }
+    }
+
+    // Поправка на температуру среды (ПУЭ табл. 1.3.3): k = sqrt((t_жилы - t_среды) / (65 - t_табл))
+    inline float PueTempFactor() {
+        float t_max = 65.0f;                                   // ПВХ - как в таблицах ПУЭ
+        if (calc_data::insulation_type == 1) t_max = 90.0f;    // сшитый полиэтилен
+        else if (calc_data::insulation_type == 2) t_max = 60.0f; // резина (с запасом)
+        const float t_ref = (calc_data::cable_install >= 2) ? 15.0f : 25.0f;  // земля/вода : воздух
+        const float num = t_max - calc_data::ambient_temp;
+        if (num <= 0.0f) return 0.0f;
+        return sqrtf(num / (65.0f - t_ref));
+    }
+
+    // Удельное сопротивление при рабочей температуре жилы (+65 °C), Ом*мм2/м
+    inline float RhoHot() {
+        const float rho20 = (calc_data::cable_material == 0) ? 0.0175f : 0.028f;
+        return rho20 * (1.0f + 0.004f * (65.0f - 20.0f));
+    }
+
+    // Номинал автомата: выбранный во вкладке "Автомат" или ближайший стандартный не меньше тока
+    inline int PueBreakerIn() {
+        if (calc_data::breaker_rating > 0) return calc_data::breaker_rating;
+        const int ratings[] = { 6, 10, 16, 20, 25, 32, 40, 50, 63, 80, 100, 125, 160, 200, 250 };
+        const float target = calc_data::result_current;   // ПУЭ: In >= Iрасч (запас из вкладки "Автомат" тут не нужен)
+        for (int r : ratings) if ((float)r >= target) return r;
+        return 250;
+    }
+
+    // Падение напряжения, В: dU = k * I * L * (r*cos + x*sin), k = 2 (1 фаза) или sqrt(3) (3 фазы)
+    inline float PueVoltageDrop(float S) {
+        const float k = (calc_data::phases == 3) ? 1.732f : 2.0f;
+        float c = calc_data::cos_phi;
+        if (c > 1.0f) c = 1.0f;
+        if (c < 0.1f) c = 0.1f;
+        const float sn = sqrtf(1.0f - c * c);
+        return k * calc_data::result_current * calc_data::cable_length_m * (RhoHot() / S * c + X0_LINE * sn);
+    }
+
+    // Ток однофазного КЗ в конце линии, А: Ik = Uф / (Zт/3 + Zпетли + Rконт)
+    inline float PueIk(float S, float* z_loop_out) {
+        const float L = calc_data::cable_length_m;
+        const float r = 2.0f * L * RhoHot() / S;
+        const float x = 2.0f * L * X0_LINE;
+        const float zl = sqrtf(r * r + x * x);
+        if (z_loop_out) *z_loop_out = zl;
+        int ti = calc_data::trafo_index;
+        if (ti < 0 || ti >= TRAFO_N) ti = 0;
+        const float z = TRAFO_Z3[ti] + zl + R_CONTACTS;
+        const float u_ph = (calc_data::phases == 3) ? calc_data::voltage / 1.732f : calc_data::voltage;
+        return (z > 1e-6f) ? u_ph / z : 0.0f;
+    }
+
+    inline float BreakerCurveK() {
+        switch (calc_data::breaker_curve) {
+        case 0:  return 5.0f;    // B: верхняя граница 5 In
+        case 2:  return 20.0f;   // D: 20 In
+        default: return 10.0f;   // C: 10 In
+        }
+    }
+
     void RecalcCable() {
-        float P = calc_data::load_power_kw * 1000.0f;
-        float U = calc_data::voltage;
-        float cosf = calc_data::cos_phi;
+        const float P = calc_data::load_power_kw * 1000.0f;
+        const float U = calc_data::voltage;
+        const float cosf = calc_data::cos_phi;
         if (calc_data::phases == 1) calc_data::result_current = P / (U * cosf);
         else calc_data::result_current = P / (1.732f * U * cosf);
+        const float I = calc_data::result_current;
 
-        float k = InstallFactor(calc_data::cable_install);
-        calc_data::result_k_install = k;
+        calc_data::result_k_install = 1.0f;   // прокладка теперь учтена выбором колонки таблицы ПУЭ
         calc_data::result_install_name = InstallName(calc_data::cable_install);
 
-        // === NEW: температурный derating ===
-        float k_temp = TempDeratingFactor(calc_data::insulation_type, calc_data::ambient_temp);
-        calc_data::result_k_temp = k_temp;
+        const float kt = PueTempFactor();
+        calc_data::result_k_temp = kt;
 
-        float j = (calc_data::cable_material == 0) ? 6.0f : 4.0f;
-        j *= k;
-        j *= k_temp;   // <-- применяем
-        calc_data::result_required_section = calc_data::result_current / j;
-        if (calc_data::use_manual_section && calc_data::manual_section > 0.01f)
-            calc_data::result_section = calc_data::manual_section;
-        else
-            calc_data::result_section = calc_data::result_required_section;
+        const int in_rating = PueBreakerIn();
+        calc_data::result_breaker_in = in_rating;
+        calc_data::result_ik_min = (float)in_rating * BreakerCurveK();
 
-        float rho = (calc_data::cable_material == 0) ? 0.0175f : 0.028f;
-        float S = calc_data::result_section > 0.01f ? calc_data::result_section : 0.01f;
-        calc_data::result_drop_v = (2.0f * calc_data::cable_length_m * calc_data::result_current * rho) / S;
-        calc_data::result_drop_pct = (calc_data::result_drop_v / U) * 100.0f;
-        // === NEW: Ik, петля фаза-ноль (упрощённо) ===
-        {
-            float in_rating = (float)calc_data::breaker_rating;
-            if (calc_data::breaker_rating <= 0) {
-                const int ratings[] = { 6,10,16,20,25,32,40,50,63,80,100,125 };
-                const float target = calc_data::result_current * calc_data::breaker_margin;
-                in_rating = 125.0f;
-                for (int r : ratings) {
-                    if ((float)r >= target) { in_rating = (float)r; break; }
-                }
-            }
+        int ti = calc_data::trafo_index;
+        if (ti < 0 || ti >= TRAFO_N) ti = 0;
+        calc_data::result_z_trafo = TRAFO_Z3[ti];
 
-            float k_curve = 10.0f;
-            switch (calc_data::breaker_curve) {
-            case 0:  k_curve = 5.0f;  break;   // B
-            case 1:  k_curve = 10.0f; break;   // C
-            case 2:  k_curve = 20.0f; break;   // D
-            default: k_curve = 10.0f; break;
-            }
-            calc_data::result_ik_min = in_rating * k_curve;
-
-            calc_data::result_ik = 0.0f;
-            const float S_ik = calc_data::result_section;
-            const float L_ik = calc_data::cable_length_m;
-            if (S_ik >= 0.01f && L_ik > 0.01f) {
-                const float z_loop = 2.0f * L_ik * rho / S_ik;
-                if (z_loop > 1e-6f) {
-                    const float u_ph = (calc_data::phases == 3) ? U / 1.732f : U;
-                    calc_data::result_ik = u_ph / z_loop;
-                }
-            }
+        // Наименьшее сечение по каждому критерию (индекс в PUE_S, -1 = не хватает таблицы)
+        int need[4] = { -1, -1, -1, -1 };   // 0 нагрев, 1 защита, 2 падение, 3 КЗ
+        for (int i = 0; i < PUE_N; ++i) {
+            const float it = PueTableCurrent(i);
+            if (it <= 0.0f) continue;                        // сечения нет (алюминий 1,5)
+            const float ia = it * kt;
+            const float S = PUE_S[i];
+            if (need[0] < 0 && ia >= I) need[0] = i;
+            if (need[1] < 0 && ia >= (float)in_rating) need[1] = i;
+            if (need[2] < 0 && (U > 0.0f) && PueVoltageDrop(S) / U * 100.0f <= 5.0f) need[2] = i;
+            if (need[3] < 0 && (calc_data::cable_length_m <= 0.01f || PueIk(S, nullptr) >= calc_data::result_ik_min)) need[3] = i;
         }
+        int idx = 0, crit = 0;
+        bool ok = true;
+        for (int c = 0; c < 4; ++c) {
+            if (need[c] < 0) { ok = false; crit = c; break; }
+            if (need[c] > idx) { idx = need[c]; crit = c; }
+        }
+        // Минимум из таблицы - первое существующее сечение
+        if (ok && crit == 0 && need[0] >= 0) idx = (std::max)(idx, need[0]);
+
+        if (ok) {
+            calc_data::result_required_section = PUE_S[idx];
+            calc_data::result_criterion = crit;
+        }
+        else {
+            idx = PUE_N - 1;
+            calc_data::result_required_section = 0.0f;       // 0 = больше 150 мм2
+            calc_data::result_criterion = 4;
+        }
+
+        // Итоговое сечение для расчётов: ручное или выбранное
+        float S = PUE_S[idx];
+        int s_idx = idx;
+        if (calc_data::use_manual_section && calc_data::manual_section > 0.01f) {
+            S = calc_data::manual_section;
+            // допустимый ток ручного сечения - по ближайшему меньшему табличному (с запасом)
+            s_idx = -1;
+            for (int i = 0; i < PUE_N; ++i)
+                if (PUE_S[i] <= S + 0.001f && PueTableCurrent(i) > 0.0f) s_idx = i;
+        }
+        calc_data::result_section = S;
+        calc_data::result_i_allow = (s_idx >= 0) ? PueTableCurrent(s_idx) * kt : 0.0f;
+
+        calc_data::result_drop_v = PueVoltageDrop(S);
+        calc_data::result_drop_pct = (U > 0.0f) ? calc_data::result_drop_v / U * 100.0f : 0.0f;
+
+        float zl = 0.0f;
+        calc_data::result_ik = (calc_data::cable_length_m > 0.01f) ? PueIk(S, &zl) : 0.0f;
+        calc_data::result_z_loop = zl;
     }
     void RecalcLoad() {
         calc_data::total_current_a = calc_data::total_power_kw * 1000.0f
@@ -2586,7 +2710,7 @@ namespace menu {
         float side_w = (ImGui::GetContentRegionAvail().x - diag_w - 30.0f) * 0.5f;
         if (side_w < 340.0f) side_w = 340.0f;
 
-        gui.group_box(T("MOTOR PARAMETERS"), ImVec2(side_w, 740)); {
+        gui.group_box(T("MOTOR PARAMETERS"), ImVec2(side_w, 810)); {
             ImGui::TextColored(g_theme.text_dim, "%s", T("Mode:"));
             ImGui::RadioButton(L("Forward"), &calc_data::motor_mode, 0); ImGui::SameLine();
             ImGui::RadioButton(L("Reverse"), &calc_data::motor_mode, 1);
@@ -2631,6 +2755,12 @@ namespace menu {
             ImGui::TextColored(g_theme.text_dim, "%s", T("Start ratio (Ist/In):"));
             TextInputFloat("motor_sr", &calc_data::motor_start_ratio);
 
+            // === NEW: ограничение тока устройства плавного пуска ===
+            if (calc_data::motor_start_type == 2) {
+                ImGui::TextColored(g_theme.text_dim, "%s", T("Soft starter current limit, x In:"));
+                TextInputFloat("motor_soft", &calc_data::motor_soft_limit);
+            }
+
             if (calc_data::use_auto_calc) RecalcMotor();
         } gui.end_group_box();
 
@@ -2662,21 +2792,34 @@ namespace menu {
 
             ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
 
-            const float target = calc_data::result_motor_flc * 1.25f;
-            const int ratings[] = { 6,10,16,20,25,32,40,50,63,80,100,125,160,200 };
-            int best = 0;
-            for (int r : ratings) if ((float)r >= target) { best = r; break; }
-            if (best == 0) best = 200;
-            const char* prefix = (calc_data::motor_start_type == 0) ? "D" : "C";
-            snprintf(buf, sizeof(buf), "%s%d", prefix, best);
-            ResultRow(T("Recommended breaker:"), buf, col_ok);
+            // === NEW: автомат - не должен срабатывать от пускового тока ===
+            // In >= 1,25 Iн, и 1,2*Iпуск ниже нижней границы мгновенного срабатывания:
+            // C - 5 In, D - 10 In. Сначала пробуем C, потом D, потом номинал больше.
+            {
+                const float In_m = calc_data::result_motor_flc;
+                const float Ist = calc_data::result_motor_start;
+                const int ratings[] = { 6,10,16,20,25,32,40,50,63,80,100,125,160,200,250 };
+                int best = 0, curve = 1;
+                for (int r : ratings) {
+                    if ((float)r < In_m * 1.25f) continue;
+                    if (1.2f * Ist <= 5.0f * (float)r) { best = r; curve = 1; break; }
+                    if (1.2f * Ist <= 10.0f * (float)r) { best = r; curve = 2; break; }
+                }
+                calc_data::result_motor_breaker = best;
+                calc_data::result_motor_curve = curve;
+                if (best > 0) snprintf(buf, sizeof(buf), "%c%d", curve == 2 ? 'D' : 'C', best);
+                else snprintf(buf, sizeof(buf), "> 250 A");
+                ResultRow(T("Recommended breaker:"), buf, col_ok);
 
-            const int contactor[] = { 9,12,18,25,32,40,50,65,80,95,115,150,185,225 };
-            int c_best = 0;
-            for (int c : contactor) if ((float)c >= calc_data::result_motor_flc * 1.2f) { c_best = c; break; }
-            if (c_best == 0) c_best = 225;
-            snprintf(buf, sizeof(buf), "%d A", c_best);
-            ResultRow(T("Recommended contactor:"), buf, col_ok);
+                // Контактор: номинальный ток в категории AC-3 не меньше Iн
+                const int contactor[] = { 9,12,18,25,32,40,50,65,80,95,115,150,185,225,265,330 };
+                int c_best = 0;
+                for (int c : contactor) if ((float)c >= In_m) { c_best = c; break; }
+                calc_data::result_motor_contactor = c_best;
+                if (c_best > 0) snprintf(buf, sizeof(buf), "%d A (AC-3)", c_best);
+                else snprintf(buf, sizeof(buf), "> 330 A");
+                ResultRow(T("Recommended contactor:"), buf, col_ok);
+            }
 
             snprintf(buf, sizeof(buf), "%.2f - %.2f A",
                 calc_data::result_motor_flc * 0.9f,
@@ -2973,8 +3116,8 @@ namespace menu {
         switch (type) {
         case 0: return dol_ratio;         // напрямую — полный пусковой
         case 1: return dol_ratio / 3.0f;  // звезда-треугольник ~ в 3 раза меньше
-        case 2: return dol_ratio * 0.5f;  // soft ~ половина
-        case 3: return dol_ratio * 0.15f; // VFD — почти без броска
+        case 2: return (std::min)(dol_ratio, calc_data::motor_soft_limit);  // УПП: ток ограничен настройкой (обычно 2-4 Iн)
+        case 3: return (std::min)(dol_ratio, 1.5f);                         // ЧП: пуск током до ~1,5 Iн
         default: return dol_ratio;
         }
     }
@@ -3020,11 +3163,70 @@ namespace menu {
             calc_data::motor_start_ratio);
         calc_data::result_motor_start = calc_data::result_motor_flc * k;
     }
+    // === NEW: заземление по методике для вертикальных электродов ===
+    // Коэффициент использования вертикальных электродов, расположенных в ряд
+    // (строки: a/L = 1, 2, 3; столбцы: n = 1, 2, 3, 5, 10, 15, 20). Табличные значения, ориентировочно.
+    inline float GroundEta(int n, float a_over_l) {
+        static const float N_PTS[7] = { 1, 2, 3, 5, 10, 15, 20 };
+        static const float ETA[3][7] = {
+            { 1.0f, 0.85f, 0.78f, 0.70f, 0.59f, 0.54f, 0.49f },   // a/L = 1
+            { 1.0f, 0.91f, 0.86f, 0.81f, 0.74f, 0.70f, 0.68f },   // a/L = 2
+            { 1.0f, 0.94f, 0.91f, 0.87f, 0.81f, 0.78f, 0.77f },   // a/L = 3
+        };
+        if (n <= 1) return 1.0f;
+        float fn = (float)n;
+        if (fn > 20.0f) fn = 20.0f;
+        auto row = [&](int r) {
+            for (int j = 0; j < 6; ++j) {
+                if (fn <= N_PTS[j + 1]) {
+                    const float t = (fn - N_PTS[j]) / (N_PTS[j + 1] - N_PTS[j]);
+                    return ETA[r][j] + (ETA[r][j + 1] - ETA[r][j]) * t;
+                }
+            }
+            return ETA[r][6];
+            };
+        float q = a_over_l;
+        if (q < 1.0f) q = 1.0f;
+        if (q > 3.0f) q = 3.0f;
+        const int r0 = (q < 2.0f) ? 0 : 1;
+        const float t = q - (float)(r0 + 1);
+        return row(r0) + (row(r0 + 1) - row(r0)) * t;
+    }
+
+    inline float GroundNorm() {
+        switch (calc_data::ground_norm) {
+        case 1:  return 10.0f;
+        case 2:  return 30.0f;
+        default: return 4.0f;
+        }
+    }
+
     void RecalcGround() {
-        float R = (calc_data::soil_resistivity / (2.0f * 3.14159f * calc_data::ground_rod_len))
-            * (logf(4.0f * calc_data::ground_rod_len / 0.02f) - 1.0f)
-            / (float)calc_data::ground_rods;
-        calc_data::result_ground = R;
+        const float rho = calc_data::soil_resistivity;
+        const float L = (calc_data::ground_rod_len > 0.1f) ? calc_data::ground_rod_len : 0.1f;
+        const float d = (calc_data::ground_electrode == 1) ? 0.0475f : 0.016f;  // уголок 50x50: d = 0,95*b
+        const float t = (calc_data::ground_depth > 0.0f) ? calc_data::ground_depth : 0.0f;
+        const float T = t + L * 0.5f;   // глубина середины электрода
+
+        // Одиночный вертикальный электрод, заглублённый в землю:
+        // R1 = rho / (2*pi*L) * ( ln(2L/d) + 0.5 * ln((4T + L) / (4T - L)) )
+        const float R1 = rho / (2.0f * 3.14159265f * L) *
+            (logf(2.0f * L / d) + 0.5f * logf((4.0f * T + L) / (4.0f * T - L)));
+        calc_data::result_ground_single = R1;
+
+        int n = calc_data::ground_rods;
+        if (n < 1) n = 1;
+        const float a_l = calc_data::ground_spacing / L;
+        const float eta = GroundEta(n, a_l);
+        calc_data::result_ground_eta = eta;
+        calc_data::result_ground = R1 / ((float)n * eta);
+
+        // Сколько электродов нужно для выбранной нормы
+        const float norm = GroundNorm();
+        calc_data::result_ground_need = 0;
+        for (int k = 1; k <= 100; ++k) {
+            if (R1 / ((float)k * GroundEta(k, a_l)) <= norm) { calc_data::result_ground_need = k; break; }
+        }
     }
 
     inline bool DateIsLeap(int y) { return (y % 4 == 0 && y % 100 != 0) || (y % 400 == 0); }
@@ -3067,7 +3269,7 @@ namespace menu {
         using i18n::T;
         using i18n::L;
 
-        gui.group_box(T("PARAMETERS"), ImVec2(CARD_W_HALF, 880)); {
+        gui.group_box(T("PARAMETERS"), ImVec2(CARD_W_HALF, 960)); {
             ImGui::TextColored(g_theme.text_dim, "%s", T("Material:"));
             ImGui::RadioButton(L("Copper"), &calc_data::cable_material, 0); ImGui::SameLine();
             ImGui::RadioButton(L("Aluminum"), &calc_data::cable_material, 1);
@@ -3104,6 +3306,20 @@ namespace menu {
             ImGui::TextColored(g_theme.text_dim, "%s", T("Length, m:"));
             TextInputFloat("length", &calc_data::cable_length_m);
 
+            // === NEW: трансформатор ТП - для расчёта тока КЗ ===
+            ImGui::Spacing();
+            ImGui::TextColored(g_theme.text_dim, "%s", T("Supply transformer (Y/Yn):"));
+            {
+                static char trafo_buf[TRAFO_N][48];
+                const char* trafo_items[TRAFO_N];
+                for (int i = 0; i < TRAFO_N; ++i) {
+                    if (TRAFO_KVA[i] == 0) snprintf(trafo_buf[i], sizeof(trafo_buf[i]), "%s", T("Not considered"));
+                    else snprintf(trafo_buf[i], sizeof(trafo_buf[i]), "%d %s", TRAFO_KVA[i], T("kVA"));
+                    trafo_items[i] = trafo_buf[i];
+                }
+                CustomCombo("##trafo", &calc_data::trafo_index, trafo_items, TRAFO_N);
+            }
+
             ImGui::Spacing();
             ToggleSwitch(T("Manual section"), &calc_data::use_manual_section);
 
@@ -3119,20 +3335,37 @@ namespace menu {
         ImGui::SameLine(0.0f, 15.0f);
 
         // ==================== RESULT ====================
-        gui.group_box(T("RESULT"), ImVec2(CARD_W_HALF, 640)); {
+        gui.group_box(T("RESULT"), ImVec2(CARD_W_HALF, 960)); {
             const ImVec4 col_ok(0.4f, 1.0f, 0.4f, 1.0f);
             const ImVec4 col_fail(1.0f, 0.4f, 0.4f, 1.0f);
             char buf[64];
 
             snprintf(buf, sizeof(buf), "%.2f A", calc_data::result_current);
             ResultRow(T("Current:"), buf, g_theme.accent);
-            snprintf(buf, sizeof(buf), "%.2f mm^2", calc_data::result_section);
-            ResultRow(T("Section:"), buf, col_ok);
+
+            // === NEW: сечение по ПУЭ и по какому критерию выбрано ===
+            if (calc_data::result_criterion == 4)
+                snprintf(buf, sizeof(buf), "> 150 mm^2");
+            else
+                snprintf(buf, sizeof(buf), "%.1f mm^2", calc_data::result_required_section);
+            ResultRow(T("Section (PUE):"), buf, calc_data::result_criterion == 4 ? col_fail : col_ok);
+            {
+                static const char* crit_names[] = {
+                    "by heating", "by breaker protection", "by voltage drop", "by short-circuit current",
+                    "no suitable section in PUE tables" };
+                int c = calc_data::result_criterion;
+                if (c < 0 || c > 4) c = 0;
+                ResultRow(T("Chosen:"), T(crit_names[c]), c == 4 ? col_fail : ImVec4(0.6f, 0.85f, 1.0f, 1.0f));
+            }
+            snprintf(buf, sizeof(buf), "%.0f A", calc_data::result_i_allow);
+            ResultRow(T("Allowable current:"), buf,
+                calc_data::result_i_allow >= calc_data::result_current ? col_ok : col_fail);
 
             if (calc_data::use_manual_section) {
-                snprintf(buf, sizeof(buf), "%.2f mm^2", calc_data::result_required_section);
-                ResultRow(T("Required section:"), buf, ImVec4(1.0f, 0.8f, 0.4f, 1.0f));
-                const bool sec_ok = (calc_data::manual_section >= calc_data::result_required_section);
+                snprintf(buf, sizeof(buf), "%.1f mm^2", calc_data::manual_section);
+                ResultRow(T("Manual section:"), buf, ImVec4(1.0f, 0.8f, 0.4f, 1.0f));
+                const bool sec_ok = (calc_data::result_criterion != 4) &&
+                    (calc_data::manual_section >= calc_data::result_required_section - 0.001f);
                 ResultRow(T("Section check:"),
                     sec_ok ? T("OK") : T("OVERLOAD"),
                     sec_ok ? col_ok : col_fail);
@@ -3153,27 +3386,26 @@ namespace menu {
             ResultRow(T("Drop percent:"), buf,
                 calc_data::result_drop_pct <= 5.0f ? col_ok : col_fail);
 
-            ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
-
-            ImGui::TextColored(g_theme.text_dim, "%s", T("Nearest standard section:"));
-            const float std_sections[] = { 1.5f,2.5f,4,6,10,16,25,35,50,70,95,120 };
-            float best = 1.5f;
-            for (float s : std_sections) if (s >= calc_data::result_section) { best = s; break; }
-            snprintf(buf, sizeof(buf), "%.1f mm^2", best);
-            ImGui::TextColored(g_theme.accent, "%s", buf);
-
-            // === Ik check ===
+            // === Ik: однофазное КЗ в конце линии ===
             ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
             {
                 char min_buf[64];
+                const char pref = (calc_data::breaker_curve == 0) ? 'B' : (calc_data::breaker_curve == 2 ? 'D' : 'C');
                 if (calc_data::breaker_rating <= 0)
-                    snprintf(min_buf, sizeof(min_buf), "%.0f A %s", calc_data::result_ik_min, T("(auto)"));
+                    snprintf(min_buf, sizeof(min_buf), "%.0f A (%c%d %s)", calc_data::result_ik_min, pref,
+                        calc_data::result_breaker_in, T("(auto)"));
                 else
-                    snprintf(min_buf, sizeof(min_buf), "%.0f A", calc_data::result_ik_min);
+                    snprintf(min_buf, sizeof(min_buf), "%.0f A (%c%d)", calc_data::result_ik_min, pref,
+                        calc_data::result_breaker_in);
+
+                snprintf(buf, sizeof(buf), "%.3f Ohm", calc_data::result_z_trafo);
+                ResultRow(T("Transformer Zt/3:"), buf, g_theme.text_main);
+                snprintf(buf, sizeof(buf), "%.3f Ohm", calc_data::result_z_loop);
+                ResultRow(T("Line loop Z:"), buf, g_theme.text_main);
 
                 if (calc_data::result_ik > 0.0f) {
                     const bool ik_ok = (calc_data::result_ik >= calc_data::result_ik_min);
-                    snprintf(buf, sizeof(buf), "%.1f A", calc_data::result_ik);
+                    snprintf(buf, sizeof(buf), "%.0f A", calc_data::result_ik);
                     ResultRow(T("Ik:"), buf, ik_ok ? col_ok : col_fail);
                     ResultRow(T("Min Ik for breaker:"), min_buf, g_theme.text_main);
                     ResultRow(T("Ik check:"), ik_ok ? T("OK") : T("FAIL"), ik_ok ? col_ok : col_fail);
@@ -3184,6 +3416,12 @@ namespace menu {
                     ResultRow(T("Ik check:"), T("n/a"), g_theme.text_dim);
                 }
             }
+
+            ImGui::Spacing();
+            ImGui::PushTextWrapPos(0.0f);
+            ImGui::TextColored(g_theme.text_dim, "%s",
+                T("Per PUE tables 1.3.4-1.3.7, temperature per table 1.3.3. Contacts 0.03 Ohm included."));
+            ImGui::PopTextWrapPos();
 
             ImGui::Spacing();
             if (OutlineButton(L("Calculate"), ImVec2(-1, 36))) {
@@ -3202,8 +3440,12 @@ namespace menu {
         gui.group_box(T("MAX LENGTH FOR 5% VOLTAGE DROP"), ImVec2(CARD_W_FULL, 320)); {
             const float U = calc_data::voltage;
             const float I = (calc_data::result_current > 0.01f) ? calc_data::result_current : 1.0f;
-            const float rho = (calc_data::cable_material == 0) ? 0.0175f : 0.028f;
+            const float rho = RhoHot();                                   // при рабочей температуре жилы
             const float k = (calc_data::phases == 3) ? 1.732f : 2.0f;
+            float cphi = calc_data::cos_phi;
+            if (cphi > 1.0f) cphi = 1.0f;
+            if (cphi < 0.1f) cphi = 0.1f;
+            const float sphi = sqrtf(1.0f - cphi * cphi);
             constexpr float X_COL2 = 140.0f;   // вторая колонка (шрифт пропорциональный)
 
             ImGui::TextColored(g_theme.text_dim, "%s", T("Section"));
@@ -3213,7 +3455,8 @@ namespace menu {
 
             const float sections[] = { 1.5f, 2.5f, 4.0f, 6.0f, 10.0f, 16.0f, 25.0f };
             for (float S : sections) {
-                const float len_max = (U * S * 0.05f) / (k * I * rho);
+                // dU = k * I * L * (rho/S * cos + x0 * sin) = 5% U
+                const float len_max = (U * 0.05f) / (k * I * (rho / S * cphi + X0_LINE * sphi));
                 ImGui::TextColored(g_theme.text_main, "%.1f", S);
                 ImGui::SameLine(X_COL2);
                 ImGui::TextColored(g_theme.text_main, "%.0f", len_max);
@@ -3269,7 +3512,7 @@ namespace menu {
         using i18n::T;
         using i18n::L;
 
-        gui.group_box(T("EARTHING RESISTANCE"), ImVec2(CARD_W_FULL, 430)); {
+        gui.group_box(T("EARTHING RESISTANCE"), ImVec2(CARD_W_FULL, 900)); {
             ImGui::TextColored(g_theme.text_dim, "%s", T("Soil Resistivity, Ohm*m:"));
             TextInputFloat("soil", &calc_data::soil_resistivity);
             ImGui::TextColored(g_theme.text_dim, "%s", T("Rod Length, m:"));
@@ -3278,22 +3521,57 @@ namespace menu {
             double rods_d = (double)calc_data::ground_rods;
             ImGui::TextColored(g_theme.text_dim, "%s", T("Number of Rods:"));
             if (TextInputDouble("rods", &rods_d))
-                calc_data::ground_rods = (int)rods_d;
+                calc_data::ground_rods = (rods_d < 1.0) ? 1 : (int)rods_d;
+
+            // === NEW: параметры по методике ===
+            ImGui::TextColored(g_theme.text_dim, "%s", T("Distance between rods, m:"));
+            TextInputFloat("rodspace", &calc_data::ground_spacing);
+            ImGui::TextColored(g_theme.text_dim, "%s", T("Depth of rod top, m:"));
+            TextInputFloat("roddepth", &calc_data::ground_depth);
+
+            ImGui::Spacing();
+            ImGui::TextColored(g_theme.text_dim, "%s", T("Electrode:"));
+            ImGui::RadioButton(L("Round bar d16"), &calc_data::ground_electrode, 0); ImGui::SameLine();
+            ImGui::RadioButton(L("Angle 50x50"), &calc_data::ground_electrode, 1);
+
+            ImGui::Spacing();
+            ImGui::TextColored(g_theme.text_dim, "%s", T("Required resistance:"));
+            ImGui::RadioButton(L("4 Ohm (TP neutral)"), &calc_data::ground_norm, 0); ImGui::SameLine();
+            ImGui::RadioButton(L("10 Ohm"), &calc_data::ground_norm, 1); ImGui::SameLine();
+            ImGui::RadioButton(L("30 Ohm (repeated)"), &calc_data::ground_norm, 2);
 
             ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
 
             RecalcGround();
             char buf[64];
+            const ImVec4 col_ok(0.4f, 1.0f, 0.4f, 1.0f);
+            const ImVec4 col_fail(1.0f, 0.4f, 0.4f, 1.0f);
+            const float norm = GroundNorm();
+
+            snprintf(buf, sizeof(buf), "%.2f Ohm", calc_data::result_ground_single);
+            ResultRow(T("One rod:"), buf, g_theme.text_main);
+            snprintf(buf, sizeof(buf), "%.2f", calc_data::result_ground_eta);
+            ResultRow(T("Utilization factor:"), buf, ImVec4(1.0f, 0.7f, 0.4f, 1.0f));
             snprintf(buf, sizeof(buf), "%.2f Ohm", calc_data::result_ground);
-            ImGui::TextColored(g_theme.text_main, "%s", T("Resistance:"));
-            ImGui::SameLine();
-            ImGui::TextColored(g_theme.accent, "%s", buf);
+            ResultRow(T("Resistance:"), buf, calc_data::result_ground <= norm ? col_ok : col_fail);
+
+            if (calc_data::result_ground <= norm)
+                snprintf(buf, sizeof(buf), "%s (<= %.0f Ohm)", T("OK"), norm);
+            else
+                snprintf(buf, sizeof(buf), "%s (> %.0f Ohm)", T("FAIL"), norm);
+            ResultRow(T("Norm check:"), buf, calc_data::result_ground <= norm ? col_ok : col_fail);
+
+            if (calc_data::result_ground_need > 0)
+                snprintf(buf, sizeof(buf), "%d", calc_data::result_ground_need);
+            else
+                snprintf(buf, sizeof(buf), "> 100");
+            ResultRow(T("Rods needed for norm:"), buf, g_theme.accent);
 
             ImGui::Spacing();
-            if (calc_data::result_ground <= 4.0f)
-                ImGui::TextColored(ImVec4(0.4f, 1.0f, 0.4f, 1.0f), "%s", T("Normal (<= 4 Ohm)"));
-            else
-                ImGui::TextColored(ImVec4(1.0f, 0.4f, 0.4f, 1.0f), "%s", T("Exceeds limit (> 4 Ohm)"));
+            ImGui::PushTextWrapPos(0.0f);
+            ImGui::TextColored(g_theme.text_dim, "%s",
+                T("Vertical rods in a row, without the connecting strip (with margin). Utilization factors are approximate table values."));
+            ImGui::PopTextWrapPos();
 
             ImGui::Spacing();
             if (OutlineButton(L("Save to History"), ImVec2(-1, 32), btn_col::success)) {

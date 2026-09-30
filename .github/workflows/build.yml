@@ -4,6 +4,7 @@ name: Build
 # Если версии из .github/release-version ещё нет в релизах - публикуется новый релиз
 # с тегом этой версии и описанием из .github/release-notes.md.
 # Выпустить новую версию = поменять номер в .github/release-version и описание.
+# Заменить архив у уже вышедшей версии = написать в коммите "пересобрать релиз".
 on:
   push:
     branches: [main]
@@ -38,7 +39,8 @@ jobs:
       - name: Package
         shell: pwsh
         run: |
-          $out = "ElectroGuiCalc"
+          # Отдельная папка, чтобы в архив не попали промежуточные файлы сборки
+          $out = "pkg/ElectroGuiCalc"
           New-Item -ItemType Directory -Force -Path $out, "$out/fonts", "$out/lectures" | Out-Null
           Copy-Item "x64/Release/ElectroGuiCalc.exe" $out
           Copy-Item "fonts/fa-solid-900.ttf" "$out/fonts"
@@ -52,7 +54,7 @@ jobs:
           path: ElectroGuiCalc-*.zip
 
       - name: Publish release
-        if: steps.ver.outputs.exists == 'false'
+        if: steps.ver.outputs.exists == 'false' || contains(github.event.head_commit.message, 'пересобрать релиз')
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.ver.outputs.version }}

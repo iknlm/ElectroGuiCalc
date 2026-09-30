@@ -720,6 +720,66 @@ namespace i18n {
         { "Core diameter d, mm:",       "Диаметр жилы d, мм:" },
         { "AWG number:",                "Номер AWG:" },
         { "Temperature, C:",            "Температура, °C:" },
+        // ─── Формулы: подразделы ───
+        { "Ohm's law and charge",       "Закон Ома и заряд" },
+        { "Power",                      "Мощность" },
+        { "Joule-Lenz law",             "Закон Джоуля-Ленца" },
+        { "Wire resistance",            "Сопротивление провода" },
+        { "Core temperature, C:",       "Температура жилы, °C:" },
+        { "Series and parallel connection", "Последовательное и параллельное соединение" },
+        { "Series R =",                 "Последовательно R =" },
+        { "Parallel R =",               "Параллельно R =" },
+        { "Alternating current: reactance and impedance", "Переменный ток: реактивное и полное сопротивление" },
+        { "Frequency f, Hz:",           "Частота f, Гц:" },
+        { "Inductance L, mH:",          "Индуктивность L, мГн:" },
+        { "Capacitance C, uF:",         "Ёмкость C, мкФ:" },
+        { "Capacitor and RC circuit",   "Конденсатор и RC-цепь" },
+        { "Resistance R, kOhm:",        "Сопротивление R, кОм:" },
+        { "Current density",            "Плотность тока" },
+        { "Linear equation",            "Линейное уравнение" },
+        { "a must not be 0",            "a не должно быть 0" },
+        { "System of two equations (Cramer's rule)", "Система двух уравнений (метод Крамера)" },
+        { "D = 0: no single solution",  "D = 0: нет единственного решения" },
+        { "Percentages",                "Проценты" },
+        { "x% of N =",                  "x% от N =" },
+        { "Change =",                   "Изменение =" },
+        { "Proportion",                 "Пропорция" },
+        { "Powers, roots, logarithms",  "Степени, корни, логарифмы" },
+        { "base b:",                    "основание b:" },
+        { "root =",                     "корень =" },
+        { "Progressions",               "Прогрессии" },
+        { "Right triangle (Pythagoras)", "Прямоугольный треугольник (Пифагор)" },
+        { "angle A =",                  "угол A =" },
+        { "angle B =",                  "угол B =" },
+        { "Any triangle",               "Произвольный треугольник" },
+        { "base:",                      "основание:" },
+        { "height h:",                  "высота h:" },
+        { "Perimeter =",                "Периметр =" },
+        { "Such a triangle does not exist", "Такого треугольника не существует" },
+        { "Law of cosines and law of sines", "Теоремы косинусов и синусов" },
+        { "angle C, deg:",              "угол C, град:" },
+        { "angle A, deg:",              "угол A, град:" },
+        { "angle B, deg:",              "угол B, град:" },
+        { "Circle and sector",          "Окружность и сектор" },
+        { "angle alpha, deg:",          "угол alpha, град:" },
+        { "arc =",                      "дуга =" },
+        { "S sector =",                 "S сектора =" },
+        { "Rectangle and trapezoid",    "Прямоугольник и трапеция" },
+        { "width a:",                   "ширина a:" },
+        { "height b:",                  "высота b:" },
+        { "diagonal =",                 "диагональ =" },
+        { "base a:",                    "основание a:" },
+        { "base b:",                    "основание b:" },
+        { "S trapezoid =",              "S трапеции =" },
+        { "Solids: cylinder, cone, sphere", "Тела: цилиндр, конус, шар" },
+        { "radius r:",                  "радиус r:" },
+        { "V cylinder =",               "V цилиндра =" },
+        { "S cylinder =",               "S цилиндра =" },
+        { "V cone =",                   "V конуса =" },
+        { "V sphere =",                 "V шара =" },
+        { "S sphere =",                 "S шара =" },
+        { "Angles",                     "Углы" },
+        { "angle, deg:",                "угол, град:" },
       { "Glow on hover",             "Свечение при наведении" },
       { "Danger",                    "Опасно" },
       { "Success",                   "Успех" },
@@ -1230,6 +1290,26 @@ namespace calc_data {
     double f_rho = 100.0, f_Lg = 2.5, f_dg = 16.0, f_tg = 0.7, f_ng = 3.0, f_eta = 0.78; // заземление
     double f_P2 = 5.5, f_eff = 0.87, f_cosm = 0.85, f_Um = 400.0, f_km = 7.0; // двигатель
     double f_Pw = 2.0, f_hours = 4.0, f_d = 1.78, f_awg = 12.0, f_tc = 25.0;  // энергия и единицы
+
+    // Электричество
+    double e_pU = 230.0, e_pI = 10.0, e_pR = 23.0;                       // мощность
+    double e_wL = 20.0, e_wS = 2.5, e_wt = 70.0;  int e_wmat = 0;        // сопротивление провода
+    double e_r1 = 10.0, e_r2 = 20.0, e_r3 = 30.0;                        // соединения резисторов
+    double e_f = 50.0, e_R = 10.0, e_Lmh = 50.0, e_Cuf = 100.0;          // переменный ток
+    double e_cU = 230.0, e_cRk = 10.0, e_cUf = 100.0;                    // конденсатор, RC
+    double e_jI = 25.0, e_jS = 4.0;                                      // плотность тока
+    // Алгебра
+    double a_la = 2.0, a_lb = -6.0;                                      // линейное уравнение
+    double a_a1 = 2.0, a_b1 = 1.0, a_c1 = 5.0, a_a2 = 1.0, a_b2 = -1.0, a_c2 = 1.0; // система 2x2
+    double a_px = 15.0, a_pn = 200.0, a_pa = 80.0, a_pb = 100.0;        // проценты
+    double a_ra = 2.0, a_rb = 5.0, a_rc = 8.0;                           // пропорция
+    double a_base = 2.0, a_exp = 10.0, a_lx = 1000.0, a_lb2 = 10.0;     // степени, корни, логарифмы
+    // Геометрия
+    double g_secA = 90.0;                                                // сектор
+    double g_ta = 3.0, g_tb = 4.0, g_tc = 5.0, g_tbase = 6.0, g_th = 4.0; // треугольник
+    double g_rw = 4.0, g_rh = 3.0, g_za = 6.0, g_zb = 4.0, g_zh = 3.0;  // прямоугольник, трапеция
+    double g_cr = 0.5, g_ch = 2.0;                                       // цилиндр, конус, шар
+    double g_deg = 30.0;                                                 // угол
 }
 
 // ======================= CONFIG (.ini) =======================
@@ -3887,44 +3967,7 @@ namespace menu {
         static float s_formulas_h = 1680.0f;   // высота по содержимому (секции сворачиваются)
         gui.group_box(T("PHYSICS & MATH SOLVERS"), ImVec2(CARD_W_FULL, s_formulas_h)); {
 
-            if (SectionHeader(T("Electricity / Current"), &s_el)) {
-                ImGui::TextColored(g_theme.accent, "I = q / t");
-                ImGui::TextColored(g_theme.text_dim, "%s", T("Charge q (C):"));
-                TextInputDouble("##el_q", &calc_data::el_q);
-                ImGui::TextColored(g_theme.text_dim, "%s", T("Time t (s):"));
-                TextInputDouble("##el_t", &calc_data::el_t);
-                ShowResult("I =", calc_data::el_t != 0.0 ? calc_data::el_q / calc_data::el_t : 0.0, "A");
-                ImGui::Separator();
-
-                ImGui::TextColored(g_theme.accent, "I = U / R");
-                ImGui::TextColored(g_theme.text_dim, "%s", T("Voltage U (V):"));
-                TextInputDouble("##el_U", &calc_data::el_U);
-                ImGui::TextColored(g_theme.text_dim, "%s", T("Resistance R (Ohm):"));
-                TextInputDouble("##el_R", &calc_data::el_R);
-                ShowResult("I =", calc_data::el_R != 0.0 ? calc_data::el_U / calc_data::el_R : 0.0, "A");
-                ImGui::Separator();
-
-                ImGui::TextColored(g_theme.accent, "I = P / U");
-                ImGui::TextColored(g_theme.text_dim, "%s", T("Power P (W):"));
-                TextInputDouble("##el_P", &calc_data::el_P);
-                ImGui::TextColored(g_theme.text_dim, "%s", T("Voltage U (V):"));
-                TextInputDouble("##el_U2", &calc_data::el_U);
-                ShowResult("I =", calc_data::el_U != 0.0 ? calc_data::el_P / calc_data::el_U : 0.0, "A");
-                ImGui::Separator();
-
-                ImGui::TextColored(g_theme.accent, "Q = I^2 * R * t");
-                ImGui::TextColored(g_theme.text_dim, "%s", T("Current I (A):"));
-                TextInputDouble("##jl_I", &calc_data::jl_I);
-                ImGui::TextColored(g_theme.text_dim, "%s", T("Resistance R (Ohm):"));
-                TextInputDouble("##jl_R", &calc_data::jl_R);
-                ImGui::TextColored(g_theme.text_dim, "%s", T("Time t (s):"));
-                TextInputDouble("##jl_t", &calc_data::jl_t);
-                ShowResult("Q =", calc_data::jl_I * calc_data::jl_I * calc_data::jl_R * calc_data::jl_t, "J");
-                ImGui::Spacing();
-            }
-
-            // ============ NEW: все формулы, по которым считают калькуляторы ============
-            // Поля ввода в ряд, по 4 в строке
+            // ---------- Помощники: поля в ряд, формулы, подзаголовки ----------
             auto Field = [](const char* label, const char* id, double* v) {
                 ImGui::BeginGroup();
                 ImGui::TextColored(g_theme.text_dim, "%s", label);
@@ -3938,8 +3981,102 @@ namespace menu {
                 ImGui::TextColored(g_theme.text_dim, "%s", t);
                 ImGui::PopTextWrapPos();
                 };
+            auto Sub = [](const char* title) {
+                ImGui::Spacing();
+                ImGui::TextColored(g_theme.text_main, "%s", title);
+                ImGui::Separator();
+                };
             using namespace calc_data;
             const double SQ3 = 1.7320508;
+            const double PI_D = 3.14159265358979;
+
+            // ================= ЭЛЕКТРИЧЕСТВО =================
+            if (SectionHeader(T("Electricity / Current"), &s_el)) {
+                Sub(T("Ohm's law and charge"));
+                Formula("I = U / R        U = I * R        R = U / I        I = q / t");
+                Field(T("Voltage U (V):"), "##el_U", &el_U); Gap();
+                Field(T("Resistance R (Ohm):"), "##el_R", &el_R); Gap();
+                Field(T("Charge q (C):"), "##el_q", &el_q); Gap();
+                Field(T("Time t (s):"), "##el_t", &el_t);
+                ShowResult2("I = U/R =", el_R != 0.0 ? el_U / el_R : 0.0, "A",
+                    "I = q/t =", el_t != 0.0 ? el_q / el_t : 0.0, "A");
+
+                Sub(T("Power"));
+                Formula("P = U * I        P = I^2 * R        P = U^2 / R");
+                Field(T("Voltage U (V):"), "##e_pU", &e_pU); Gap();
+                Field(T("Current I (A):"), "##e_pI", &e_pI); Gap();
+                Field(T("Resistance R (Ohm):"), "##e_pR", &e_pR);
+                ShowResult2("U*I =", e_pU * e_pI, "W", "I^2*R =", e_pI * e_pI * e_pR, "W");
+                ShowResult("U^2/R =", e_pR != 0.0 ? e_pU * e_pU / e_pR : 0.0, "W");
+
+                Sub(T("Joule-Lenz law"));
+                Formula("Q = I^2 * R * t");
+                Field(T("Current I (A):"), "##jl_I", &jl_I); Gap();
+                Field(T("Resistance R (Ohm):"), "##jl_R", &jl_R); Gap();
+                Field(T("Time t (s):"), "##jl_t", &jl_t);
+                ShowResult2("Q =", jl_I * jl_I * jl_R * jl_t, "J", "=", jl_I * jl_I * jl_R * jl_t / 3.6e6, "kWh");
+
+                Sub(T("Wire resistance"));
+                Formula("R = rho * L / S        R(t) = R20 * (1 + 0.004 * (t - 20))");
+                ImGui::RadioButton(i18n::L("Copper", "e_wcu"), &e_wmat, 0); ImGui::SameLine();
+                ImGui::RadioButton(i18n::L("Aluminum", "e_wal"), &e_wmat, 1);
+                Field(T("Length, m:"), "##e_wL", &e_wL); Gap();
+                Field(T("Section, mm^2:"), "##e_wS", &e_wS); Gap();
+                Field(T("Core temperature, C:"), "##e_wt", &e_wt);
+                {
+                    const double rho = (e_wmat == 0) ? 0.0175 : 0.028;
+                    const double r20 = (e_wS > 0.0) ? rho * e_wL / e_wS : 0.0;
+                    ShowResult2("R20 =", r20, "Ohm", "R(t) =", r20 * (1.0 + 0.004 * (e_wt - 20.0)), "Ohm");
+                }
+
+                Sub(T("Series and parallel connection"));
+                Formula("Series: R = R1 + R2 + R3        Parallel: 1/R = 1/R1 + 1/R2 + 1/R3");
+                Field("R1, Ohm:", "##e_r1", &e_r1); Gap();
+                Field("R2, Ohm:", "##e_r2", &e_r2); Gap();
+                Field("R3, Ohm (0 = none):", "##e_r3", &e_r3);
+                {
+                    double inv = 0.0;
+                    if (e_r1 > 0.0) inv += 1.0 / e_r1;
+                    if (e_r2 > 0.0) inv += 1.0 / e_r2;
+                    if (e_r3 > 0.0) inv += 1.0 / e_r3;
+                    ShowResult2(T("Series R ="), e_r1 + e_r2 + e_r3, "Ohm", T("Parallel R ="), inv > 0.0 ? 1.0 / inv : 0.0, "Ohm");
+                }
+
+                Sub(T("Alternating current: reactance and impedance"));
+                Formula("X_L = 2*pi*f*L        X_C = 1 / (2*pi*f*C)        Z = sqrt(R^2 + (X_L - X_C)^2)");
+                Formula("cos phi = R / Z        f0 = 1 / (2*pi*sqrt(L*C))        T = 1 / f");
+                Field(T("Frequency f, Hz:"), "##e_f", &e_f); Gap();
+                Field(T("Resistance R (Ohm):"), "##e_R", &e_R); Gap();
+                Field(T("Inductance L, mH:"), "##e_Lmh", &e_Lmh); Gap();
+                Field(T("Capacitance C, uF:"), "##e_Cuf", &e_Cuf);
+                {
+                    const double Lh = e_Lmh / 1000.0, Cf = e_Cuf / 1e6;
+                    const double xl = 2.0 * PI_D * e_f * Lh;
+                    const double xc = (e_f > 0.0 && Cf > 0.0) ? 1.0 / (2.0 * PI_D * e_f * Cf) : 0.0;
+                    const double z = sqrt(e_R * e_R + (xl - xc) * (xl - xc));
+                    ShowResult2("X_L =", xl, "Ohm", "X_C =", xc, "Ohm");
+                    ShowResult2("Z =", z, "Ohm", "cos phi =", z > 0.0 ? e_R / z : 0.0, "");
+                    ShowResult2("f0 =", (Lh > 0.0 && Cf > 0.0) ? 1.0 / (2.0 * PI_D * sqrt(Lh * Cf)) : 0.0, "Hz",
+                        "T =", e_f > 0.0 ? 1000.0 / e_f : 0.0, "ms");
+                }
+
+                Sub(T("Capacitor and RC circuit"));
+                Formula("W = C * U^2 / 2        tau = R * C        charge to 95% ~ 3 * tau");
+                Field(T("Voltage U (V):"), "##e_cU", &e_cU); Gap();
+                Field(T("Resistance R, kOhm:"), "##e_cRk", &e_cRk); Gap();
+                Field(T("Capacitance C, uF:"), "##e_cUf", &e_cUf);
+                {
+                    const double Cf = e_cUf / 1e6, R = e_cRk * 1000.0;
+                    ShowResult2("W =", Cf * e_cU * e_cU / 2.0, "J", "tau =", R * Cf, "s");
+                }
+
+                Sub(T("Current density"));
+                Formula("j = I / S");
+                Field(T("Current I (A):"), "##e_jI", &e_jI); Gap();
+                Field(T("Section, mm^2:"), "##e_jS", &e_jS);
+                ShowResult("j =", e_jS > 0.0 ? e_jI / e_jS : 0.0, "A/mm^2");
+                ImGui::Spacing();
+            }
 
             // ---------- Мощность и ток ----------
             if (SectionHeader(T("Power and current (Cable, Load)"), &s_pw)) {
@@ -4089,49 +4226,178 @@ namespace menu {
                 ImGui::Spacing();
             }
 
+            // ================= АЛГЕБРА =================
             if (SectionHeader(T("Algebra"), &s_al)) {
-                ImGui::TextColored(g_theme.accent, "%s", T("Quadratic"));
-                ImGui::TextColored(g_theme.text_dim, "a:");
-                TextInputDouble("##qd_a", &calc_data::qd_a);
-                ImGui::TextColored(g_theme.text_dim, "b:");
-                TextInputDouble("##qd_b", &calc_data::qd_b);
-                ImGui::TextColored(g_theme.text_dim, "c:");
-                TextInputDouble("##qd_c", &calc_data::qd_c);
+                Sub(T("Quadratic"));
+                Formula("a*x^2 + b*x + c = 0        D = b^2 - 4ac        x = (-b +- sqrt(D)) / 2a");
+                Field("a:", "##qd_a", &qd_a); Gap();
+                Field("b:", "##qd_b", &qd_b); Gap();
+                Field("c:", "##qd_c", &qd_c);
                 {
-                    const double a = calc_data::qd_a, b = calc_data::qd_b, c = calc_data::qd_c;
-                    const double D = b * b - 4.0 * a * c;
+                    const double qa = qd_a, qb = qd_b, qc = qd_c;
+                    const double D = qb * qb - 4.0 * qa * qc;
                     ShowResult("D =", D, "");
-                    if (a == 0.0) {
-                        if (b != 0.0) ShowResult("x =", -c / b, "");
+                    if (qa == 0.0) {
+                        if (qb != 0.0) ShowResult("x =", -qc / qb, "");
                     }
                     else if (D < 0.0) {
                         ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "%s", T("No real roots"));
                     }
                     else if (D == 0.0) {
-                        ShowResult("x =", -b / (2.0 * a), "");
+                        ShowResult("x =", -qb / (2.0 * qa), "");
                     }
                     else {
-                        ShowResult2("x1 =", (-b + sqrt(D)) / (2.0 * a), "",
-                            "x2 =", (-b - sqrt(D)) / (2.0 * a), "");
+                        ShowResult2("x1 =", (-qb + sqrt(D)) / (2.0 * qa), "",
+                            "x2 =", (-qb - sqrt(D)) / (2.0 * qa), "");
                     }
+                }
+
+                Sub(T("Linear equation"));
+                Formula("a*x + b = 0        x = -b / a");
+                Field("a:", "##a_la", &a_la); Gap();
+                Field("b:", "##a_lb", &a_lb);
+                if (a_la != 0.0) ShowResult("x =", -a_lb / a_la, "");
+                else ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "%s", T("a must not be 0"));
+
+                Sub(T("System of two equations (Cramer's rule)"));
+                Formula("a1*x + b1*y = c1,  a2*x + b2*y = c2        D = a1*b2 - a2*b1,  x = Dx/D,  y = Dy/D");
+                Field("a1:", "##a_a1", &a_a1); Gap();
+                Field("b1:", "##a_b1", &a_b1); Gap();
+                Field("c1:", "##a_c1", &a_c1);
+                Field("a2:", "##a_a2", &a_a2); Gap();
+                Field("b2:", "##a_b2", &a_b2); Gap();
+                Field("c2:", "##a_c2", &a_c2);
+                {
+                    const double D = a_a1 * a_b2 - a_a2 * a_b1;
+                    if (D != 0.0)
+                        ShowResult2("x =", (a_c1 * a_b2 - a_c2 * a_b1) / D, "", "y =", (a_a1 * a_c2 - a_a2 * a_c1) / D, "");
+                    else
+                        ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "%s", T("D = 0: no single solution"));
+                }
+
+                Sub(T("Percentages"));
+                Formula("x% of N = N * x / 100        change A -> B = (B - A) / A * 100%");
+                Field("x, %:", "##a_px", &a_px); Gap();
+                Field("N:", "##a_pn", &a_pn); Gap();
+                Field("A:", "##a_pa", &a_pa); Gap();
+                Field("B:", "##a_pb", &a_pb);
+                ShowResult2(T("x% of N ="), a_pn * a_px / 100.0, "", T("Change ="), a_pa != 0.0 ? (a_pb - a_pa) / a_pa * 100.0 : 0.0, "%");
+
+                Sub(T("Proportion"));
+                Formula("a / b = c / x        x = b * c / a");
+                Field("a:", "##a_ra", &a_ra); Gap();
+                Field("b:", "##a_rb", &a_rb); Gap();
+                Field("c:", "##a_rc", &a_rc);
+                ShowResult("x =", a_ra != 0.0 ? a_rb * a_rc / a_ra : 0.0, "");
+
+                Sub(T("Powers, roots, logarithms"));
+                Formula("a^n        n-th root of a = a^(1/n)        log_b(x) = ln(x) / ln(b)");
+                Field("a:", "##a_base", &a_base); Gap();
+                Field("n:", "##a_exp", &a_exp); Gap();
+                Field("x:", "##a_lx", &a_lx); Gap();
+                Field(T("base b:"), "##a_lb2", &a_lb2);
+                ShowResult2("a^n =", pow(a_base, a_exp), "", T("root ="), (a_exp != 0.0 && a_base >= 0.0) ? pow(a_base, 1.0 / a_exp) : 0.0, "");
+                ShowResult2("log_b(x) =", (a_lx > 0.0 && a_lb2 > 0.0 && a_lb2 != 1.0) ? log(a_lx) / log(a_lb2) : 0.0, "",
+                    "ln(x) =", a_lx > 0.0 ? log(a_lx) : 0.0, "");
+
+                Sub(T("Progressions"));
+                Formula("Arithmetic: a_n = a1 + (n-1)*d,  S_n = (a1 + a_n) * n / 2");
+                Formula("Geometric: b_n = b1 * q^(n-1),  S_n = b1 * (q^n - 1) / (q - 1)");
+                Field("a1:", "##ap_a1", &ap_a1); Gap();
+                Field("d:", "##ap_d", &ap_d); Gap();
+                Field("n:", "##ap_n", &ap_n);
+                {
+                    const double an = ap_a1 + (ap_n - 1.0) * ap_d;
+                    ShowResult2("a_n =", an, "", "S_n =", (ap_a1 + an) * ap_n / 2.0, "");
+                }
+                Field("b1:", "##gp_b1", &gp_b1); Gap();
+                Field("q:", "##gp_q", &gp_q); Gap();
+                Field("n:", "##gp_n", &gp_n);
+                {
+                    const double bn = gp_b1 * pow(gp_q, gp_n - 1.0);
+                    const double sn = (gp_q != 1.0) ? gp_b1 * (pow(gp_q, gp_n) - 1.0) / (gp_q - 1.0) : gp_b1 * gp_n;
+                    ShowResult2("b_n =", bn, "", "S_n =", sn, "");
                 }
                 ImGui::Spacing();
             }
 
+            // ================= ГЕОМЕТРИЯ =================
             if (SectionHeader(T("Geometry"), &s_ge)) {
-                ImGui::TextColored(g_theme.accent, "%s", T("Pythagorean: c = sqrt(a^2 + b^2)"));
-                ImGui::TextColored(g_theme.text_dim, "%s", T("Leg a:"));
-                TextInputDouble("##py_a", &calc_data::geo_a);
-                ImGui::TextColored(g_theme.text_dim, "%s", T("Leg b:"));
-                TextInputDouble("##py_b", &calc_data::geo_b);
-                ShowResult("c =", sqrt(calc_data::geo_a * calc_data::geo_a + calc_data::geo_b * calc_data::geo_b), "");
-                ImGui::Separator();
+                Sub(T("Right triangle (Pythagoras)"));
+                Formula("c = sqrt(a^2 + b^2)        S = a * b / 2        sin A = a / c");
+                Field(T("Leg a:"), "##py_a", &geo_a); Gap();
+                Field(T("Leg b:"), "##py_b", &geo_b);
+                {
+                    const double c = sqrt(geo_a * geo_a + geo_b * geo_b);
+                    ShowResult2("c =", c, "", "S =", geo_a * geo_b / 2.0, "");
+                    ShowResult2(T("angle A ="), c > 0.0 ? asin(geo_a / c) * 180.0 / PI_D : 0.0, "deg",
+                        T("angle B ="), c > 0.0 ? asin(geo_b / c) * 180.0 / PI_D : 0.0, "deg");
+                }
 
-                ImGui::TextColored(g_theme.accent, "%s", T("Circle: C = 2*pi*R, S = pi*R^2"));
-                ImGui::TextColored(g_theme.text_dim, "%s", T("Radius R:"));
-                TextInputDouble("##ci_R", &calc_data::geo_R);
-                ShowResult2("C =", 2.0 * PI * calc_data::geo_R, "",
-                    "S =", PI * calc_data::geo_R * calc_data::geo_R, "");
+                Sub(T("Any triangle"));
+                Formula("S = base * h / 2        Heron: p = (a+b+c)/2,  S = sqrt(p(p-a)(p-b)(p-c))");
+                Field(T("base:"), "##g_tbase", &g_tbase); Gap();
+                Field(T("height h:"), "##g_th", &g_th);
+                ShowResult("S =", g_tbase * g_th / 2.0, "");
+                Field("a:", "##g_ta", &g_ta); Gap();
+                Field("b:", "##g_tb", &g_tb); Gap();
+                Field("c:", "##g_tc", &g_tc);
+                {
+                    const double pp = (g_ta + g_tb + g_tc) / 2.0;
+                    const double h2 = pp * (pp - g_ta) * (pp - g_tb) * (pp - g_tc);
+                    if (h2 > 0.0) ShowResult2(T("Perimeter ="), 2.0 * pp, "", "S =", sqrt(h2), "");
+                    else ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "%s", T("Such a triangle does not exist"));
+                }
+
+                Sub(T("Law of cosines and law of sines"));
+                Formula("c^2 = a^2 + b^2 - 2ab*cos C        a / sin A = b / sin B");
+                Field("a:", "##cl_a", &cl_a); Gap();
+                Field("b:", "##cl_b", &cl_b); Gap();
+                Field(T("angle C, deg:"), "##cl_C", &cl_C);
+                ShowResult("c =", sqrt((std::max)(0.0, cl_a * cl_a + cl_b * cl_b - 2.0 * cl_a * cl_b * cos(cl_C * PI_D / 180.0))), "");
+                Field("a:", "##sl_a", &sl_a); Gap();
+                Field(T("angle A, deg:"), "##sl_A", &sl_A); Gap();
+                Field(T("angle B, deg:"), "##sl_B", &sl_B);
+                {
+                    const double sa = sin(sl_A * PI_D / 180.0);
+                    ShowResult("b =", sa != 0.0 ? sl_a * sin(sl_B * PI_D / 180.0) / sa : 0.0, "");
+                }
+
+                Sub(T("Circle and sector"));
+                Formula("C = 2*pi*R        S = pi*R^2        arc = pi*R*alpha/180        S_sector = pi*R^2*alpha/360");
+                Field(T("Radius R:"), "##ci_R", &geo_R); Gap();
+                Field(T("angle alpha, deg:"), "##g_secA", &g_secA);
+                ShowResult2("C =", 2.0 * PI_D * geo_R, "", "S =", PI_D * geo_R * geo_R, "");
+                ShowResult2(T("arc ="), PI_D * geo_R * g_secA / 180.0, "", T("S sector ="), PI_D * geo_R * geo_R * g_secA / 360.0, "");
+
+                Sub(T("Rectangle and trapezoid"));
+                Formula("S = a*b        P = 2(a+b)        d = sqrt(a^2 + b^2)        trapezoid: S = (a+b)/2 * h");
+                Field(T("width a:"), "##g_rw", &g_rw); Gap();
+                Field(T("height b:"), "##g_rh", &g_rh);
+                ShowResult2("S =", g_rw * g_rh, "", "P =", 2.0 * (g_rw + g_rh), "");
+                ShowResult(T("diagonal ="), sqrt(g_rw * g_rw + g_rh * g_rh), "");
+                Field(T("base a:"), "##g_za", &g_za); Gap();
+                Field(T("base b:"), "##g_zb", &g_zb); Gap();
+                Field(T("height h:"), "##g_zh", &g_zh);
+                ShowResult(T("S trapezoid ="), (g_za + g_zb) / 2.0 * g_zh, "");
+
+                Sub(T("Solids: cylinder, cone, sphere"));
+                Formula("Cylinder: V = pi*r^2*h,  S = 2*pi*r*(r+h)        Cone: V = pi*r^2*h/3        Sphere: V = 4/3*pi*r^3,  S = 4*pi*r^2");
+                Field(T("radius r:"), "##g_cr", &g_cr); Gap();
+                Field(T("height h:"), "##g_ch", &g_ch);
+                ShowResult2(T("V cylinder ="), PI_D * g_cr * g_cr * g_ch, "", T("S cylinder ="), 2.0 * PI_D * g_cr * (g_cr + g_ch), "");
+                ShowResult2(T("V cone ="), PI_D * g_cr * g_cr * g_ch / 3.0, "", T("V sphere ="), 4.0 / 3.0 * PI_D * g_cr * g_cr * g_cr, "");
+                ShowResult(T("S sphere ="), 4.0 * PI_D * g_cr * g_cr, "");
+
+                Sub(T("Angles"));
+                Formula("rad = deg * pi / 180        sin, cos, tan");
+                Field(T("angle, deg:"), "##g_deg", &g_deg);
+                {
+                    const double r = g_deg * PI_D / 180.0;
+                    ShowResult2("rad =", r, "", "sin =", sin(r), "");
+                    ShowResult2("cos =", cos(r), "", "tan =", fabs(cos(r)) > 1e-12 ? tan(r) : 0.0, "");
+                }
+                ImGui::Spacing();
             }
 
             // Пересчитываем высоту, только когда карточка видна

@@ -694,6 +694,32 @@ namespace i18n {
         { "Vertical rods in a row, without the connecting strip (with margin). Utilization factors are approximate table values.",
           "Вертикальные электроды в ряд, без учёта соединительной полосы (с запасом). Коэффициенты использования - ориентировочные табличные." },
         { "Soft starter current limit, x In:", "Ограничение тока УПП, x Iн:" },
+        // ─── Формулы: новые секции ───
+        { "Power and current (Cable, Load)", "Мощность и ток (Кабель, Нагрузка)" },
+        { "Power P, kW:",               "Мощность P, кВт:" },
+        { "Cable: temperature and voltage drop", "Кабель: температура и падение напряжения" },
+        { "t_max of core, C:",          "t_max жилы, °C:" },
+        { "t ambient, C:",              "t среды, °C:" },
+        { "t of table, C:",             "t таблицы, °C:" },
+        { "t_max: PVC 65, XLPE 90, rubber 60. t of table: 25 in air, 15 in ground. Allowable current = table current * k_t.",
+          "t_max: ПВХ 65, СПЭ 90, резина 60. t таблицы: 25 в воздухе, 15 в земле. Допустимый ток = ток по таблице ПУЭ * k_t." },
+        { "Voltage U is taken from the 'Power and current' section above.",
+          "Напряжение U берётся из секции «Мощность и ток» выше." },
+        { "Short circuit: phase-zero loop", "Ток КЗ: петля фаза-ноль" },
+        { "Phase voltage U_ph, V:",     "Фазное напряжение Uф, В:" },
+        { "Breaker In, A:",             "Номинал автомата In, А:" },
+        { "Transformer Zt/3, Ohm:",     "Трансформатор Zт/3, Ом:" },
+        { "Contacts, Ohm:",             "Контакты, Ом:" },
+        { "Zt/3 for Y/Yn transformers: 100 kVA 0.26; 160 kVA 0.162; 250 kVA 0.104; 400 kVA 0.065; 630 kVA 0.043; 1000 kVA 0.027 Ohm.",
+          "Zт/3 трансформаторов Y/Yн: 100 кВА 0,26; 160 кВА 0,162; 250 кВА 0,104; 400 кВА 0,065; 630 кВА 0,043; 1000 кВА 0,027 Ом." },
+        { "Grounding: vertical rods",   "Заземление: вертикальные электроды" },
+        { "Rod diameter d, mm:",        "Диаметр электрода d, мм:" },
+        { "Angle 50x50: d = 0.95 * 50 = 47.5 mm. Utilization factor: 0.5-0.95, see the Grounding tab or lecture 8.",
+          "Уголок 50x50: d = 0,95 * 50 = 47,5 мм. Коэффициент использования 0,5-0,95 - см. вкладку «Заземление» или лекцию 8." },
+        { "Energy and units",           "Энергия и единицы" },
+        { "Core diameter d, mm:",       "Диаметр жилы d, мм:" },
+        { "AWG number:",                "Номер AWG:" },
+        { "Temperature, C:",            "Температура, °C:" },
       { "Glow on hover",             "Свечение при наведении" },
       { "Danger",                    "Опасно" },
       { "Success",                   "Успех" },
@@ -1194,6 +1220,16 @@ namespace calc_data {
     int   result_motor_breaker = 0;      // номинал автомата
     int   result_motor_curve = 1;        // 1 = C, 2 = D
     int   result_motor_contactor = 0;    // контактор AC-3, А
+
+    // === NEW: вкладка "Формулы" - все формулы калькуляторов ===
+    double f_P = 5.0, f_U = 230.0, f_cos = 0.95;  int f_ph = 1;          // мощность и ток
+    double f_tmax = 65.0, f_tamb = 35.0, f_tref = 25.0;                  // поправка на температуру
+    double f_I = 16.0, f_L = 30.0, f_S = 2.5;     int f_mat = 0;         // падение напряжения
+    double f_Ukz = 230.0, f_Lkz = 50.0, f_Skz = 2.5, f_Zt = 0.104, f_Rk = 0.03, f_In = 16.0;
+    int    f_matkz = 0, f_curve = 1;                                      // ток КЗ
+    double f_rho = 100.0, f_Lg = 2.5, f_dg = 16.0, f_tg = 0.7, f_ng = 3.0, f_eta = 0.78; // заземление
+    double f_P2 = 5.5, f_eff = 0.87, f_cosm = 0.85, f_Um = 400.0, f_km = 7.0; // двигатель
+    double f_Pw = 2.0, f_hours = 4.0, f_d = 1.78, f_awg = 12.0, f_tc = 25.0;  // энергия и единицы
 }
 
 // ======================= CONFIG (.ini) =======================
@@ -1580,6 +1616,14 @@ inline const char* InputUnit(const char* id) {
         { "ambient", "°C", "°C" },       { "hours", "h/day", "ч/сут" },   { "rods", "pcs", "шт" },
         { "soil", "Ohm·m", "Ом·м" },     { "mansec", "mm²", "мм²" },      { "motor_flc_in", "A", "А" },
         { "motor_sr", "×In", "×Iн" },    { "motor_eff", "eff", "КПД" },
+        { "##f_P", "kW", "кВт" },       { "##f_U", "V", "В" },            { "##f_I", "A", "А" },
+        { "##f_L", "m", "м" },          { "##f_S", "mm²", "мм²" },        { "##f_Ukz", "V", "В" },
+        { "##f_Lkz", "m", "м" },        { "##f_Skz", "mm²", "мм²" },      { "##f_In", "A", "А" },
+        { "##f_Zt", "Ohm", "Ом" },      { "##f_Rk", "Ohm", "Ом" },        { "##f_rho", "Ohm·m", "Ом·м" },
+        { "##f_Lg", "m", "м" },         { "##f_dg", "mm", "мм" },         { "##f_tg", "m", "м" },
+        { "##f_P2", "kW", "кВт" },      { "##f_Um", "V", "В" },           { "##f_Pw", "kW", "кВт" },
+        { "##f_hours", "h", "ч" },      { "##f_d", "mm", "мм" },          { "##f_tc", "°C", "°C" },
+        { "##f_tmax", "°C", "°C" },     { "##f_tamb", "°C", "°C" },       { "##f_tref", "°C", "°C" },
         { "rodspace", "m", "м" },         { "roddepth", "m", "м" },        { "motor_soft", "×In", "×Iн" },
         { "cosphi", "cos", "cos" },      { "load_cosphi", "cos", "cos" }, { "motor_cos", "cos", "cos" },
         { "##el_q", "C", "Кл" },         { "##el_t", "s", "с" },          { "##jl_t", "s", "с" },
@@ -3817,6 +3861,7 @@ namespace menu {
         using i18n::T;
 
         static bool s_el = true, s_al = true, s_ge = true;
+        static bool s_pw = false, s_vd = false, s_kz = false, s_gr = false, s_mo = false, s_en = false;
 
         auto ShowResult = [](const char* label, double value, const char* unit) {
             char buf[64];
@@ -3875,6 +3920,172 @@ namespace menu {
                 ImGui::TextColored(g_theme.text_dim, "%s", T("Time t (s):"));
                 TextInputDouble("##jl_t", &calc_data::jl_t);
                 ShowResult("Q =", calc_data::jl_I * calc_data::jl_I * calc_data::jl_R * calc_data::jl_t, "J");
+                ImGui::Spacing();
+            }
+
+            // ============ NEW: все формулы, по которым считают калькуляторы ============
+            // Поля ввода в ряд, по 4 в строке
+            auto Field = [](const char* label, const char* id, double* v) {
+                ImGui::BeginGroup();
+                ImGui::TextColored(g_theme.text_dim, "%s", label);
+                TextInputDouble(id, v, 200.0f);
+                ImGui::EndGroup();
+                };
+            auto Gap = []() { ImGui::SameLine(0.0f, 14.0f); };
+            auto Formula = [](const char* f) { ImGui::TextColored(g_theme.accent, "%s", f); };
+            auto Note = [](const char* t) {
+                ImGui::PushTextWrapPos(0.0f);
+                ImGui::TextColored(g_theme.text_dim, "%s", t);
+                ImGui::PopTextWrapPos();
+                };
+            using namespace calc_data;
+            const double SQ3 = 1.7320508;
+
+            // ---------- Мощность и ток ----------
+            if (SectionHeader(T("Power and current (Cable, Load)"), &s_pw)) {
+                Formula("1 ph:  I = P / (U * cos)        3 ph:  I = P / (sqrt(3) * U * cos)");
+                Formula("S = P / cos        Q = S * sin = sqrt(S^2 - P^2)");
+                ImGui::RadioButton(i18n::L("1 Phase", "f_ph1"), &f_ph, 1); ImGui::SameLine();
+                ImGui::RadioButton(i18n::L("3 Phases", "f_ph3"), &f_ph, 3);
+                Field(T("Power P, kW:"), "##f_P", &f_P); Gap();
+                Field(T("Voltage, V:"), "##f_U", &f_U); Gap();
+                Field(T("cos phi:"), "##f_cos", &f_cos);
+                const double c = (f_cos > 0.0 && f_cos <= 1.0) ? f_cos : 1.0;
+                const double den = (f_ph == 3 ? SQ3 : 1.0) * f_U * c;
+                const double S_kva = f_P / c;
+                ShowResult2("I =", den > 0.0 ? f_P * 1000.0 / den : 0.0, "A",
+                    "S =", S_kva, "kVA");
+                ShowResult("Q =", S_kva * sqrt((std::max)(0.0, 1.0 - c * c)), "kvar");
+                ImGui::Spacing();
+            }
+
+            // ---------- Сечение, падение напряжения ----------
+            if (SectionHeader(T("Cable: temperature and voltage drop"), &s_vd)) {
+                Formula("k_t = sqrt( (t_max - t_amb) / (65 - t_ref) )      (PUE table 1.3.3)");
+                Field(T("t_max of core, C:"), "##f_tmax", &f_tmax); Gap();
+                Field(T("t ambient, C:"), "##f_tamb", &f_tamb); Gap();
+                Field(T("t of table, C:"), "##f_tref", &f_tref);
+                {
+                    const double num = f_tmax - f_tamb, dn = 65.0 - f_tref;
+                    ShowResult("k_t =", (num > 0.0 && dn > 0.0) ? sqrt(num / dn) : 0.0, "");
+                }
+                Note(T("t_max: PVC 65, XLPE 90, rubber 60. t of table: 25 in air, 15 in ground. Allowable current = table current * k_t."));
+                ImGui::Separator();
+
+                Formula("dU = k * I * L * (rho/S * cos + x0 * sin),   k = 2 (1 ph) or sqrt(3) (3 ph)");
+                Formula("rho = rho20 * (1 + 0.004 * (65 - 20)),   x0 = 0.08 Ohm/km");
+                Formula("L_max (5%) = 0.05 * U / (k * I * (rho/S * cos + x0 * sin))");
+                ImGui::RadioButton(i18n::L("Copper", "f_cu"), &f_mat, 0); ImGui::SameLine();
+                ImGui::RadioButton(i18n::L("Aluminum", "f_al"), &f_mat, 1); ImGui::SameLine(0.0f, 30.0f);
+                ImGui::RadioButton(i18n::L("1 Phase", "f_vph1"), &f_ph, 1); ImGui::SameLine();
+                ImGui::RadioButton(i18n::L("3 Phases", "f_vph3"), &f_ph, 3);
+                Field(T("Current I (A):"), "##f_I", &f_I); Gap();
+                Field(T("Length, m:"), "##f_L", &f_L); Gap();
+                Field(T("Section, mm^2:"), "##f_S", &f_S); Gap();
+                Field(T("cos phi:"), "##f_cos2", &f_cos);
+                {
+                    const double rho = (f_mat == 0 ? 0.0175 : 0.028) * 1.18;
+                    const double c = (f_cos > 0.0 && f_cos <= 1.0) ? f_cos : 1.0;
+                    const double sn = sqrt(1.0 - c * c);
+                    const double k = (f_ph == 3) ? SQ3 : 2.0;
+                    const double per_m = (f_S > 0.0) ? (rho / f_S * c + 0.00008 * sn) : 0.0;
+                    const double du = k * f_I * f_L * per_m;
+                    ShowResult2("dU =", du, "V", "dU% =", f_U > 0.0 ? du / f_U * 100.0 : 0.0, "%");
+                    ShowResult("L_max =", (f_I > 0.0 && per_m > 0.0) ? 0.05 * f_U / (k * f_I * per_m) : 0.0, "m");
+                }
+                Note(T("Voltage U is taken from the 'Power and current' section above."));
+                ImGui::Spacing();
+            }
+
+            // ---------- Ток КЗ ----------
+            if (SectionHeader(T("Short circuit: phase-zero loop"), &s_kz)) {
+                Formula("Ik = U_ph / (Zt/3 + Z_loop + R_contacts),   U_ph = U / sqrt(3) for 3 ph");
+                Formula("Z_loop = sqrt( (2*L*rho/S)^2 + (2*L*x0)^2 )");
+                Formula("Check: Ik >= k * In,   k = 5 (B), 10 (C), 20 (D)");
+                ImGui::RadioButton(i18n::L("Copper", "f_kcu"), &f_matkz, 0); ImGui::SameLine();
+                ImGui::RadioButton(i18n::L("Aluminum", "f_kal"), &f_matkz, 1); ImGui::SameLine(0.0f, 30.0f);
+                ImGui::RadioButton("B##f_cb", &f_curve, 0); ImGui::SameLine();
+                ImGui::RadioButton("C##f_cc", &f_curve, 1); ImGui::SameLine();
+                ImGui::RadioButton("D##f_cd", &f_curve, 2);
+                Field(T("Phase voltage U_ph, V:"), "##f_Ukz", &f_Ukz); Gap();
+                Field(T("Length, m:"), "##f_Lkz", &f_Lkz); Gap();
+                Field(T("Section, mm^2:"), "##f_Skz", &f_Skz); Gap();
+                Field(T("Breaker In, A:"), "##f_In", &f_In);
+                Field(T("Transformer Zt/3, Ohm:"), "##f_Zt", &f_Zt); Gap();
+                Field(T("Contacts, Ohm:"), "##f_Rk", &f_Rk);
+                {
+                    const double rho = (f_matkz == 0 ? 0.0175 : 0.028) * 1.18;
+                    const double r = (f_Skz > 0.0) ? 2.0 * f_Lkz * rho / f_Skz : 0.0;
+                    const double x = 2.0 * f_Lkz * 0.00008;
+                    const double zl = sqrt(r * r + x * x);
+                    const double z = f_Zt + zl + f_Rk;
+                    const double ik = (z > 0.0) ? f_Ukz / z : 0.0;
+                    const double kc = (f_curve == 0) ? 5.0 : (f_curve == 2 ? 20.0 : 10.0);
+                    ShowResult2("Z_loop =", zl, "Ohm", "Ik =", ik, "A");
+                    const bool ok = ik >= kc * f_In;
+                    ImGui::TextColored(g_theme.text_dim, "%s", T("Ik check:"));
+                    ImGui::SameLine();
+                    ImGui::TextColored(ok ? ImVec4(0.4f, 1.0f, 0.4f, 1.0f) : ImVec4(1.0f, 0.4f, 0.4f, 1.0f),
+                        "%s (%.0f A >= %.0f A)", ok ? T("OK") : T("FAIL"), ik, kc * f_In);
+                }
+                Note(T("Zt/3 for Y/Yn transformers: 100 kVA 0.26; 160 kVA 0.162; 250 kVA 0.104; 400 kVA 0.065; 630 kVA 0.043; 1000 kVA 0.027 Ohm."));
+                ImGui::Spacing();
+            }
+
+            // ---------- Заземление ----------
+            if (SectionHeader(T("Grounding: vertical rods"), &s_gr)) {
+                Formula("R1 = rho / (2*pi*L) * ( ln(2L/d) + 0.5 * ln((4T + L) / (4T - L)) ),   T = t + L/2");
+                Formula("R = R1 / (n * eta)");
+                Field(T("Soil Resistivity, Ohm*m:"), "##f_rho", &f_rho); Gap();
+                Field(T("Rod Length, m:"), "##f_Lg", &f_Lg); Gap();
+                Field(T("Rod diameter d, mm:"), "##f_dg", &f_dg); Gap();
+                Field(T("Depth of rod top, m:"), "##f_tg", &f_tg);
+                Field(T("Number of Rods:"), "##f_ng", &f_ng); Gap();
+                Field(T("Utilization factor:"), "##f_eta", &f_eta);
+                {
+                    const double L = (f_Lg > 0.01) ? f_Lg : 0.01;
+                    const double d = (f_dg > 0.1 ? f_dg : 0.1) / 1000.0;
+                    const double Tm = f_tg + L / 2.0;
+                    const double r1 = f_rho / (2.0 * 3.14159265358979 * L) *
+                        (log(2.0 * L / d) + 0.5 * log((4.0 * Tm + L) / (4.0 * Tm - L)));
+                    const double n = (f_ng >= 1.0) ? f_ng : 1.0;
+                    const double eta = (f_eta > 0.0 && f_eta <= 1.0) ? f_eta : 1.0;
+                    ShowResult2("R1 =", r1, "Ohm", "R =", r1 / (n * eta), "Ohm");
+                }
+                Note(T("Angle 50x50: d = 0.95 * 50 = 47.5 mm. Utilization factor: 0.5-0.95, see the Grounding tab or lecture 8."));
+                ImGui::Spacing();
+            }
+
+            // ---------- Двигатель ----------
+            if (SectionHeader(T("Motor"), &s_mo)) {
+                Formula("P1 = P2 / eff        I = P1 / (sqrt(3) * U * cos)        P2 = sqrt(3) * U * I * cos * eff");
+                Formula("Ist = k * I     Star-Delta: Ist / 3     Breaker: In >= 1.25 * I,  1.2 * Ist <= 5 In (C) / 10 In (D)");
+                Field(T("Shaft power, kW:"), "##f_P2", &f_P2); Gap();
+                Field(T("Efficiency (0.5-1.0):"), "##f_eff", &f_eff); Gap();
+                Field(T("cos phi:"), "##f_cosm", &f_cosm); Gap();
+                Field(T("Voltage, V:"), "##f_Um", &f_Um);
+                Field(T("Start ratio (Ist/In):"), "##f_km", &f_km);
+                {
+                    const double eff = (f_eff > 0.01) ? f_eff : 0.01;
+                    const double p1 = f_P2 / eff;
+                    const double den = SQ3 * f_Um * f_cosm;
+                    const double i = (den > 0.0) ? p1 * 1000.0 / den : 0.0;
+                    ShowResult2("P1 =", p1, "kW", "I =", i, "A");
+                    ShowResult2("Ist =", f_km * i, "A", "Ist (Y/D) =", f_km * i / 3.0, "A");
+                }
+                ImGui::Spacing();
+            }
+
+            // ---------- Энергия и единицы ----------
+            if (SectionHeader(T("Energy and units"), &s_en)) {
+                Formula("W = P * t        S = pi * d^2 / 4        S_AWG = 0.012668 * 92^((36 - n) / 19.5)        F = C * 9/5 + 32");
+                Field(T("Power P, kW:"), "##f_Pw", &f_Pw); Gap();
+                Field(T("Hours per day:"), "##f_hours", &f_hours); Gap();
+                Field(T("Core diameter d, mm:"), "##f_d", &f_d); Gap();
+                Field(T("AWG number:"), "##f_awg", &f_awg);
+                Field(T("Temperature, C:"), "##f_tc", &f_tc);
+                ShowResult2("W =", f_Pw * f_hours, "kWh", "S(d) =", 3.14159265358979 * f_d * f_d / 4.0, "mm^2");
+                ShowResult2("S(AWG) =", 0.012668 * pow(92.0, (36.0 - f_awg) / 19.5), "mm^2", "F =", f_tc * 9.0 / 5.0 + 32.0, "F");
                 ImGui::Spacing();
             }
 

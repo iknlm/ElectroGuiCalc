@@ -1,11 +1,12 @@
 name: Build
 
-# Сборка на каждый push в main (проверка, что код компилируется)
-# и публикация релиза при создании тега вида v1.1
+# На каждый push в main: сборка в Visual Studio (проверка, что код компилируется).
+# Если версии из .github/release-version ещё нет в релизах - публикуется новый релиз
+# с тегом этой версии и описанием из .github/release-notes.md.
+# Выпустить новую версию = поменять номер в .github/release-version и описание.
 on:
   push:
     branches: [main]
-    tags: ['v*']
   workflow_dispatch:
 
 permissions:
@@ -22,6 +23,18 @@ jobs:
       - name: Build Release x64
         run: msbuild ElectroGuiCalc.sln /p:Configuration=Release /p:Platform=x64 /m
 
+      - name: Read version
+        id: ver
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $v = (Get-Content .github/release-version -Raw).Trim()
+          "version=$v" >> $env:GITHUB_OUTPUT
+          gh release view $v --repo "${{ github.repository }}" *> $null
+          if ($LASTEXITCODE -eq 0) { "exists=true" >> $env:GITHUB_OUTPUT } else { "exists=false" >> $env:GITHUB_OUTPUT }
+          exit 0
+
       - name: Package
         shell: pwsh
         run: |
@@ -30,7 +43,7 @@ jobs:
           Copy-Item "x64/Release/ElectroGuiCalc.exe" $out
           Copy-Item "fonts/fa-solid-900.ttf" "$out/fonts"
           Copy-Item "lectures/*.pdf" "$out/lectures"
-          Compress-Archive -Path $out -DestinationPath "ElectroGuiCalc-${{ github.ref_name }}.zip"
+          Compress-Archive -Path $out -DestinationPath "ElectroGuiCalc-${{ steps.ver.outputs.version }}.zip"
 
       - name: Upload build
         uses: actions/upload-artifact@v4
@@ -39,9 +52,12 @@ jobs:
           path: ElectroGuiCalc-*.zip
 
       - name: Publish release
-        if: startsWith(github.ref, 'refs/tags/')
+        if: steps.ver.outputs.exists == 'false'
         uses: softprops/action-gh-release@v2
         with:
-          name: ElectroGuiCalc ${{ github.ref_name }}
+          tag_name: ${{ steps.ver.outputs.version }}
+          target_commitish: ${{ github.sha }}
+          name: ElectroGuiCalc ${{ steps.ver.outputs.version }}
           body_path: .github/release-notes.md
           files: ElectroGuiCalc-*.zip
+          make_latest: true

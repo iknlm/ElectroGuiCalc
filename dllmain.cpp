@@ -10,6 +10,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <ctime>
+#include <cstdint>
 #include "imgui/imgui.h"
 #include "imgui/imgui_internal.h"
 #include "imgui/imgui_impl_win32.h"
@@ -141,6 +142,7 @@ struct ThemeSettings {
     float intro_scale_min = 0.92f;
 
     bool  minimize_animation = true;
+    bool  close_animation = true;      // рассыпание в пыль при закрытии
 } g_theme;
 
 // ======================= I18N (EN / RU) =======================
@@ -492,6 +494,7 @@ namespace i18n {
 { "Duration (s)",               "Длительность (с)" },
 { "Start scale",                "Начальный масштаб" },
 { "Minimize/restore animation", "Анимация сворачивания" },
+{ "Crumble to dust on close", "Рассыпание при закрытии" },
         { "Animated background",        "Анимированный фон" },
 { "Settings file: settings.ini (next to .exe)", "Файл настроек: settings.ini (рядом с .exe)" },
 { "Save Settings",           "Сохранить настройки" },
@@ -1377,6 +1380,7 @@ namespace config {
         fprintf(f, "intro_duration=%.2f\n", g_theme.intro_duration);
         fprintf(f, "intro_scale_min=%.2f\n", g_theme.intro_scale_min);
         fprintf(f, "minimize_animation=%d\n", g_theme.minimize_animation ? 1 : 0);
+        fprintf(f, "close_animation=%d\n", g_theme.close_animation ? 1 : 0);
 
         fprintf(f, "\n[calc]\n");
         fprintf(f, "cable_material=%d\n", calc_data::cable_material);
@@ -1459,6 +1463,7 @@ namespace config {
             else if (key == "intro_duration")     g_theme.intro_duration = (float)atof(val.c_str());
             else if (key == "intro_scale_min")    g_theme.intro_scale_min = (float)atof(val.c_str());
             else if (key == "minimize_animation") g_theme.minimize_animation = atoi(val.c_str()) != 0;
+            else if (key == "close_animation") g_theme.close_animation = atoi(val.c_str()) != 0;
             else if (key == "cable_material")     calc_data::cable_material = atoi(val.c_str());
             else if (key == "cable_install")      calc_data::cable_install = atoi(val.c_str());
             else if (key == "load_power_kw")      calc_data::load_power_kw = (float)atof(val.c_str());
@@ -5130,12 +5135,13 @@ namespace menu {
 
         ImGui::Spacing();
 
-        gui.group_box(T("ANIMATION"), ImVec2(CARD_W_FULL, 290)); {
+        gui.group_box(T("ANIMATION"), ImVec2(CARD_W_FULL, 326)); {
             ToggleSwitch(T("Intro animation on start"), &g_theme.intro_animation);
             LabeledSlider(T("Duration (s)"), &g_theme.intro_duration, 0.1f, 1.0f, "%.2f");
             LabeledSlider(T("Start scale"), &g_theme.intro_scale_min, 0.5f, 1.0f, "%.2f");
             ImGui::Spacing();
             ToggleSwitch(T("Minimize/restore animation"), &g_theme.minimize_animation);
+            ToggleSwitch(T("Crumble to dust on close"), &g_theme.close_animation);
             ToggleSwitch(T("Animated background"), &g_theme.bg_animated);
         } gui.end_group_box();
 
@@ -5180,6 +5186,7 @@ namespace menu {
                 g_theme.intro_duration = 0.30f;
                 g_theme.intro_scale_min = 0.92f;
                 g_theme.minimize_animation = true;
+                g_theme.close_animation = true;
                 g_theme.bg_animated = true;
                 g_theme.res_good = ImVec4(0.40f, 1.00f, 0.40f, 1.00f);
                 g_theme.res_bad = ImVec4(1.00f, 0.40f, 0.40f, 1.00f);
@@ -5786,6 +5793,249 @@ namespace menu {
     }
 }  // namespace menu
 
+// ======================= ЗАКРЫТИЕ: РАССЫПАНИЕ В ПЫЛЬ =======================
+// Как удаление сообщения в Telegram. По WM_CLOSE снимаем последний кадр окна,
+// прячем окно и показываем картинку в прозрачном слое поверх рабочего стола.
+// Картинка волной слева направо рассыпается на песчинки, они улетают вверх и гаснут.
+namespace dust_fx {
+    static bool                  s_request = false;   // снять кадр в ближайшем RenderFrame
+    static bool                  s_ready = false;     // кадр снят, можно рассыпать
+    static bool                  s_played = false;    // уже рассыпались - дальше закрываемся по-настоящему
+    static std::vector<uint32_t> s_pixels;            // BGRA, как в DIB
+    static int                   s_w = 0;
+    static int                   s_h = 0;
+
+    // Копия заднего буфера. Вызывать ДО Present - после него содержимое не определено.
+    static void CaptureBackBuffer() {
+        s_request = false;
+        ID3D11Texture2D* back = nullptr;
+        if (FAILED(g_pSwapChain->GetBuffer(0, IID_PPV_ARGS(&back))) || !back) { s_ready = true; return; }
+        D3D11_TEXTURE2D_DESC desc;
+        back->GetDesc(&desc);
+        desc.Usage = D3D11_USAGE_STAGING;
+        desc.BindFlags = 0;
+        desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+        desc.MiscFlags = 0;
+        ID3D11Texture2D* staging = nullptr;
+        if (SUCCEEDED(g_pd3dDevice->CreateTexture2D(&desc, nullptr, &staging)) && staging) {
+            g_pd3dDeviceContext->CopyResource(staging, back);
+            D3D11_MAPPED_SUBRESOURCE m;
+            if (SUCCEEDED(g_pd3dDeviceContext->Map(staging, 0, D3D11_MAP_READ, 0, &m))) {
+                s_w = (int)desc.Width;
+                s_h = (int)desc.Height;
+                s_pixels.resize((size_t)s_w * (size_t)s_h);
+                for (int y = 0; y < s_h; ++y) {
+                    const uint8_t* src = (const uint8_t*)m.pData + (size_t)y * m.RowPitch;
+                    uint32_t* dst = &s_pixels[(size_t)y * (size_t)s_w];
+                    for (int x = 0; x < s_w; ++x) {
+                        const uint8_t* px = src + (size_t)x * 4;   // RGBA -> BGRA
+                        dst[x] = 0xFF000000u | ((uint32_t)px[0] << 16) | ((uint32_t)px[1] << 8) | (uint32_t)px[2];
+                    }
+                }
+                g_pd3dDeviceContext->Unmap(staging, 0);
+            }
+            staging->Release();
+        }
+        back->Release();
+        s_ready = true;   // даже если снять не вышло - просто закроемся без эффекта
+    }
+
+    struct Grain {
+        float x, y;        // исходное место в окне
+        float vx, vy;      // скорость, px/s
+        float ax;          // боковой снос
+        float delay;       // когда оторвётся
+        float life;        // сколько летит
+        uint32_t col;
+    };
+
+    static uint32_t s_rng = 0x9E3779B9u;
+    static float Rand01() {
+        s_rng ^= s_rng << 13; s_rng ^= s_rng >> 17; s_rng ^= s_rng << 5;
+        return (float)(s_rng & 0xFFFFFFu) / 16777216.0f;
+    }
+
+    // точка внутри скруглённого прямоугольника (углы окна на Win10/11)
+    static bool InsideRounded(int x, int y, int w, int h, int r) {
+        if (r <= 0) return true;
+        const int cx = x < r ? r : (x >= w - r ? w - r - 1 : x);
+        const int cy = y < r ? r : (y >= h - r ? h - r - 1 : y);
+        const int dx = x - cx, dy = y - cy;
+        return dx * dx + dy * dy <= r * r;
+    }
+
+    static void Finish(HWND main) {
+        s_pixels.clear();
+        s_pixels.shrink_to_fit();
+        s_played = true;
+        ::PostMessageW(main, WM_CLOSE, 0, 0);
+    }
+
+    static void Play(HWND main) {
+        s_ready = false;
+        const int W = s_w, H = s_h;
+        if (s_pixels.empty() || W <= 0 || H <= 0) { Finish(main); return; }
+
+        RECT wr;
+        ::GetWindowRect(main, &wr);
+
+        // размер песчинки: чтобы их было не больше ~350 тысяч (иначе тормозит на 4K)
+        const int cell = ImMax(2, (int)std::ceil(std::sqrt((double)W * (double)H / 350000.0)));
+        const int corner = ::IsZoomed(main) ? 0 : 8;
+
+        std::vector<Grain> grains;
+        grains.reserve((size_t)(W / cell + 1) * (size_t)(H / cell + 1));
+        float total = 0.0f;
+        for (int y = 0; y < H; y += cell) {
+            for (int x = 0; x < W; x += cell) {
+                const int px = ImMin(x + cell / 2, W - 1);
+                const int py = ImMin(y + cell / 2, H - 1);
+                if (!InsideRounded(px, py, W, H, corner)) continue;
+                Grain q;
+                q.x = (float)x;
+                q.y = (float)y;
+                const float nx = (float)x / (float)W;
+                const float ny = (float)y / (float)H;
+                q.delay = nx * 0.45f + (1.0f - ny) * 0.08f + Rand01() * 0.15f;   // волна слева направо
+                q.life = 0.45f + Rand01() * 0.40f;
+                q.vx = -80.0f + Rand01() * 260.0f;
+                q.vy = -(60.0f + Rand01() * 200.0f);
+                q.ax = -80.0f + Rand01() * 160.0f;
+                q.col = s_pixels[(size_t)py * (size_t)W + (size_t)px];
+                grains.push_back(q);
+                total = ImMax(total, q.delay + q.life);
+            }
+        }
+
+        // слой больше окна - песчинкам есть куда лететь
+        const int MS = 260, MT = 340, MB = 60;
+        const int DW = W + MS * 2, DH = H + MT + MB;
+
+        BITMAPINFO bi = {};
+        bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+        bi.bmiHeader.biWidth = DW;
+        bi.bmiHeader.biHeight = -DH;   // сверху вниз
+        bi.bmiHeader.biPlanes = 1;
+        bi.bmiHeader.biBitCount = 32;
+        bi.bmiHeader.biCompression = BI_RGB;
+
+        HDC screen = ::GetDC(nullptr);
+        HDC mem = ::CreateCompatibleDC(screen);
+        void* bits = nullptr;
+        HBITMAP dib = ::CreateDIBSection(screen, &bi, DIB_RGB_COLORS, &bits, nullptr, 0);
+        if (!dib || !bits) {
+            if (dib) ::DeleteObject(dib);
+            ::DeleteDC(mem);
+            ::ReleaseDC(nullptr, screen);
+            Finish(main);
+            return;
+        }
+        HGDIOBJ old_bmp = ::SelectObject(mem, dib);
+
+        HINSTANCE inst = ::GetModuleHandleW(nullptr);
+        WNDCLASSEXW wc = {};
+        wc.cbSize = sizeof(wc);
+        wc.lpfnWndProc = ::DefWindowProcW;
+        wc.hInstance = inst;
+        wc.lpszClassName = L"ElectroCalcDust";
+        ::RegisterClassExW(&wc);   // повторная регистрация просто вернёт ошибку - не страшно
+
+        HWND dust = ::CreateWindowExW(
+            WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE,
+            wc.lpszClassName, L"", WS_POPUP,
+            wr.left - MS, wr.top - MT, DW, DH, nullptr, nullptr, inst, nullptr);
+
+        uint32_t* buf = (uint32_t*)bits;
+        auto draw = [&](float t) {
+            memset(buf, 0, (size_t)DW * (size_t)DH * 4);
+            for (const Grain& q : grains) {
+                const float lt = t - q.delay;
+                float fx = q.x, fy = q.y;
+                int s = cell;
+                uint32_t a = 255;
+                if (lt > 0.0f) {
+                    if (lt >= q.life) continue;
+                    const float k = lt / q.life;
+                    fx += q.vx * lt + 0.5f * q.ax * lt * lt;
+                    fy += q.vy * lt - 90.0f * lt * lt;   // ускоряются вверх
+                    a = (uint32_t)(255.0f * (1.0f - k * k));
+                    s = ImMax(1, (int)((float)cell * (1.0f - 0.5f * k) + 0.5f));
+                    if (a == 0) continue;
+                }
+                const int ix = (int)fx + MS;
+                const int iy = (int)fy + MT;
+                if (ix < 0 || iy < 0 || ix + s > DW || iy + s > DH) continue;
+                const uint32_t c = q.col;
+                uint32_t src;
+                if (a == 255) src = c;
+                else {
+                    const uint32_t r = ((c >> 16) & 0xFF) * a / 255;
+                    const uint32_t g = ((c >> 8) & 0xFF) * a / 255;
+                    const uint32_t b = (c & 0xFF) * a / 255;
+                    src = (a << 24) | (r << 16) | (g << 8) | b;
+                }
+                const uint32_t inv = 255 - a;
+                for (int yy = 0; yy < s; ++yy) {
+                    uint32_t* row = buf + (size_t)(iy + yy) * (size_t)DW + (size_t)ix;
+                    for (int xx = 0; xx < s; ++xx) {
+                        if (inv == 0 || row[xx] == 0) { row[xx] = src; continue; }
+                        const uint32_t d = row[xx];   // смешивание premultiplied: src + dst*(1-a)
+                        const uint32_t da = ((d >> 24) & 0xFF) * inv / 255;
+                        const uint32_t dr = ((d >> 16) & 0xFF) * inv / 255;
+                        const uint32_t dg = ((d >> 8) & 0xFF) * inv / 255;
+                        const uint32_t db = (d & 0xFF) * inv / 255;
+                        row[xx] = src + ((da << 24) | (dr << 16) | (dg << 8) | db);
+                    }
+                }
+            }
+        };
+
+        POINT pt_dst = { wr.left - MS, wr.top - MT };
+        SIZE  sz = { DW, DH };
+        POINT pt_src = { 0, 0 };
+        BLENDFUNCTION bf = { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA };
+        auto present = [&]() {
+            ::UpdateLayeredWindow(dust, screen, &pt_dst, &sz, mem, &pt_src, 0, &bf, ULW_ALPHA);
+        };
+
+        if (dust) {
+            draw(0.0f);
+            present();
+            // слой ставим прямо над окном, чтобы не вылезти поверх чужих окон
+            HWND above = ::GetWindow(main, GW_HWNDPREV);
+            ::SetWindowPos(dust, above ? above : HWND_TOP, 0, 0, 0, 0,
+                SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+            ::ShowWindow(main, SW_HIDE);
+
+            BOOL dwm_on = FALSE;
+            ::DwmIsCompositionEnabled(&dwm_on);
+            LARGE_INTEGER freq, t0, now;
+            ::QueryPerformanceFrequency(&freq);
+            ::QueryPerformanceCounter(&t0);
+            for (;;) {
+                MSG msg;
+                while (::PeekMessageW(&msg, dust, 0, 0, PM_REMOVE)) {
+                    ::TranslateMessage(&msg);
+                    ::DispatchMessageW(&msg);
+                }
+                ::QueryPerformanceCounter(&now);
+                const float t = (float)((double)(now.QuadPart - t0.QuadPart) / (double)freq.QuadPart);
+                if (t >= total) break;
+                draw(t);
+                present();
+                if (dwm_on) ::DwmFlush(); else ::Sleep(10);
+            }
+            ::DestroyWindow(dust);
+        }
+
+        ::SelectObject(mem, old_bmp);
+        ::DeleteObject(dib);
+        ::DeleteDC(mem);
+        ::ReleaseDC(nullptr, screen);
+        Finish(main);
+    }
+}  // namespace dust_fx
+
 // ======================= WINMAIN =======================
 // === NEW: один кадр целиком. Вызывается из главного цикла и по таймеру
 // во время перетаскивания окна (Windows в это время крутит свой цикл сообщений).
@@ -5804,6 +6054,7 @@ static void RenderFrame() {
     g_pd3dDeviceContext->OMSetRenderTargets(1, &g_mainRenderTargetView, nullptr);
     g_pd3dDeviceContext->ClearRenderTargetView(g_mainRenderTargetView, cca);
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+    if (dust_fx::s_request) dust_fx::CaptureBackBuffer();   // кадр для рассыпания - до Present
     g_pSwapChain->Present(1, 0);
 
     g_in_frame = false;
@@ -5896,6 +6147,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         if (done) break;
 
         RenderFrame();
+
+        if (dust_fx::s_ready) dust_fx::Play(g_hwnd);   // крутится ~1.5 с, потом снова WM_CLOSE
 
         // Перетаскивание окна за заголовок - строго вне кадра ImGui
         if (g_pending_drag) {
@@ -6035,6 +6288,14 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
             io.MouseDown[1] = false;
             io.MouseDown[2] = false;
             ImGui::ClearActiveID();
+        }
+        break;
+    case WM_CLOSE:
+        // Сначала рассыпаемся, закрываемся потом (dust_fx сам пришлёт WM_CLOSE ещё раз)
+        if (g_imgui_ready && g_theme.close_animation && !dust_fx::s_played
+            && ::IsWindowVisible(hWnd) && !::IsIconic(hWnd)) {
+            dust_fx::s_request = true;
+            return 0;
         }
         break;
     case WM_DESTROY:

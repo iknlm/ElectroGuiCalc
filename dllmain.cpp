@@ -495,6 +495,30 @@ namespace i18n {
 { "Start scale",                "Начальный масштаб" },
 { "Minimize/restore animation", "Анимация сворачивания" },
 { "Crumble to dust on close", "Рассыпание при закрытии" },
+{ "CABLE MARK", "МАРКА КАБЕЛЯ" },
+{ "MARK CHECK", "ПРОВЕРКА МАРКИ" },
+{ "Wire type (2nd letter):", "Тип провода (2-я буква):" },
+{ "Insulation (3rd letter):", "Изоляция (3-я буква):" },
+{ "Sheath (for rubber insulation):", "Оболочка (для резиновой изоляции):" },
+{ "Design (4th letter):", "Конструкция (4-я буква):" },
+{ "Number of cores:", "Число жил:" },
+{ "Rated voltage, kV:", "Номинальное напряжение, кВ:" },
+{ "- (no letter)", "- (без буквы)" },
+{ "nairit sheath", "найритовая оболочка" },
+{ "PVC sheath", "оболочка из ПВХ" },
+{ "Mark:", "Марка:" },
+{ "Cable voltage:", "Напряжение кабеля:" },
+{ "Cores:", "Жилы:" },
+{ "Laying:", "Прокладка:" },
+{ "Core metal mass:", "Масса металла жил:" },
+{ "armour needed: Б or К", "нужна броня: Б или К" },
+{ "round-wire armour needed: К", "нужна броня из проволоки: К" },
+{ "need at least", "нужно не меньше" },
+{ "PE 70C", "ПЭ 70C" },
+{ "kg", "кг" },
+{ "Voltage check:", "Проверка напряжения:" },
+{ "The first letter follows the Material switch, the section comes from the calculation.", "Первая буква берётся из переключателя «Материал», сечение - из расчёта." },
+{ "In earth a cable needs armour (Б or К), in water - round-wire armour (К). The cable voltage must be no less than the network voltage.", "В земле кабелю нужна броня (Б или К), в воде - броня из круглой проволоки (К). Напряжение кабеля должно быть не меньше напряжения сети." },
 { "Cable and wire marking", "Маркировка кабеля и провода" },
 { "Letters: metal, type, insulation, design. Digits: cores x section - voltage.", "Буквы: металл, тип, изоляция, конструкция. Цифры: число жил x сечение - напряжение." },
 { "1st letter - core metal", "1-я буква - металл жилы" },
@@ -1249,7 +1273,15 @@ namespace calc_data {
     const char* result_install_name = "Air";
 
     // === NEW: temperature derating ===
-    int   insulation_type = 0;   // 0=PVC 70C, 1=XLPE 90C, 2=Rubber 60C
+    int   insulation_type = 0;   // 0=PVC 70C, 1=XLPE 90C, 2=Rubber 60C, 3=PE 70C (из марки)
+
+    // === NEW: марка кабеля (индексы в списках MK_*) ===
+    int   mark_type = 4;         // 2-я буква: П
+    int   mark_ins = 0;          // 3-я буква: В
+    int   mark_sheath = 0;       // оболочка: нет
+    int   mark_design = 0;       // 4-я буква: нет
+    int   mark_cores = 2;        // число жил - 1 (то есть 3 жилы)
+    int   mark_u = 1;            // напряжение: 0,66 кВ
     float ambient_temp = 30.0f;  // °C
     float result_k_temp = 1.0f;  // итоговый температурный коэффициент
 
@@ -1421,6 +1453,12 @@ namespace config {
         fprintf(f, "\n[calc]\n");
         fprintf(f, "cable_material=%d\n", calc_data::cable_material);
         fprintf(f, "cable_install=%d\n", calc_data::cable_install);
+        fprintf(f, "mark_type=%d\n", calc_data::mark_type);
+        fprintf(f, "mark_ins=%d\n", calc_data::mark_ins);
+        fprintf(f, "mark_sheath=%d\n", calc_data::mark_sheath);
+        fprintf(f, "mark_design=%d\n", calc_data::mark_design);
+        fprintf(f, "mark_cores=%d\n", calc_data::mark_cores);
+        fprintf(f, "mark_u=%d\n", calc_data::mark_u);
         fprintf(f, "load_power_kw=%.4f\n", calc_data::load_power_kw);
         fprintf(f, "voltage=%.4f\n", calc_data::voltage);
         fprintf(f, "phases=%d\n", calc_data::phases);
@@ -1502,6 +1540,12 @@ namespace config {
             else if (key == "close_animation") g_theme.close_animation = atoi(val.c_str()) != 0;
             else if (key == "cable_material")     calc_data::cable_material = atoi(val.c_str());
             else if (key == "cable_install")      calc_data::cable_install = atoi(val.c_str());
+            else if (key == "mark_type")          calc_data::mark_type = atoi(val.c_str());
+            else if (key == "mark_ins")           calc_data::mark_ins = atoi(val.c_str());
+            else if (key == "mark_sheath")        calc_data::mark_sheath = atoi(val.c_str());
+            else if (key == "mark_design")        calc_data::mark_design = atoi(val.c_str());
+            else if (key == "mark_cores")         calc_data::mark_cores = atoi(val.c_str());
+            else if (key == "mark_u")             calc_data::mark_u = atoi(val.c_str());
             else if (key == "load_power_kw")      calc_data::load_power_kw = (float)atof(val.c_str());
             else if (key == "voltage")            calc_data::voltage = (float)atof(val.c_str());
             else if (key == "phases")             calc_data::phases = atoi(val.c_str());
@@ -2717,6 +2761,7 @@ namespace menu {
         case 0: return "PVC 70C";
         case 1: return "XLPE 90C";
         case 2: return "Rubber 60C";
+        case 3: return "PE 70C";
         default: return "PVC 70C";
         }
     }
@@ -2780,6 +2825,7 @@ namespace menu {
         float t_max = 65.0f;                                   // ПВХ - как в таблицах ПУЭ
         if (calc_data::insulation_type == 1) t_max = 90.0f;    // сшитый полиэтилен
         else if (calc_data::insulation_type == 2) t_max = 60.0f; // резина (с запасом)
+        else if (calc_data::insulation_type == 3) t_max = 70.0f; // полиэтилен (буква П в марке)
         const float t_ref = (calc_data::cable_install >= 2) ? 15.0f : 25.0f;  // земля/вода : воздух
         const float num = t_max - calc_data::ambient_temp;
         if (num <= 0.0f) return 0.0f;
@@ -3538,6 +3584,59 @@ namespace menu {
         return names[days % 7];
     }
 
+    // =====================================================================
+    // === NEW: марка кабеля по буквенной схеме (металл, тип, изоляция, конструкция) ===
+    struct MarkLetter { const char* letter; const char* key; };
+    static const MarkLetter MK_TYPE[] = {
+        { "", "- (no letter)" }, { "К", "control wire" }, { "М", "mounting wire" },
+        { "МГ", "mounting, flexible cores" }, { "П", "flat wire" },
+        { "ПУ", "installation wire" }, { "Ш", "installation wire" } };
+    static const MarkLetter MK_INS[] = {
+        { "В", "PVC insulation" }, { "ВР", "PVC insulation" }, { "Г", "with a flexible core" },
+        { "К", "kapron (nylon)" }, { "Л", "lacquered" }, { "МЭ", "enamelled" },
+        { "Н", "nairit, non-flammable rubber" }, { "НР", "nairit, non-flammable rubber" },
+        { "О", "polyamide silk" }, { "П", "polyethylene" }, { "С", "fiberglass" },
+        { "Т", "with a carrier cable" }, { "Ф", "seamed (folded) sheath" }, { "Э", "screened" } };
+    static const MarkLetter MK_SHEATH[] = {
+        { "", "- (no letter)" }, { "Н", "nairit sheath" }, { "П", "PVC sheath" } };
+    static const MarkLetter MK_DESIGN[] = {
+        { "", "- (no letter)" }, { "А", "asphalt-coated" }, { "Б", "armoured with steel tapes" },
+        { "Г", "bare, no protective cover" }, { "К", "armoured with round wire" },
+        { "О", "in a protective braid" }, { "Т", "for laying inside pipes" } };
+    constexpr int MK_TYPE_N = 7, MK_INS_N = 14, MK_SHEATH_N = 3, MK_DESIGN_N = 7, MK_CORES_N = 5, MK_U_N = 6;
+    static const float MK_U_KV[MK_U_N] = { 0.38f, 0.66f, 1.0f, 3.0f, 6.0f, 10.0f };
+
+    inline int MarkClamp(int v, int n) { return (v < 0 || v >= n) ? 0 : v; }
+
+    // Полная марка: буквы + число жил x сечение - напряжение, например "АПВ 3x2.5-0.66"
+    inline void BuildCableMark(char* out, size_t out_size) {
+        const int cores = MarkClamp(calc_data::mark_cores, MK_CORES_N) + 1;
+        char cores_buf[8] = "";
+        if (cores > 1) snprintf(cores_buf, sizeof(cores_buf), "%dx", cores);
+        snprintf(out, out_size, "%s%s%s%s%s %s%g-%g",
+            calc_data::cable_material == 1 ? "А" : "",
+            MK_TYPE[MarkClamp(calc_data::mark_type, MK_TYPE_N)].letter,
+            MK_INS[MarkClamp(calc_data::mark_ins, MK_INS_N)].letter,
+            MK_SHEATH[MarkClamp(calc_data::mark_sheath, MK_SHEATH_N)].letter,
+            MK_DESIGN[MarkClamp(calc_data::mark_design, MK_DESIGN_N)].letter,
+            cores_buf, (double)calc_data::result_section,
+            (double)MK_U_KV[MarkClamp(calc_data::mark_u, MK_U_N)]);
+    }
+
+    // Выпадающий список букв: "Б - бронированная стальными лентами"
+    inline void MarkCombo(const char* id, int* value, const MarkLetter* list, int n) {
+        static char bufs[16][96];
+        const char* items[16];
+        if (n > 16) n = 16;
+        for (int i = 0; i < n; ++i) {
+            if (list[i].letter[0] == 0) snprintf(bufs[i], sizeof(bufs[i]), "%s", i18n::T(list[i].key));
+            else snprintf(bufs[i], sizeof(bufs[i]), "%s - %s", list[i].letter, i18n::T(list[i].key));
+            items[i] = bufs[i];
+        }
+        *value = MarkClamp(*value, n);
+        CustomCombo(id, value, items, n);
+    }
+
     void RenderCableTab() {
         using i18n::T;
         using i18n::L;
@@ -3561,9 +3660,12 @@ namespace menu {
 
             ImGui::Spacing();
             ImGui::TextColored(g_theme.text_dim, "%s", T("Insulation:"));
-            ImGui::RadioButton(L("PVC 70C"), &calc_data::insulation_type, 0); ImGui::SameLine();
-            ImGui::RadioButton(L("XLPE 90C"), &calc_data::insulation_type, 1); ImGui::SameLine();
-            ImGui::RadioButton(L("Rubber 60C"), &calc_data::insulation_type, 2);
+            // переключатель изоляции меняет и букву в марке кабеля
+            if (ImGui::RadioButton(L("PVC 70C"), &calc_data::insulation_type, 0)) calc_data::mark_ins = 0;   // В
+            ImGui::SameLine();
+            if (ImGui::RadioButton(L("XLPE 90C"), &calc_data::insulation_type, 1)) calc_data::mark_ins = 9;  // П
+            ImGui::SameLine();
+            if (ImGui::RadioButton(L("Rubber 60C"), &calc_data::insulation_type, 2)) calc_data::mark_ins = 6; // Н
 
             ImGui::Spacing();
             ImGui::TextColored(g_theme.text_dim, "%s", T("Ambient temp, C:"));
@@ -3700,11 +3802,122 @@ namespace menu {
             if (OutlineButton(L("Calculate"), ImVec2(-1, 36))) {
                 RecalcCable();
                 char hbuf[128];
-                snprintf(hbuf, sizeof(hbuf), "I=%.2f A, S=%.2f mm2, %s",
+                char mark_buf[64];
+                BuildCableMark(mark_buf, sizeof(mark_buf));
+                snprintf(hbuf, sizeof(hbuf), "I=%.2f A, S=%.2f mm2, %s, %s",
                     calc_data::result_current, calc_data::result_section,
-                    calc_data::result_install_name);
+                    calc_data::result_install_name, mark_buf);
                 history::Add("Cable", hbuf);
             }
+        } gui.end_group_box();
+
+        ImGui::Spacing();
+
+        // ==================== МАРКА КАБЕЛЯ ====================
+        gui.group_box(T("CABLE MARK"), ImVec2(CARD_W_HALF, 520)); {
+            ImGui::TextColored(g_theme.text_dim, "%s", T("Wire type (2nd letter):"));
+            MarkCombo("##mk_type", &calc_data::mark_type, MK_TYPE, MK_TYPE_N);
+
+            ImGui::TextColored(g_theme.text_dim, "%s", T("Insulation (3rd letter):"));
+            {
+                const int before = calc_data::mark_ins;
+                MarkCombo("##mk_ins", &calc_data::mark_ins, MK_INS, MK_INS_N);
+                if (calc_data::mark_ins != before) {
+                    // буква изоляции задаёт допустимую температуру жилы в расчёте
+                    switch (calc_data::mark_ins) {
+                    case 0: case 1: calc_data::insulation_type = 0; break;   // В, ВР - ПВХ
+                    case 6: case 7: calc_data::insulation_type = 2; break;   // Н, НР - резина
+                    case 9:         calc_data::insulation_type = 3; break;   // П - полиэтилен
+                    default: break;                                          // остальные на нагрев не влияют
+                    }
+                }
+            }
+
+            ImGui::TextColored(g_theme.text_dim, "%s", T("Sheath (for rubber insulation):"));
+            MarkCombo("##mk_sheath", &calc_data::mark_sheath, MK_SHEATH, MK_SHEATH_N);
+
+            ImGui::TextColored(g_theme.text_dim, "%s", T("Design (4th letter):"));
+            MarkCombo("##mk_design", &calc_data::mark_design, MK_DESIGN, MK_DESIGN_N);
+
+            ImGui::TextColored(g_theme.text_dim, "%s", T("Number of cores:"));
+            {
+                static const char* const core_items[MK_CORES_N] = { "1", "2", "3", "4", "5" };
+                calc_data::mark_cores = MarkClamp(calc_data::mark_cores, MK_CORES_N);
+                CustomCombo("##mk_cores", &calc_data::mark_cores, core_items, MK_CORES_N);
+            }
+
+            ImGui::TextColored(g_theme.text_dim, "%s", T("Rated voltage, kV:"));
+            {
+                static const char* const u_items[MK_U_N] = { "0.38", "0.66", "1", "3", "6", "10" };
+                calc_data::mark_u = MarkClamp(calc_data::mark_u, MK_U_N);
+                CustomCombo("##mk_u", &calc_data::mark_u, u_items, MK_U_N);
+            }
+
+            ImGui::Spacing();
+            ImGui::PushTextWrapPos(0.0f);
+            ImGui::TextColored(g_theme.text_dim, "%s",
+                T("The first letter follows the Material switch, the section comes from the calculation."));
+            ImGui::PopTextWrapPos();
+        } gui.end_group_box();
+
+        ImGui::SameLine(0.0f, 15.0f);
+
+        gui.group_box(T("MARK CHECK"), ImVec2(CARD_W_HALF, 520)); {
+            const ImVec4 col_ok = g_theme.res_good;
+            const ImVec4 col_fail = g_theme.res_bad;
+            char buf[96];
+
+            BuildCableMark(buf, sizeof(buf));
+            ResultRow(T("Mark:"), buf, g_theme.accent);
+
+            ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
+
+            // напряжение кабеля не ниже напряжения сети
+            const float u_kv = MK_U_KV[MarkClamp(calc_data::mark_u, MK_U_N)];
+            const bool u_ok = (u_kv * 1000.0f >= calc_data::voltage - 0.5f);
+            snprintf(buf, sizeof(buf), "%g kV / %.0f V", (double)u_kv, calc_data::voltage);
+            ResultRow(T("Cable voltage:"), buf, g_theme.text_main);
+            ResultRow(T("Voltage check:"), u_ok ? T("OK") : T("FAIL"), u_ok ? col_ok : col_fail);
+
+            ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
+
+            // жил должно хватать на сеть; одножильные провода кладут по одному на каждый проводник
+            const int cores = MarkClamp(calc_data::mark_cores, MK_CORES_N) + 1;
+            const int need = (calc_data::phases == 3) ? 3 : 2;
+            const bool cores_ok = (cores == 1) || (cores >= need);
+            if (cores_ok) snprintf(buf, sizeof(buf), "%d - %s", cores, T("OK"));
+            else snprintf(buf, sizeof(buf), "%d - %s %d", cores, T("need at least"), need);
+            ResultRow(T("Cores:"), buf, cores_ok ? col_ok : col_fail);
+
+            // конструкция должна подходить к способу прокладки
+            const int des = MarkClamp(calc_data::mark_design, MK_DESIGN_N);
+            const char* lay_text = T("OK");
+            bool lay_ok = true;
+            if (calc_data::cable_install == 2 && des != 2 && des != 4) {          // земля: броня Б или К
+                lay_ok = false;
+                lay_text = T("armour needed: Б or К");
+            }
+            else if (calc_data::cable_install == 3 && des != 4) {                 // вода: броня из проволоки
+                lay_ok = false;
+                lay_text = T("round-wire armour needed: К");
+            }
+            ResultRow(T("Laying:"), lay_text, lay_ok ? col_ok : col_fail);
+
+            ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
+
+            // масса металла жил: m = n * S * L * плотность
+            const float density = (calc_data::cable_material == 0) ? 8.9f : 2.7f;   // г/см3
+            const float mass_kg = (float)cores * calc_data::result_section * calc_data::cable_length_m * density / 1000.0f;
+            snprintf(buf, sizeof(buf), "%.1f mm^2", calc_data::result_section);
+            ResultRow(T("Section, mm^2:"), buf, g_theme.text_main);
+            snprintf(buf, sizeof(buf), "%.2f %s", mass_kg, T("kg"));
+            ResultRow(T("Core metal mass:"), buf, g_theme.res_info);
+
+            ImGui::Spacing();
+            ImGui::PushTextWrapPos(0.0f);
+            ImGui::TextColored(g_theme.text_dim, "%s",
+                T("In earth a cable needs armour (Б or К), in water - round-wire armour (К). The cable voltage must be no less than the network voltage."));
+            ImGui::PopTextWrapPos();
         } gui.end_group_box();
 
         ImGui::Spacing();

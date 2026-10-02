@@ -555,6 +555,18 @@ namespace i18n {
 { "armour needed for earth", "в земле нужна броня" },
 { "round-wire armour needed: К or Ка", "нужна броня из проволоки: К или Ка" },
 { "Steel armour on a single-core AC cable heats up, aluminium (Ба, Ка) is used instead.", "Стальная броня на одножильном кабеле переменного тока греется, поэтому берут алюминиевую (Ба, Ка)." },
+{ "Cables laid together:", "Кабелей проложено вместе:" },
+{ "Group factor:", "Коэф. групповой прокладки:" },
+{ "Seasonal factor (climate zone):", "Сезонный коэффициент (климатическая зона):" },
+{ "Not considered (1.0)", "Не учитывать (1.0)" },
+{ "Zone I, cold (1.9)", "Зона I, холодная (1.9)" },
+{ "Zone II (1.7)", "Зона II (1.7)" },
+{ "Zone III (1.5)", "Зона III (1.5)" },
+{ "Zone IV, warm (1.3)", "Зона IV, тёплая (1.3)" },
+{ "Design soil resistivity:", "Расчётное сопротивление грунта:" },
+{ "Start time, s:", "Время пуска, с:" },
+{ "Relay trip class:", "Класс расцепления реле:" },
+{ "special protection needed", "нужна особая защита" },
 { "Cable and wire marking", "Маркировка кабеля и провода" },
 { "Letters: metal, type, insulation, design. Digits: cores x section - voltage.", "Буквы: металл, тип, изоляция, конструкция. Цифры: число жил x сечение - напряжение." },
 { "1st letter - core metal", "1-я буква - металл жилы" },
@@ -1320,6 +1332,10 @@ namespace calc_data {
     int   mark_u = 1;            // напряжение: 0,66 кВ
     float ambient_temp = 30.0f;  // °C
     float result_k_temp = 1.0f;  // итоговый температурный коэффициент
+    int   cable_group = 1;       // сколько кабелей лежит вместе (пучок, лоток, траншея)
+    float result_k_group = 1.0f; // коэффициент групповой прокладки
+    int   ground_season = 0;     // сезонный коэффициент: 0 = не учитывать, 1..4 = климатическая зона
+    float motor_start_time = 5.0f;   // время пуска двигателя, с
 
     float total_power_kw = 0.0f;
     float total_current_a = 0.0f;
@@ -1489,6 +1505,9 @@ namespace config {
         fprintf(f, "\n[calc]\n");
         fprintf(f, "cable_material=%d\n", calc_data::cable_material);
         fprintf(f, "cable_install=%d\n", calc_data::cable_install);
+        fprintf(f, "cable_group=%d\n", calc_data::cable_group);
+        fprintf(f, "ground_season=%d\n", calc_data::ground_season);
+        fprintf(f, "motor_start_time=%.2f\n", calc_data::motor_start_time);
         fprintf(f, "mark_type=%d\n", calc_data::mark_type);
         fprintf(f, "mark_ins=%d\n", calc_data::mark_ins);
         fprintf(f, "mark_sheath=%d\n", calc_data::mark_sheath);
@@ -1576,6 +1595,9 @@ namespace config {
             else if (key == "close_animation") g_theme.close_animation = atoi(val.c_str()) != 0;
             else if (key == "cable_material")     calc_data::cable_material = atoi(val.c_str());
             else if (key == "cable_install")      calc_data::cable_install = atoi(val.c_str());
+            else if (key == "cable_group")        calc_data::cable_group = atoi(val.c_str());
+            else if (key == "ground_season")      calc_data::ground_season = atoi(val.c_str());
+            else if (key == "motor_start_time")   calc_data::motor_start_time = (float)atof(val.c_str());
             else if (key == "mark_type")          calc_data::mark_type = atoi(val.c_str());
             else if (key == "mark_ins")           calc_data::mark_ins = atoi(val.c_str());
             else if (key == "mark_sheath")        calc_data::mark_sheath = atoi(val.c_str());
@@ -2895,6 +2917,16 @@ namespace menu {
         return sqrtf(num / (65.0f - t_ref));
     }
 
+    // Снижение допустимого тока, когда несколько кабелей лежат вместе
+    // (ГОСТ Р 50571.5.52, табл. B.52.17, пучок или один слой вплотную)
+    inline float PueGroupFactor() {
+        static const float K[9] = { 1.00f, 0.80f, 0.70f, 0.65f, 0.60f, 0.57f, 0.54f, 0.52f, 0.50f };
+        int n = calc_data::cable_group;
+        if (n < 1) n = 1;
+        if (n > 9) n = 9;
+        return K[n - 1];
+    }
+
     // Удельное сопротивление при рабочей температуре жилы (+65 °C), Ом*мм2/м
     inline float RhoHot() {
         const float rho20 = (calc_data::cable_material == 0) ? 0.0175f : 0.028f;
@@ -2955,10 +2987,12 @@ namespace menu {
 
         const float kt = PueTempFactor();
         calc_data::result_k_temp = kt;
+        const float kg = PueGroupFactor();
+        calc_data::result_k_group = kg;
 
         const int in_rating = PueBreakerIn();
         calc_data::result_breaker_in = in_rating;
-        calc_data::result_ik_min = (float)in_rating * BreakerCurveK();
+        calc_data::result_ik_min = (float)in_rating * BreakerCurveK() * 1.1f;   // запас 1,1 по ПУЭ
 
         int ti = calc_data::trafo_index;
         if (ti < 0 || ti >= TRAFO_N) ti = 0;
@@ -2969,7 +3003,7 @@ namespace menu {
         for (int i = 0; i < PUE_N; ++i) {
             const float it = PueTableCurrent(i);
             if (it <= 0.0f) continue;                        // сечения нет (алюминий 1,5)
-            const float ia = it * kt;
+            const float ia = it * kt * kg;
             const float S = PUE_S[i];
             if (need[0] < 0 && ia >= I) need[0] = i;
             if (need[1] < 0 && ia >= (float)in_rating) need[1] = i;
@@ -3006,7 +3040,7 @@ namespace menu {
                 if (PUE_S[i] <= S + 0.001f && PueTableCurrent(i) > 0.0f) s_idx = i;
         }
         calc_data::result_section = S;
-        calc_data::result_i_allow = (s_idx >= 0) ? PueTableCurrent(s_idx) * kt : 0.0f;
+        calc_data::result_i_allow = (s_idx >= 0) ? PueTableCurrent(s_idx) * kt * kg : 0.0f;
 
         calc_data::result_drop_v = PueVoltageDrop(S);
         calc_data::result_drop_pct = (U > 0.0f) ? calc_data::result_drop_v / U * 100.0f : 0.0f;
@@ -3029,7 +3063,7 @@ namespace menu {
         float side_w = (ImGui::GetContentRegionAvail().x - diag_w - 30.0f) * 0.5f;
         if (side_w < 340.0f) side_w = 340.0f;
 
-        gui.group_box(T("MOTOR PARAMETERS"), ImVec2(side_w, 810)); {
+        gui.group_box(T("MOTOR PARAMETERS"), ImVec2(side_w, 870)); {
             ImGui::TextColored(g_theme.text_dim, "%s", T("Mode:"));
             ImGui::RadioButton(L("Forward"), &calc_data::motor_mode, 0); ImGui::SameLine();
             ImGui::RadioButton(L("Reverse"), &calc_data::motor_mode, 1);
@@ -3059,6 +3093,9 @@ namespace menu {
             ImGui::TextColored(g_theme.text_dim, "%s", T("Efficiency (0.5-1.0):"));
             TextInputFloat("motor_eff", &calc_data::motor_efficiency);
 
+            ImGui::TextColored(g_theme.text_dim, "%s", T("Start time, s:"));
+            TextInputFloat("motor_tstart", &calc_data::motor_start_time);
+
             ImGui::Spacing();
             ImGui::TextColored(g_theme.text_dim, "%s", T("Start method:"));
             // Две строки по сетке: по-русски в одну строку не влезает
@@ -3085,7 +3122,7 @@ namespace menu {
 
         ImGui::SameLine(0.0f, 15.0f);
 
-        gui.group_box(T("RESULT"), ImVec2(side_w, 460)); {
+        gui.group_box(T("RESULT"), ImVec2(side_w, 490)); {
             RecalcMotor();
 
             const ImVec4 col_ok = g_theme.res_good;
@@ -3145,6 +3182,15 @@ namespace menu {
                 calc_data::result_motor_flc * 1.1f);
             ResultRow(T("Thermal relay range:"), buf, col_ok);
 
+            // Класс расцепления по времени пуска (ГОСТ IEC 60947-4-1): реле не должно сработать за время разгона
+            {
+                const float ts = calc_data::motor_start_time;
+                if (ts <= 10.0f) ResultRow(T("Relay trip class:"), "Class 10", col_ok);
+                else if (ts <= 20.0f) ResultRow(T("Relay trip class:"), "Class 20", g_theme.res_warn);
+                else if (ts <= 30.0f) ResultRow(T("Relay trip class:"), "Class 30", g_theme.res_warn);
+                else ResultRow(T("Relay trip class:"), T("special protection needed"), g_theme.res_bad);
+            }
+
             ImGui::Spacing();
             if (OutlineButton(L("Save to History"), ImVec2(-1, 36), btn_col::success)) {
                 RecalcMotor();
@@ -3172,7 +3218,7 @@ namespace menu {
         // ==================== CONNECTION DIAGRAM ====================
         ImGui::SameLine(0.0f, 15.0f);
 
-        gui.group_box(T("CONNECTION DIAGRAM"), ImVec2(diag_w, 460)); {
+        gui.group_box(T("CONNECTION DIAGRAM"), ImVec2(diag_w, 490)); {
             static int diagram_side = 0; // 0 = STAR, 1 = DELTA
             ImGui::AlignTextToFramePadding();
             ImGui::TextColored(g_theme.text_dim, "%s", T("Show:")); ImGui::SameLine();
@@ -3583,8 +3629,19 @@ namespace menu {
         }
     }
 
+    // Сезонный коэффициент для вертикальных электродов: зимой грунт промерзает, летом сохнет
+    inline float GroundSeasonK() {
+        switch (calc_data::ground_season) {
+        case 1:  return 1.9f;   // зона I
+        case 2:  return 1.7f;   // зона II
+        case 3:  return 1.5f;   // зона III
+        case 4:  return 1.3f;   // зона IV
+        default: return 1.0f;
+        }
+    }
+
     void RecalcGround() {
-        const float rho = calc_data::soil_resistivity;
+        const float rho = calc_data::soil_resistivity * GroundSeasonK();
         const float L = (calc_data::ground_rod_len > 0.1f) ? calc_data::ground_rod_len : 0.1f;
         const float d = (calc_data::ground_electrode == 1) ? 0.0475f : 0.016f;  // уголок 50x50: d = 0,95*b
         const float t = (calc_data::ground_depth > 0.0f) ? calc_data::ground_depth : 0.0f;
@@ -3712,7 +3769,7 @@ namespace menu {
         using i18n::T;
         using i18n::L;
 
-        gui.group_box(T("PARAMETERS"), ImVec2(CARD_W_HALF, 975)); {
+        gui.group_box(T("PARAMETERS"), ImVec2(CARD_W_HALF, 1040)); {
             ImGui::TextColored(g_theme.text_dim, "%s", T("Material:"));
             ImGui::RadioButton(L("Copper"), &calc_data::cable_material, 0); ImGui::SameLine();
             ImGui::RadioButton(L("Aluminum"), &calc_data::cable_material, 1);
@@ -3758,6 +3815,13 @@ namespace menu {
             ImGui::TextColored(g_theme.text_dim, "%s", T("Ambient temp, C:"));
             TextInputFloat("ambient", &calc_data::ambient_temp);
 
+            ImGui::TextColored(g_theme.text_dim, "%s", T("Cables laid together:"));
+            {
+                double group_d = (double)calc_data::cable_group;
+                if (TextInputDouble("cgroup", &group_d))
+                    calc_data::cable_group = (group_d < 1.0) ? 1 : (group_d > 50.0 ? 50 : (int)group_d);
+            }
+
             ImGui::Spacing();
             ImGui::TextColored(g_theme.text_dim, "%s", T("Power, kW:"));
             TextInputFloat("power", &calc_data::load_power_kw);
@@ -3797,7 +3861,7 @@ namespace menu {
         ImGui::SameLine(0.0f, 15.0f);
 
         // ==================== RESULT ====================
-        gui.group_box(T("RESULT"), ImVec2(CARD_W_HALF, 975)); {
+        gui.group_box(T("RESULT"), ImVec2(CARD_W_HALF, 1040)); {
             const ImVec4 col_ok = g_theme.res_good;
             const ImVec4 col_fail = g_theme.res_bad;
             char buf[64];
@@ -3837,6 +3901,8 @@ namespace menu {
 
             snprintf(buf, sizeof(buf), "%.2f", calc_data::result_k_temp);
             ResultRow(T("Temp factor:"), buf, g_theme.res_warn);
+            snprintf(buf, sizeof(buf), "%.2f", calc_data::result_k_group);
+            ResultRow(T("Group factor:"), buf, g_theme.res_warn);
             ResultRow(T("Insulation:"), T(InsulationName(calc_data::insulation_type)),
                 g_theme.res_warn);
 
@@ -4097,7 +4163,7 @@ namespace menu {
         using i18n::T;
         using i18n::L;
 
-        gui.group_box(T("EARTHING RESISTANCE"), ImVec2(CARD_W_FULL, 900)); {
+        gui.group_box(T("EARTHING RESISTANCE"), ImVec2(CARD_W_FULL, 990)); {
             ImGui::TextColored(g_theme.text_dim, "%s", T("Soil Resistivity, Ohm*m:"));
             TextInputFloat("soil", &calc_data::soil_resistivity);
             ImGui::TextColored(g_theme.text_dim, "%s", T("Rod Length, m:"));
@@ -4113,6 +4179,14 @@ namespace menu {
             TextInputFloat("rodspace", &calc_data::ground_spacing);
             ImGui::TextColored(g_theme.text_dim, "%s", T("Depth of rod top, m:"));
             TextInputFloat("roddepth", &calc_data::ground_depth);
+
+            ImGui::TextColored(g_theme.text_dim, "%s", T("Seasonal factor (climate zone):"));
+            {
+                const char* season_items[5] = { T("Not considered (1.0)"), T("Zone I, cold (1.9)"),
+                    T("Zone II (1.7)"), T("Zone III (1.5)"), T("Zone IV, warm (1.3)") };
+                if (calc_data::ground_season < 0 || calc_data::ground_season > 4) calc_data::ground_season = 0;
+                CustomCombo("##gseason", &calc_data::ground_season, season_items, 5);
+            }
 
             ImGui::Spacing();
             ImGui::TextColored(g_theme.text_dim, "%s", T("Electrode:"));
@@ -4133,6 +4207,8 @@ namespace menu {
             const ImVec4 col_fail = g_theme.res_bad;
             const float norm = GroundNorm();
 
+            snprintf(buf, sizeof(buf), "%.0f Ohm*m", calc_data::soil_resistivity * GroundSeasonK());
+            ResultRow(T("Design soil resistivity:"), buf, g_theme.res_warn);
             snprintf(buf, sizeof(buf), "%.2f Ohm", calc_data::result_ground_single);
             ResultRow(T("One rod:"), buf, g_theme.text_main);
             snprintf(buf, sizeof(buf), "%.2f", calc_data::result_ground_eta);

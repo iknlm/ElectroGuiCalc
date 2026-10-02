@@ -204,7 +204,7 @@ namespace i18n {
 { "Ambient temp, C:", "Темп. среды, °C:" },
 { "Power, kW:",       "Мощность, кВт:" },
 { "Voltage, V:",      "Напряжение, В:" },
-{ "cos phi:",         "Коэф. мощности (cos):" },
+{ "cos φ:",         "Коэф. мощности (cos φ):" },
 { "Length, m:",       "Длина, м:" },
 { "Manual section",   "Ручное сечение" },
 { "Section, mm^2:",   "Сечение, мм²:" },
@@ -567,7 +567,7 @@ namespace i18n {
 { "Start time, s:", "Время пуска, с:" },
 { "Relay trip class:", "Класс расцепления реле:" },
 { "special protection needed", "нужна особая защита" },
-{ "Target cos phi:", "Желаемый cos phi:" },
+{ "Target cos φ:", "Желаемый cos φ:" },
 { "Capacitor power:", "Мощность конденсаторов:" },
 { "Capacitance per phase (delta):", "Ёмкость на фазу (треугольник):" },
 { "Capacitance:", "Ёмкость:" },
@@ -786,7 +786,7 @@ namespace i18n {
           // ─── Help: описание табов ───
         { "Scientific calculator: + - * /, power, root, sin/cos/tan, log, ln, factorial.",
           "Инженерный калькулятор: + - * /, степень, корень, sin/cos/tan, log, ln, факториал." },
-        { "Cable section by power, voltage, cos phi and length; material, installation, insulation, ambient temp.",
+        { "Cable section by power, voltage, cos φ and length; material, installation, insulation, ambient temp.",
           "Сечение кабеля по мощности, напряжению, cos и длине; материал, прокладка, изоляция, темп. среды." },
         { "Manual section: fix a specific section and check it against the required one.",
           "Ручное сечение: задайте конкретное сечение и сравните его с требуемым." },
@@ -3235,13 +3235,13 @@ namespace menu {
             ImGui::RadioButton("3", &calc_data::motor_phases, 3);
 
             ImGui::Spacing();
-            ImGui::TextColored(g_theme.text_dim, "%s", T("cos phi:"));
+            ImGui::TextColored(g_theme.text_dim, "%s", T("cos φ:"));
             TextInputFloat("motor_cos", &calc_data::motor_cos_phi);
 
             ImGui::TextColored(g_theme.text_dim, "%s", T("Efficiency (0.5-1.0):"));
             TextInputFloat("motor_eff", &calc_data::motor_efficiency);
 
-            ImGui::TextColored(g_theme.text_dim, "%s", T("Target cos phi:"));
+            ImGui::TextColored(g_theme.text_dim, "%s", T("Target cos φ:"));
             TextInputFloat("motor_cos2", &calc_data::motor_cos_target);
 
             ImGui::TextColored(g_theme.text_dim, "%s", T("Start time, s:"));
@@ -4122,7 +4122,7 @@ namespace menu {
             TextInputFloat("power", &calc_data::load_power_kw);
             ImGui::TextColored(g_theme.text_dim, "%s", T("Voltage, V:"));
             TextInputFloat("volt", &calc_data::voltage);
-            ImGui::TextColored(g_theme.text_dim, "%s", T("cos phi:"));
+            ImGui::TextColored(g_theme.text_dim, "%s", T("cos φ:"));
             TextInputFloat("cosphi", &calc_data::cos_phi);
             ImGui::TextColored(g_theme.text_dim, "%s", T("Length, m:"));
             TextInputFloat("length", &calc_data::cable_length_m);
@@ -4492,7 +4492,7 @@ namespace menu {
             TextInputFloat("total_power", &calc_data::total_power_kw);
             ImGui::TextColored(g_theme.text_dim, "%s", T("Voltage, V:"));
             TextInputFloat("load_volt", &calc_data::voltage);
-            ImGui::TextColored(g_theme.text_dim, "%s", T("cos phi:"));
+            ImGui::TextColored(g_theme.text_dim, "%s", T("cos φ:"));
             TextInputFloat("load_cosphi", &calc_data::cos_phi);
             ImGui::TextColored(g_theme.text_dim, "%s", T("Hours per day:"));
             TextInputFloat("hours", &calc_data::hours_per_day);
@@ -5110,7 +5110,7 @@ namespace menu {
 
                 Sub(T("Alternating current: reactance and impedance"));
                 Formula("X_L = 2*pi*f*L        X_C = 1 / (2*pi*f*C)        Z = sqrt(R^2 + (X_L - X_C)^2)");
-                Formula("cos phi = R / Z        f0 = 1 / (2*pi*sqrt(L*C))        T = 1 / f");
+                Formula("cos φ = R / Z        f0 = 1 / (2*pi*sqrt(L*C))        T = 1 / f");
                 Field(T("Frequency f, Hz:"), "##e_f", &e_f); Gap();
                 Field(T("Resistance R (Ohm):"), "##e_R", &e_R); Gap();
                 Field(T("Inductance L, mH:"), "##e_Lmh", &e_Lmh); Gap();
@@ -5121,7 +5121,7 @@ namespace menu {
                     const double xc = (e_f > 0.0 && Cf > 0.0) ? 1.0 / (2.0 * PI_D * e_f * Cf) : 0.0;
                     const double z = sqrt(e_R * e_R + (xl - xc) * (xl - xc));
                     ShowResult2("X_L =", xl, "Ohm", "X_C =", xc, "Ohm");
-                    ShowResult2("Z =", z, "Ohm", "cos phi =", z > 0.0 ? e_R / z : 0.0, "");
+                    ShowResult2("Z =", z, "Ohm", "cos φ =", z > 0.0 ? e_R / z : 0.0, "");
                     ShowResult2("f0 =", (Lh > 0.0 && Cf > 0.0) ? 1.0 / (2.0 * PI_D * sqrt(Lh * Cf)) : 0.0, "Hz",
                         "T =", e_f > 0.0 ? 1000.0 / e_f : 0.0, "ms");
                 }
@@ -5152,7 +5152,7 @@ namespace menu {
                 ImGui::RadioButton(i18n::L("3 Phases", "f_ph3"), &f_ph, 3);
                 Field(T("Power P, kW:"), "##f_P", &f_P); Gap();
                 Field(T("Voltage, V:"), "##f_U", &f_U); Gap();
-                Field(T("cos phi:"), "##f_cos", &f_cos);
+                Field(T("cos φ:"), "##f_cos", &f_cos);
                 const double c = (f_cos > 0.0 && f_cos <= 1.0) ? f_cos : 1.0;
                 const double den = (f_ph == 3 ? SQ3 : 1.0) * f_U * c;
                 const double S_kva = f_P / c;
@@ -5185,7 +5185,7 @@ namespace menu {
                 Field(T("Current I (A):"), "##f_I", &f_I); Gap();
                 Field(T("Length, m:"), "##f_L", &f_L); Gap();
                 Field(T("Section, mm^2:"), "##f_S", &f_S); Gap();
-                Field(T("cos phi:"), "##f_cos2", &f_cos);
+                Field(T("cos φ:"), "##f_cos2", &f_cos);
                 {
                     const double rho = (f_mat == 0 ? 0.0175 : 0.028) * 1.18;
                     const double c = (f_cos > 0.0 && f_cos <= 1.0) ? f_cos : 1.0;
@@ -5265,7 +5265,7 @@ namespace menu {
                 Formula("Ist = k * I     Star-Delta: Ist / 3     Breaker: In >= 1.25 * I,  1.2 * Ist <= 5 In (C) / 10 In (D)");
                 Field(T("Shaft power, kW:"), "##f_P2", &f_P2); Gap();
                 Field(T("Efficiency (0.5-1.0):"), "##f_eff", &f_eff); Gap();
-                Field(T("cos phi:"), "##f_cosm", &f_cosm); Gap();
+                Field(T("cos φ:"), "##f_cosm", &f_cosm); Gap();
                 Field(T("Voltage, V:"), "##f_Um", &f_Um);
                 Field(T("Start ratio (Ist/In):"), "##f_km", &f_km);
                 {
@@ -6325,7 +6325,7 @@ namespace menu {
                     "Scientific calculator: + - * /, power, root, sin/cos/tan, log, ln, factorial.",
                     nullptr, nullptr);
                 TabHelp("Cable Size",
-                    "Cable section by power, voltage, cos phi and length; material, installation, insulation, ambient temp.",
+                    "Cable section by power, voltage, cos φ and length; material, installation, insulation, ambient temp.",
                     "Manual section: fix a specific section and check it against the required one.",
                     "Ik check (short-circuit current) and a max-length table for 5% voltage drop.");
                 TabHelp("Grid Load",
@@ -7130,8 +7130,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     g_imgui_ready = true;
 
+    // латиница, греческие буквы (cos φ), кириллица
+    static const ImWchar font_ranges[] = { 0x0020, 0x00FF, 0x0370, 0x03FF, 0x0400, 0x052F,
+        0x2DE0, 0x2DFF, 0xA640, 0xA69F, 0 };
     io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\segoeui.ttf", 16.0f,
-        nullptr, io.Fonts->GetGlyphRangesCyrillic());
+        nullptr, font_ranges);
 
     static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
     ImFontConfig icons_config;

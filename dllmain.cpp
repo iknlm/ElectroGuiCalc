@@ -787,7 +787,7 @@ namespace i18n {
         { "Scientific calculator: + - * /, power, root, sin/cos/tan, log, ln, factorial.",
           "Инженерный калькулятор: + - * /, степень, корень, sin/cos/tan, log, ln, факториал." },
         { "Cable section by power, voltage, cos φ and length; material, installation, insulation, ambient temp.",
-          "Сечение кабеля по мощности, напряжению, cos и длине; материал, прокладка, изоляция, темп. среды." },
+          "Сечение кабеля по мощности, напряжению, cos φ и длине; материал, прокладка, изоляция, темп. среды." },
         { "Manual section: fix a specific section and check it against the required one.",
           "Ручное сечение: задайте конкретное сечение и сравните его с требуемым." },
         { "Ik check (short-circuit current) and a max-length table for 5% voltage drop.",

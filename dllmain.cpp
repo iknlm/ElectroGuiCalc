@@ -495,6 +495,42 @@ namespace i18n {
 { "Start scale",                "Начальный масштаб" },
 { "Minimize/restore animation", "Анимация сворачивания" },
 { "Crumble to dust on close", "Рассыпание при закрытии" },
+{ "Cable and wire marking", "Маркировка кабеля и провода" },
+{ "Letters: metal, type, insulation, design. Digits: cores x section - voltage.", "Буквы: металл, тип, изоляция, конструкция. Цифры: число жил x сечение - напряжение." },
+{ "1st letter - core metal", "1-я буква - металл жилы" },
+{ "2nd letter - wire type", "2-я буква - тип провода" },
+{ "3rd letter - insulation", "3-я буква - изоляция" },
+{ "4th letter - design features", "4-я буква - конструкция" },
+{ "Digits after the letters", "Цифры после букв" },
+{ "Rubber-insulated wires also have a sheath: Н - nairit, П - PVC. These letters go after the insulation letter.", "Провода с резиновой изоляцией дополнительно защищены оболочкой: Н - найритовой, П - ПВХ. Эти буквы стоят после буквы изоляции жилы." },
+{ "aluminium core", "алюминий" },
+{ "no letter: copper core", "без буквы - медь" },
+{ "control wire", "контрольный" },
+{ "mounting wire", "монтажный" },
+{ "mounting, flexible cores", "монтажный с гибкими жилами" },
+{ "flat wire", "плоский" },
+{ "installation wire", "установочный" },
+{ "PVC insulation", "поливинилхлоридная" },
+{ "with a flexible core", "с гибкой жилой" },
+{ "kapron (nylon)", "капроновая" },
+{ "lacquered", "лакированная" },
+{ "enamelled", "эмалированная" },
+{ "nairit, non-flammable rubber", "найритовая, из негорючей резины" },
+{ "polyamide silk", "полиамидный шёлк" },
+{ "polyethylene", "полиэтиленовая" },
+{ "fiberglass", "из стекловолокна" },
+{ "with a carrier cable", "с несущим тросом" },
+{ "seamed (folded) sheath", "фальцованная" },
+{ "screened", "экранированная" },
+{ "asphalt-coated", "асфальтированная" },
+{ "armoured with steel tapes", "бронированная стальными лентами" },
+{ "bare, no protective cover", "без защитного покрова (голый) или гибкий провод" },
+{ "armoured with round wire", "бронированная круглой проволокой" },
+{ "in a protective braid", "в защитной оплётке" },
+{ "for laying inside pipes", "для прокладки в трубах" },
+{ "number of cores; if absent - single core", "число жил; если не указано - одна жила" },
+{ "core cross-section, mm2", "сечение жилы, мм2" },
+{ "rated voltage of the conductor", "номинальное напряжение проводника" },
         { "Animated background",        "Анимированный фон" },
 { "Settings file: settings.ini (next to .exe)", "Файл настроек: settings.ini (рядом с .exe)" },
 { "Save Settings",           "Сохранить настройки" },
@@ -3042,7 +3078,7 @@ namespace menu {
         using i18n::T;
 
         static bool s_colors = true, s_ip = true, s_cat = true, s_motor = true,
-            s_sections = true, s_awg = true, s_symbols = true;
+            s_sections = true, s_awg = true, s_symbols = true, s_mark = true;
 
         constexpr float COL_W = 380.0f;
         constexpr float COL_H = 1340.0f;
@@ -3079,6 +3115,69 @@ namespace menu {
                 Row("Positive (+)", "Red", ImVec4(1.0f, 0.4f, 0.4f, 1.0f));
                 Row("Negative (-)", "Black", ImVec4(0.6f, 0.6f, 0.6f, 1.0f));
                 Row("Ground", "Green / bare", ImVec4(0.4f, 1.0f, 0.4f, 1.0f));
+            }
+
+            // === NEW: расшифровка буквенной маркировки кабелей и проводов ===
+            if (SectionHeader(T("Cable and wire marking"), &s_mark)) {
+                auto Head = [](const char* key) {
+                    ImGui::Spacing();
+                    ImGui::TextColored(g_theme.accent, "%s", T(key));
+                    };
+                auto MRow = [](const char* letters, const char* key) {
+                    ImGui::TextColored(g_theme.text_main, "%s", letters);
+                    ImGui::SameLine(78.0f);
+                    ImGui::PushTextWrapPos(0.0f);
+                    ImGui::TextColored(g_theme.text_dim, "%s", T(key));
+                    ImGui::PopTextWrapPos();
+                    };
+
+                ImGui::TextColored(g_theme.text_main, "%s", "А МГ К Б  3 x 2.5 - 0.66");
+                ImGui::PushTextWrapPos(0.0f);
+                ImGui::TextColored(g_theme.text_dim, "%s", T("Letters: metal, type, insulation, design. Digits: cores x section - voltage."));
+                ImGui::PopTextWrapPos();
+
+                Head("1st letter - core metal");
+                MRow("А", "aluminium core");
+                MRow("-", "no letter: copper core");
+
+                Head("2nd letter - wire type");
+                MRow("К", "control wire");
+                MRow("М", "mounting wire");
+                MRow("МГ", "mounting, flexible cores");
+                MRow("П", "flat wire");
+                MRow("П(У), Ш", "installation wire");
+
+                Head("3rd letter - insulation");
+                MRow("В, ВР", "PVC insulation");
+                MRow("Г", "with a flexible core");
+                MRow("К", "kapron (nylon)");
+                MRow("Л", "lacquered");
+                MRow("МЭ", "enamelled");
+                MRow("Н, НР", "nairit, non-flammable rubber");
+                MRow("О", "polyamide silk");
+                MRow("П", "polyethylene");
+                MRow("С", "fiberglass");
+                MRow("Т", "with a carrier cable");
+                MRow("Ф", "seamed (folded) sheath");
+                MRow("Э", "screened");
+                ImGui::Spacing();
+                ImGui::PushTextWrapPos(0.0f);
+                ImGui::TextColored(note_col, "%s", T("Rubber-insulated wires also have a sheath: Н - nairit, П - PVC. These letters go after the insulation letter."));
+                ImGui::PopTextWrapPos();
+
+                Head("4th letter - design features");
+                MRow("А", "asphalt-coated");
+                MRow("Б", "armoured with steel tapes");
+                MRow("Г", "bare, no protective cover");
+                MRow("К", "armoured with round wire");
+                MRow("О", "in a protective braid");
+                MRow("Т", "for laying inside pipes");
+
+                Head("Digits after the letters");
+                MRow("1", "number of cores; if absent - single core");
+                MRow("2", "core cross-section, mm2");
+                MRow("3", "rated voltage of the conductor");
+                ImGui::Spacing();
             }
         } gui.end_group_box();
 

@@ -650,6 +650,20 @@ namespace i18n {
 { "Current", "Ток" },
 { "Voltage", "Напряжение" },
 { "Typical values for moulded-case breakers. Check the manufacturer's data.", "Типовые значения для автоматов в литом корпусе. Сверяйте с данными производителя." },
+{ "Altitude above sea level, m:", "Высота над уровнем моря, м:" },
+{ "Altitude factor:", "Коэф. высоты:" },
+{ "up to 1000 m", "до 1000 м" },
+{ "Allowable current", "Допустимый ток" },
+{ "dry rooms only", "только в сухих помещениях" },
+{ "Copper + stainless steel", "Медь + нержавеющая сталь" },
+{ "Copper + carbon steel, lead", "Медь + чёрная сталь, свинец" },
+{ "Aluminium + zinc, cadmium-plated steel", "Алюминий + цинк, кадмированная сталь" },
+{ "Aluminium + stainless steel", "Алюминий + нержавеющая сталь" },
+{ "Galvanized steel + carbon steel", "Оцинкованная сталь + чёрная сталь" },
+{ "Galvanized steel + stainless steel", "Оцинкованная + нержавеющая сталь" },
+{ "Per GOST 9.005-72. Copper to aluminium - only through Al-Cu lugs, transition plates or tinned terminals.", "По ГОСТ 9.005-72. Медь с алюминием - только через алюмомедные наконечники, переходные пластины или лужёные клеммы." },
+{ "1 cable - up to 40%, 2 cables - 25%, 3 and more - 35% of the cross-section (by outer cable diameter).", "1 кабель - до 40%, 2 кабеля - 25%, 3 и больше - 35% сечения трубы (по наружному диаметру кабелей)." },
+{ "Above 1000 m the air is thinner and cools worse, so the allowable current is reduced (GOST 15150-69).", "Выше 1000 м воздух разрежен и хуже охлаждает, поэтому допустимый ток снижают (ГОСТ 15150-69)." },
 { "Cable and wire marking", "Маркировка кабеля и провода" },
 { "Letters: metal, type, insulation, design. Digits: cores x section - voltage.", "Буквы: металл, тип, изоляция, конструкция. Цифры: число жил x сечение - напряжение." },
 { "1st letter - core metal", "1-я буква - металл жилы" },
@@ -1416,6 +1430,8 @@ namespace calc_data {
     float ambient_temp = 30.0f;  // °C
     float result_k_temp = 1.0f;  // итоговый температурный коэффициент
     int   cable_group = 1;       // сколько кабелей лежит вместе (пучок, лоток, траншея)
+    float cable_altitude = 0.0f; // высота площадки над уровнем моря, м
+    float result_k_alt = 1.0f;   // коэффициент высоты
     float motor_cos_target = 0.95f;
     float load_kc = 1.0f;
     float load_ko = 1.0f;
@@ -1607,6 +1623,7 @@ namespace config {
         fprintf(f, "cable_material=%d\n", calc_data::cable_material);
         fprintf(f, "cable_install=%d\n", calc_data::cable_install);
         fprintf(f, "cable_group=%d\n", calc_data::cable_group);
+        fprintf(f, "cable_altitude=%.1f\n", calc_data::cable_altitude);
         fprintf(f, "motor_cos_target=%.4f\n", calc_data::motor_cos_target);
         fprintf(f, "load_kc=%.4f\n", calc_data::load_kc);
         fprintf(f, "load_ko=%.4f\n", calc_data::load_ko);
@@ -1713,6 +1730,7 @@ namespace config {
             else if (key == "cable_material")     calc_data::cable_material = atoi(val.c_str());
             else if (key == "cable_install")      calc_data::cable_install = atoi(val.c_str());
             else if (key == "cable_group")        calc_data::cable_group = atoi(val.c_str());
+            else if (key == "cable_altitude")     calc_data::cable_altitude = (float)atof(val.c_str());
             else if (key == "motor_cos_target") calc_data::motor_cos_target = (float)atof(val.c_str());
             else if (key == "load_kc") calc_data::load_kc = (float)atof(val.c_str());
             else if (key == "load_ko") calc_data::load_ko = (float)atof(val.c_str());
@@ -3060,6 +3078,15 @@ namespace menu {
         return K[n - 1];
     }
 
+    // Выше 1000 м воздух разрежен и хуже охлаждает: допустимый ток снижают (ГОСТ 15150-69)
+    inline float PueAltitudeFactor() {
+        const float h = calc_data::cable_altitude;
+        if (h <= 1000.0f) return 1.0f;
+        if (h <= 2000.0f) return 0.90f;
+        if (h <= 3000.0f) return 0.80f;
+        return 0.72f;
+    }
+
     // Удельное сопротивление при рабочей температуре жилы (+65 °C), Ом*мм2/м
     inline float RhoHot() {
         const float rho20 = (calc_data::cable_material == 0) ? 0.0175f : 0.028f;
@@ -3130,8 +3157,9 @@ namespace menu {
 
         const float kt = PueTempFactor();
         calc_data::result_k_temp = kt;
-        const float kg = PueGroupFactor();
-        calc_data::result_k_group = kg;
+        calc_data::result_k_group = PueGroupFactor();
+        calc_data::result_k_alt = PueAltitudeFactor();
+        const float kg = calc_data::result_k_group * calc_data::result_k_alt;   // группа и высота вместе
 
         const int in_rating = PueBreakerIn();
         calc_data::result_breaker_in = in_rating;
@@ -3613,22 +3641,32 @@ namespace menu {
             }
             // === NEW: какие металлы можно соединять напрямую ===
             if (SectionHeader(T("Metal compatibility"), &s_metal)) {
-                auto Pair = [](const char* pair, bool ok) {
+                // 0 = нельзя, 1 = только в сухих помещениях, 2 = можно (ГОСТ 9.005-72)
+                auto Pair = [](const char* pair, int level) {
                     ImGui::TextColored(g_theme.text_dim, "%s", T(pair));
-                    ImGui::SameLine(270.0f);
-                    ImGui::TextColored(ok ? g_theme.res_good : g_theme.res_bad, "%s", T(ok ? "yes" : "no"));
+                    const char* text = T(level == 2 ? "yes" : (level == 1 ? "dry rooms only" : "no"));
+                    const ImVec4 col = (level == 2) ? g_theme.res_good : (level == 1 ? g_theme.res_warn : g_theme.res_bad);
+                    ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - ImGui::CalcTextSize(text).x - 10.0f);
+                    ImGui::TextColored(col, "%s", text);
                     };
-                Pair("Copper + aluminium", false);
-                Pair("Copper + galvanized steel", false);
-                Pair("Copper + tin, brass, bronze", true);
-                Pair("Copper + nickel, chrome", true);
-                Pair("Aluminium + galvanized steel", true);
-                Pair("Aluminium + brass, bronze", false);
-                Pair("Steel + zinc", true);
+                Pair("Copper + tin, brass, bronze", 2);
+                Pair("Copper + stainless steel", 2);
+                Pair("Copper + nickel, chrome", 2);
+                Pair("Copper + carbon steel, lead", 1);
+                Pair("Copper + aluminium", 0);
+                Pair("Copper + galvanized steel", 0);
+                ImGui::Spacing();
+                Pair("Aluminium + zinc, cadmium-plated steel", 2);
+                Pair("Aluminium + galvanized steel", 2);
+                Pair("Aluminium + stainless steel", 1);
+                Pair("Aluminium + brass, bronze", 0);
+                ImGui::Spacing();
+                Pair("Galvanized steel + carbon steel", 2);
+                Pair("Galvanized steel + stainless steel", 1);
                 ImGui::Spacing();
                 ImGui::PushTextWrapPos(0.0f);
                 ImGui::TextColored(note_col, "%s",
-                    T("Copper to aluminium - only through a terminal block, tinned lug or steel washer."));
+                    T("Per GOST 9.005-72. Copper to aluminium - only through Al-Cu lugs, transition plates or tinned terminals."));
                 ImGui::PopTextWrapPos();
                 ImGui::Spacing();
             }
@@ -3721,7 +3759,7 @@ namespace menu {
             if (SectionHeader(T("Conduit fill"), &s_pipe)) {
                 static double pf_d = 10.0, pf_n = 3.0;
                 ImGui::PushTextWrapPos(0.0f);
-                ImGui::TextColored(g_theme.text_dim, "%s", T("1 cable - up to 53%, 2 cables - 31%, 3 and more - 40% of the cross-section."));
+                ImGui::TextColored(g_theme.text_dim, "%s", T("1 cable - up to 40%, 2 cables - 25%, 3 and more - 35% of the cross-section (by outer cable diameter)."));
                 ImGui::TextColored(g_theme.text_dim, "%s", T("Closed trunking - 35%, with a removable cover - 40% (PUE 2.1.61)."));
                 ImGui::PopTextWrapPos();
                 ImGui::Spacing();
@@ -3730,7 +3768,7 @@ namespace menu {
                 ImGui::TextColored(g_theme.text_dim, "%s", T("Number of cables:"));
                 TextInputDouble("pf_n", &pf_n);
                 const double n_c = (pf_n < 1.0) ? 1.0 : floor(pf_n);
-                const double fill = (n_c < 1.5) ? 0.53 : (n_c < 2.5 ? 0.31 : 0.40);
+                const double fill = (n_c < 1.5) ? 0.40 : (n_c < 2.5 ? 0.25 : 0.35);
                 const double d_min = (pf_d > 0.0) ? pf_d * sqrt(n_c / fill) : 0.0;   // n*d^2 <= fill*D^2
                 char pbuf[48];
                 snprintf(pbuf, sizeof(pbuf), "%.1f mm", d_min);
@@ -3740,21 +3778,19 @@ namespace menu {
 
             // === NEW: поправка на высоту над уровнем моря ===
             if (SectionHeader(T("Altitude correction"), &s_alt)) {
-                auto ARow = [](const char* alt, const char* cur, const char* volt, ImVec4 col) {
+                auto ARow = [](const char* alt, const char* cur, ImVec4 col) {
                     ImGui::TextColored(col, "%s", alt);
-                    ImGui::SameLine(120.0f);
+                    ImGui::SameLine(160.0f);
                     ImGui::TextColored(col, "%s", cur);
-                    ImGui::SameLine(210.0f);
-                    ImGui::TextColored(col, "%s", volt);
                     };
-                ARow(T("Altitude"), T("Current"), T("Voltage"), g_theme.text_dim);
-                ARow("2000 m", "100 %", "100 %", g_theme.text_main);
-                ARow("3000 m", "98 %", "87 %", g_theme.text_main);
-                ARow("4000 m", "93 %", "72 %", g_theme.text_main);
-                ARow("5000 m", "90 %", "64 %", g_theme.text_main);
+                ARow(T("Altitude"), T("Allowable current"), g_theme.text_dim);
+                ARow(T("up to 1000 m"), "100 %", g_theme.text_main);
+                ARow("1001 - 2000 m", "90 %", g_theme.text_main);
+                ARow("2001 - 3000 m", "80 %", g_theme.text_main);
+                ARow("3001 - 4000 m", "72 %", g_theme.text_main);
                 ImGui::Spacing();
                 ImGui::PushTextWrapPos(0.0f);
-                ImGui::TextColored(note_col, "%s", T("Typical values for moulded-case breakers. Check the manufacturer's data."));
+                ImGui::TextColored(note_col, "%s", T("Above 1000 m the air is thinner and cools worse, so the allowable current is reduced (GOST 15150-69)."));
                 ImGui::PopTextWrapPos();
             }
         } gui.end_group_box();
@@ -3903,10 +3939,11 @@ namespace menu {
         // полоса лежит неглубоко и сильнее зависит от промерзания, чем вертикальный электрод
         const bool strip = (calc_data::ground_type == 1);
         switch (calc_data::ground_season) {
-        case 1:  return strip ? 5.5f : 1.9f;    // зона I
-        case 2:  return strip ? 4.0f : 1.7f;    // зона II
-        case 3:  return strip ? 2.25f : 1.5f;   // зона III
-        case 4:  return strip ? 1.75f : 1.3f;   // зона IV
+        // берём верхнюю границу диапазона для зоны - расчёт на худшее время года
+        case 1:  return strip ? 6.0f : 1.9f;    // зона I
+        case 2:  return strip ? 3.5f : 1.5f;    // зона II
+        case 3:  return strip ? 2.0f : 1.3f;    // зона III
+        case 4:  return strip ? 1.4f : 1.15f;   // зона IV
         default: return 1.0f;
         }
     }
@@ -4064,7 +4101,7 @@ namespace menu {
         using i18n::T;
         using i18n::L;
 
-        gui.group_box(T("PARAMETERS"), ImVec2(CARD_W_HALF, 1040)); {
+        gui.group_box(T("PARAMETERS"), ImVec2(CARD_W_HALF, 1105)); {
             ImGui::TextColored(g_theme.text_dim, "%s", T("Material:"));
             ImGui::RadioButton(L("Copper"), &calc_data::cable_material, 0); ImGui::SameLine();
             ImGui::RadioButton(L("Aluminum"), &calc_data::cable_material, 1);
@@ -4117,6 +4154,9 @@ namespace menu {
                     calc_data::cable_group = (group_d < 1.0) ? 1 : (group_d > 50.0 ? 50 : (int)group_d);
             }
 
+            ImGui::TextColored(g_theme.text_dim, "%s", T("Altitude above sea level, m:"));
+            TextInputFloat("caltitude", &calc_data::cable_altitude);
+
             ImGui::Spacing();
             ImGui::TextColored(g_theme.text_dim, "%s", T("Power, kW:"));
             TextInputFloat("power", &calc_data::load_power_kw);
@@ -4156,7 +4196,7 @@ namespace menu {
         ImGui::SameLine(0.0f, 15.0f);
 
         // ==================== RESULT ====================
-        gui.group_box(T("RESULT"), ImVec2(CARD_W_HALF, 1040)); {
+        gui.group_box(T("RESULT"), ImVec2(CARD_W_HALF, 1105)); {
             const ImVec4 col_ok = g_theme.res_good;
             const ImVec4 col_fail = g_theme.res_bad;
             char buf[64];
@@ -4198,6 +4238,8 @@ namespace menu {
             ResultRow(T("Temp factor:"), buf, g_theme.res_warn);
             snprintf(buf, sizeof(buf), "%.2f", calc_data::result_k_group);
             ResultRow(T("Group factor:"), buf, g_theme.res_warn);
+            snprintf(buf, sizeof(buf), "%.2f", calc_data::result_k_alt);
+            ResultRow(T("Altitude factor:"), buf, g_theme.res_warn);
             ResultRow(T("Insulation:"), T(InsulationName(calc_data::insulation_type)),
                 g_theme.res_warn);
 

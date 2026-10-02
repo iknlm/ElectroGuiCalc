@@ -664,6 +664,10 @@ namespace i18n {
 { "Per GOST 9.005-72. Copper to aluminium - only through Al-Cu lugs, transition plates or tinned terminals.", "По ГОСТ 9.005-72. Медь с алюминием - только через алюмомедные наконечники, переходные пластины или лужёные клеммы." },
 { "1 cable - up to 40%, 2 cables - 25%, 3 and more - 35% of the cross-section (by outer cable diameter).", "1 кабель - до 40%, 2 кабеля - 25%, 3 и больше - 35% сечения трубы (по наружному диаметру кабелей)." },
 { "Above 1000 m the air is thinner and cools worse, so the allowable current is reduced (GOST 15150-69).", "Выше 1000 м воздух разрежен и хуже охлаждает, поэтому допустимый ток снижают (ГОСТ 15150-69)." },
+{ "Conduit inner diameter, mm:", "Внутренний диаметр трубы, мм:" },
+{ "Fill:", "Заполнение:" },
+{ "Cables will jam when pulled. Take a larger conduit.", "Кабели заклинит при протяжке. Возьмите трубу большего диаметра." },
+{ "limit", "лимит" },
 { "Cable and wire marking", "Маркировка кабеля и провода" },
 { "Letters: metal, type, insulation, design. Digits: cores x section - voltage.", "Буквы: металл, тип, изоляция, конструкция. Цифры: число жил x сечение - напряжение." },
 { "1st letter - core metal", "1-я буква - металл жилы" },
@@ -3770,9 +3774,25 @@ namespace menu {
                 const double n_c = (pf_n < 1.0) ? 1.0 : floor(pf_n);
                 const double fill = (n_c < 1.5) ? 0.40 : (n_c < 2.5 ? 0.25 : 0.35);
                 const double d_min = (pf_d > 0.0) ? pf_d * sqrt(n_c / fill) : 0.0;   // n*d^2 <= fill*D^2
-                char pbuf[48];
+                char pbuf[64];
                 snprintf(pbuf, sizeof(pbuf), "%.1f mm", d_min);
                 ResultRow(T("Min. inner diameter:"), pbuf, g_theme.accent);
+
+                // проверка конкретной трубы: площадь кабелей / площадь трубы
+                static double pf_pipe = 25.0;
+                ImGui::TextColored(g_theme.text_dim, "%s", T("Conduit inner diameter, mm:"));
+                TextInputDouble("pf_pipe", &pf_pipe);
+                if (pf_pipe > 0.0 && pf_d > 0.0) {
+                    const double used = n_c * pf_d * pf_d / (pf_pipe * pf_pipe);
+                    const bool fits = (used <= fill + 1e-9);
+                    snprintf(pbuf, sizeof(pbuf), "%.0f %% (%s %.0f %%)", used * 100.0, T("limit"), fill * 100.0);
+                    ResultRow(T("Fill:"), pbuf, fits ? g_theme.res_good : g_theme.res_bad);
+                    if (!fits) {
+                        ImGui::PushTextWrapPos(0.0f);
+                        ImGui::TextColored(g_theme.res_bad, "%s", T("Cables will jam when pulled. Take a larger conduit."));
+                        ImGui::PopTextWrapPos();
+                    }
+                }
                 ImGui::Spacing();
             }
 
@@ -4446,11 +4466,21 @@ namespace menu {
             if (tmax < 0.0f) tmax = 0.0f;
             if (tmax > 8760.0f) tmax = 8760.0f;
 
-            // ПУЭ табл. 1.3.36, кабели с резиновой и пластмассовой изоляцией, А/мм2
+            // ПУЭ табл. 1.3.36, А/мм2. Строка зависит от изоляции:
+            // кабели с резиновой и пластмассовой изоляцией или с бумажной
             const bool cu = (calc_data::cable_material == 0);
-            float j = cu ? 3.5f : 1.9f;
-            if (tmax > 5000.0f) j = cu ? 2.7f : 1.6f;
-            else if (tmax > 3000.0f) j = cu ? 3.1f : 1.7f;
+            const bool paper = (calc_data::insulation_type >= 20 && calc_data::insulation_type <= 23);
+            float j = 0.0f;
+            if (paper) {
+                j = cu ? 3.0f : 1.6f;
+                if (tmax > 5000.0f) j = cu ? 2.0f : 1.2f;
+                else if (tmax > 3000.0f) j = cu ? 2.5f : 1.4f;
+            }
+            else {
+                j = cu ? 3.5f : 1.9f;
+                if (tmax > 5000.0f) j = cu ? 2.7f : 1.6f;
+                else if (tmax > 3000.0f) j = cu ? 3.1f : 1.7f;
+            }
             snprintf(buf, sizeof(buf), "%.1f A/mm^2", j);
             ResultRow(T("Economic current density:"), buf, g_theme.text_main);
 

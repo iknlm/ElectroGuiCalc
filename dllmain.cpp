@@ -519,6 +519,42 @@ namespace i18n {
 { "Voltage check:", "Проверка напряжения:" },
 { "The first letter follows the Material switch, the section comes from the calculation.", "Первая буква берётся из переключателя «Материал», сечение - из расчёта." },
 { "In earth a cable needs armour (Б or К), in water - round-wire armour (К). The cable voltage must be no less than the network voltage.", "В земле кабелю нужна броня (Б или К), в воде - броня из круглой проволоки (К). Напряжение кабеля должно быть не меньше напряжения сети." },
+{ "PVC ng-LS 70C", "ПВХ нг-LS 70°C" },
+{ "PVC ng-FRLS 70C", "ПВХ нг-FRLS 70°C" },
+{ "Heat-resistant PVC 105C", "ПВХ теплостойкий 105°C" },
+{ "Halogen-free (HF) 70C", "Безгалогенная (HF) 70°C" },
+{ "Fire-resistant halogen-free (FRHF) 70C", "Безгалогенная огнестойкая (FRHF) 70°C" },
+{ "Cross-linked polyolefin (XLPO) 90C", "Сшитый полиолефин (XLPO) 90°C" },
+{ "Cross-linked EVA (XL-EVA) 110C", "Сшитый этиленвинилацетат (XL-EVA) 110°C" },
+{ "Heat-resistant rubber 85C", "Резина нагревостойкая 85°C" },
+{ "Ethylene-propylene rubber (EPR) 90C", "Этиленпропиленовая резина (ЭПР) 90°C" },
+{ "EPDM rubber 90C", "Резина EPDM 90°C" },
+{ "Silicone rubber 180C", "Кремнийорганическая резина 180°C" },
+{ "Ceramic-forming rubber 90C", "Керамообразующая резина 90°C" },
+{ "Nairit (neoprene) rubber 65C", "Наиритовая резина 65°C" },
+{ "PTFE (F-4) 250C", "Фторопласт-4 (PTFE) 250°C" },
+{ "FEP (F-4M) 200C", "Фторопласт-2М/4М (FEP) 200°C" },
+{ "ETFE (F-40) 150C", "Фторопласт-40 (ETFE) 150°C" },
+{ "Impregnated paper 80C", "Бумажная пропитанная (БПИ) 80°C" },
+{ "Paper, non-draining compound 80C", "Бумажная, нестекающий состав 80°C" },
+{ "Oil-filled, low pressure 85C", "Маслонаполненная, низкое давление 85°C" },
+{ "Oil-filled, high pressure 85C", "Маслонаполненная, высокое давление 85°C" },
+{ "Mica tape 400C", "Слюдяная (микалента) 400°C" },
+{ "Fiberglass 180C", "Стекловолоконная 180°C" },
+{ "Mineral (MgO) 250C", "Минеральная (оксид магния) 250°C" },
+{ "steel tapes, PVC hose", "стальные ленты, шланг из ПВХ" },
+{ "steel tapes, PE hose", "стальные ленты, шланг из полиэтилена" },
+{ "flat steel wires", "плоские стальные проволоки" },
+{ "aluminium tapes (single-core)", "алюминиевые ленты (одножильный)" },
+{ "round aluminium wires (single-core)", "круглые алюминиевые проволоки (одножильный)" },
+{ "corrugated steel tape", "гофрированная стальная лента" },
+{ "steel braid (mail armour)", "стальная оплётка (панцирная броня)" },
+{ "Armour:", "Броня:" },
+{ "Ба and Ка are for single-core cables", "Ба и Ка - только для одножильных" },
+{ "single-core: use Ба or Ка", "одножильный: нужна Ба или Ка" },
+{ "armour needed for earth", "в земле нужна броня" },
+{ "round-wire armour needed: К or Ка", "нужна броня из проволоки: К или Ка" },
+{ "Steel armour on a single-core AC cable heats up, aluminium (Ба, Ка) is used instead.", "Стальная броня на одножильном кабеле переменного тока греется, поэтому берут алюминиевую (Ба, Ка)." },
 { "Cable and wire marking", "Маркировка кабеля и провода" },
 { "Letters: metal, type, insulation, design. Digits: cores x section - voltage.", "Буквы: металл, тип, изоляция, конструкция. Цифры: число жил x сечение - напряжение." },
 { "1st letter - core metal", "1-я буква - металл жилы" },
@@ -2289,6 +2325,7 @@ inline bool CustomCombo(const char* id, int* current, const char* const items[],
     ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0, 0, 0, 0));
     ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0, 0, 0, 0));
 
+    ImGui::SetNextWindowSizeConstraints(ImVec2(0.0f, 0.0f), ImVec2(FLT_MAX, 420.0f));   // длинные списки прокручиваются
     if (ImGui::BeginPopup(id)) {
         ImDrawList* pdl = ImGui::GetWindowDrawList();
         for (int i = 0; i < items_count; ++i) {
@@ -2756,15 +2793,44 @@ namespace menu {
         ImGui::Dummy(ImVec2(W, H));
     }
 
-    inline const char* InsulationName(int t) {
-        switch (t) {
-        case 0: return "PVC 70C";
-        case 1: return "XLPE 90C";
-        case 2: return "Rubber 60C";
-        case 3: return "PE 70C";
-        default: return "PVC 70C";
-        }
-    }
+    // === NEW: виды изоляции и допустимая температура жилы для расчёта нагрева ===
+    // ПВХ считаем по 65 °C - на эту температуру составлены таблицы ПУЭ.
+    struct InsInfo { const char* key; float t_max; };
+    static const InsInfo INS_TABLE[] = {
+        { "PVC 70C", 65.0f },
+        { "XLPE 90C", 90.0f },
+        { "Rubber 60C", 60.0f },
+        { "PE 70C", 70.0f },
+        { "PVC ng-LS 70C", 65.0f },
+        { "PVC ng-FRLS 70C", 65.0f },
+        { "Heat-resistant PVC 105C", 105.0f },
+        { "Halogen-free (HF) 70C", 70.0f },
+        { "Fire-resistant halogen-free (FRHF) 70C", 70.0f },
+        { "Cross-linked polyolefin (XLPO) 90C", 90.0f },
+        { "Cross-linked EVA (XL-EVA) 110C", 110.0f },
+        { "Heat-resistant rubber 85C", 85.0f },
+        { "Ethylene-propylene rubber (EPR) 90C", 90.0f },
+        { "EPDM rubber 90C", 90.0f },
+        { "Silicone rubber 180C", 180.0f },
+        { "Ceramic-forming rubber 90C", 90.0f },
+        { "Nairit (neoprene) rubber 65C", 65.0f },
+        { "PTFE (F-4) 250C", 250.0f },
+        { "FEP (F-4M) 200C", 200.0f },
+        { "ETFE (F-40) 150C", 150.0f },
+        { "Impregnated paper 80C", 80.0f },
+        { "Paper, non-draining compound 80C", 80.0f },
+        { "Oil-filled, low pressure 85C", 85.0f },
+        { "Oil-filled, high pressure 85C", 85.0f },
+        { "Mica tape 400C", 400.0f },
+        { "Fiberglass 180C", 180.0f },
+        { "Mineral (MgO) 250C", 250.0f },
+    };
+    constexpr int INS_N = 27;
+    // порядок в выпадающем списке: пластмассы, резины, фторопласты, бумага, особые
+    static const int INS_ORDER[INS_N] = { 0, 4, 5, 6, 1, 3, 7, 8, 9, 10, 2, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 };
+
+    inline int InsClamp(int t) { return (t < 0 || t >= INS_N) ? 0 : t; }
+    inline const char* InsulationName(int t) { return INS_TABLE[InsClamp(t)].key; }
 
     constexpr float CARD_W_HALF = 440.0f;
     constexpr float CARD_W_FULL = 900.0f;
@@ -2822,10 +2888,7 @@ namespace menu {
 
     // Поправка на температуру среды (ПУЭ табл. 1.3.3): k = sqrt((t_жилы - t_среды) / (65 - t_табл))
     inline float PueTempFactor() {
-        float t_max = 65.0f;                                   // ПВХ - как в таблицах ПУЭ
-        if (calc_data::insulation_type == 1) t_max = 90.0f;    // сшитый полиэтилен
-        else if (calc_data::insulation_type == 2) t_max = 60.0f; // резина (с запасом)
-        else if (calc_data::insulation_type == 3) t_max = 70.0f; // полиэтилен (буква П в марке)
+        const float t_max = INS_TABLE[InsClamp(calc_data::insulation_type)].t_max;
         const float t_ref = (calc_data::cable_install >= 2) ? 15.0f : 25.0f;  // земля/вода : воздух
         const float num = t_max - calc_data::ambient_temp;
         if (num <= 0.0f) return 0.0f;
@@ -3602,8 +3665,16 @@ namespace menu {
     static const MarkLetter MK_DESIGN[] = {
         { "", "- (no letter)" }, { "А", "asphalt-coated" }, { "Б", "armoured with steel tapes" },
         { "Г", "bare, no protective cover" }, { "К", "armoured with round wire" },
-        { "О", "in a protective braid" }, { "Т", "for laying inside pipes" } };
-    constexpr int MK_TYPE_N = 7, MK_INS_N = 14, MK_SHEATH_N = 3, MK_DESIGN_N = 7, MK_CORES_N = 5, MK_U_N = 6;
+        { "О", "in a protective braid" }, { "Т", "for laying inside pipes" },
+        { "БШв", "steel tapes, PVC hose" },
+        { "БШп", "steel tapes, PE hose" },
+        { "П", "flat steel wires" },
+        { "Ба", "aluminium tapes (single-core)" },
+        { "Ка", "round aluminium wires (single-core)" },
+        { "", "corrugated steel tape" },
+        { "", "steel braid (mail armour)" },
+    };
+    constexpr int MK_TYPE_N = 7, MK_INS_N = 14, MK_SHEATH_N = 3, MK_DESIGN_N = 14, MK_CORES_N = 5, MK_U_N = 6;
     static const float MK_U_KV[MK_U_N] = { 0.38f, 0.66f, 1.0f, 3.0f, 6.0f, 10.0f };
 
     inline int MarkClamp(int v, int n) { return (v < 0 || v >= n) ? 0 : v; }
@@ -3625,7 +3696,7 @@ namespace menu {
 
     // Выпадающий список букв: "Б - бронированная стальными лентами"
     inline void MarkCombo(const char* id, int* value, const MarkLetter* list, int n) {
-        static char bufs[16][96];
+        static char bufs[16][160];
         const char* items[16];
         if (n > 16) n = 16;
         for (int i = 0; i < n; ++i) {
@@ -3641,7 +3712,7 @@ namespace menu {
         using i18n::T;
         using i18n::L;
 
-        gui.group_box(T("PARAMETERS"), ImVec2(CARD_W_HALF, 960)); {
+        gui.group_box(T("PARAMETERS"), ImVec2(CARD_W_HALF, 975)); {
             ImGui::TextColored(g_theme.text_dim, "%s", T("Material:"));
             ImGui::RadioButton(L("Copper"), &calc_data::cable_material, 0); ImGui::SameLine();
             ImGui::RadioButton(L("Aluminum"), &calc_data::cable_material, 1);
@@ -3660,12 +3731,28 @@ namespace menu {
 
             ImGui::Spacing();
             ImGui::TextColored(g_theme.text_dim, "%s", T("Insulation:"));
-            // переключатель изоляции меняет и букву в марке кабеля
-            if (ImGui::RadioButton(L("PVC 70C"), &calc_data::insulation_type, 0)) calc_data::mark_ins = 0;   // В
-            ImGui::SameLine();
-            if (ImGui::RadioButton(L("XLPE 90C"), &calc_data::insulation_type, 1)) calc_data::mark_ins = 9;  // П
-            ImGui::SameLine();
-            if (ImGui::RadioButton(L("Rubber 60C"), &calc_data::insulation_type, 2)) calc_data::mark_ins = 6; // Н
+            {
+                const char* ins_items[INS_N];
+                int pos = 0;
+                const int cur = InsClamp(calc_data::insulation_type);
+                for (int i = 0; i < INS_N; ++i) {
+                    ins_items[i] = T(INS_TABLE[INS_ORDER[i]].key);
+                    if (INS_ORDER[i] == cur) pos = i;
+                }
+                const int before = pos;
+                CustomCombo("##ins_type", &pos, ins_items, INS_N);
+                if (pos != before) {
+                    calc_data::insulation_type = INS_ORDER[pos];
+                    // изоляция меняет и букву в марке кабеля
+                    switch (calc_data::insulation_type) {
+                    case 0: case 4: case 5: case 6: calc_data::mark_ins = 0; break;    // ПВХ - В
+                    case 1: case 3: case 9:         calc_data::mark_ins = 9; break;    // полиэтилен - П
+                    case 2: case 16:                calc_data::mark_ins = 6; break;    // резина, найрит - Н
+                    case 25:                        calc_data::mark_ins = 10; break;   // стекловолокно - С
+                    default: break;
+                    }
+                }
+            }
 
             ImGui::Spacing();
             ImGui::TextColored(g_theme.text_dim, "%s", T("Ambient temp, C:"));
@@ -3710,7 +3797,7 @@ namespace menu {
         ImGui::SameLine(0.0f, 15.0f);
 
         // ==================== RESULT ====================
-        gui.group_box(T("RESULT"), ImVec2(CARD_W_HALF, 960)); {
+        gui.group_box(T("RESULT"), ImVec2(CARD_W_HALF, 975)); {
             const ImVec4 col_ok = g_theme.res_good;
             const ImVec4 col_fail = g_theme.res_bad;
             char buf[64];
@@ -3814,7 +3901,7 @@ namespace menu {
         ImGui::Spacing();
 
         // ==================== МАРКА КАБЕЛЯ ====================
-        gui.group_box(T("CABLE MARK"), ImVec2(CARD_W_HALF, 520)); {
+        gui.group_box(T("CABLE MARK"), ImVec2(CARD_W_HALF, 590)); {
             ImGui::TextColored(g_theme.text_dim, "%s", T("Wire type (2nd letter):"));
             MarkCombo("##mk_type", &calc_data::mark_type, MK_TYPE, MK_TYPE_N);
 
@@ -3828,6 +3915,7 @@ namespace menu {
                     case 0: case 1: calc_data::insulation_type = 0; break;   // В, ВР - ПВХ
                     case 6: case 7: calc_data::insulation_type = 2; break;   // Н, НР - резина
                     case 9:         calc_data::insulation_type = 3; break;   // П - полиэтилен
+                    case 10:        calc_data::insulation_type = 25; break;  // С - стекловолокно
                     default: break;                                          // остальные на нагрев не влияют
                     }
                 }
@@ -3862,7 +3950,7 @@ namespace menu {
 
         ImGui::SameLine(0.0f, 15.0f);
 
-        gui.group_box(T("MARK CHECK"), ImVec2(CARD_W_HALF, 520)); {
+        gui.group_box(T("MARK CHECK"), ImVec2(CARD_W_HALF, 590)); {
             const ImVec4 col_ok = g_theme.res_good;
             const ImVec4 col_fail = g_theme.res_bad;
             char buf[96];
@@ -3893,15 +3981,24 @@ namespace menu {
             const int des = MarkClamp(calc_data::mark_design, MK_DESIGN_N);
             const char* lay_text = T("OK");
             bool lay_ok = true;
-            if (calc_data::cable_install == 2 && des != 2 && des != 4) {          // земля: броня Б или К
+            const bool arm_al = (des == 10 || des == 11);                                    // Ба, Ка
+            const bool arm_steel = (des == 2 || des == 4 || des == 7 || des == 8 || des == 9 || des == 12 || des == 13);
+            if (calc_data::cable_install == 2 && !(arm_al || (arm_steel && des != 13))) {     // земля: нужна броня
                 lay_ok = false;
-                lay_text = T("armour needed: Б or К");
+                lay_text = T("armour needed for earth");
             }
-            else if (calc_data::cable_install == 3 && des != 4) {                 // вода: броня из проволоки
+            else if (calc_data::cable_install == 3 && des != 4 && des != 11) {                // вода: броня из проволоки
                 lay_ok = false;
-                lay_text = T("round-wire armour needed: К");
+                lay_text = T("round-wire armour needed: К or Ка");
             }
             ResultRow(T("Laying:"), lay_text, lay_ok ? col_ok : col_fail);
+
+            // стальная броня на одножильном кабеле греется от переменного тока
+            const char* arm_text = T("OK");
+            bool arm_ok = true;
+            if (arm_al && cores > 1) { arm_ok = false; arm_text = T("Ба and Ка are for single-core cables"); }
+            else if (arm_steel && cores == 1) { arm_ok = false; arm_text = T("single-core: use Ба or Ка"); }
+            ResultRow(T("Armour:"), arm_text, arm_ok ? col_ok : col_fail);
 
             ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
 
@@ -3917,6 +4014,8 @@ namespace menu {
             ImGui::PushTextWrapPos(0.0f);
             ImGui::TextColored(g_theme.text_dim, "%s",
                 T("In earth a cable needs armour (Б or К), in water - round-wire armour (К). The cable voltage must be no less than the network voltage."));
+            ImGui::TextColored(g_theme.text_dim, "%s",
+                T("Steel armour on a single-core AC cable heats up, aluminium (Ба, Ка) is used instead."));
             ImGui::PopTextWrapPos();
         } gui.end_group_box();
 

@@ -22,7 +22,16 @@ jobs:
       - uses: microsoft/setup-msbuild@v2
 
       - name: Build Release x64
-        run: msbuild ElectroGuiCalc.sln /p:Configuration=Release /p:Platform=x64 /m
+        run: msbuild ElectroGuiCalc.sln /p:Configuration=Release /p:Platform=x64 /m "/flp:errorsonly;logfile=msbuild-errors.log"
+
+      # Ошибки компиляции - в аннотации к сборке, чтобы их было видно без чтения всего лога
+      - name: Show build errors
+        if: failure()
+        shell: pwsh
+        run: |
+          if (Test-Path msbuild-errors.log) {
+            Get-Content msbuild-errors.log | Select-Object -First 30 | ForEach-Object { Write-Host "::error::$_" }
+          }
 
       - name: Read version
         id: ver

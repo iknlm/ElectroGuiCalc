@@ -55,10 +55,12 @@ jobs:
           if ($dll) { Copy-Item $dll.FullName $pro }
           Compress-Archive -Path $pro -DestinationPath "ElectroGuiCalc-Pro-$ver.zip"
 
-          # Lite: один exe, шрифты и лекции ему не нужны
+          # Lite: то же самое, что Pro, со своим exe
           $lite = "pkg/ElectroGuiCalc-Lite"
-          New-Item -ItemType Directory -Force -Path $lite | Out-Null
+          New-Item -ItemType Directory -Force -Path $lite, "$lite/fonts", "$lite/lectures" | Out-Null
           Copy-Item "x64/Release/ElectroGuiCalcLite.exe" "$lite/ElectroGuiCalc-Lite.exe"
+          Copy-Item "fonts/fa-solid-900.ttf" "$lite/fonts"
+          Copy-Item "lectures/*.pdf" "$lite/lectures"
           if ($dll) { Copy-Item $dll.FullName $lite }
           Compress-Archive -Path $lite -DestinationPath "ElectroGuiCalc-Lite-$ver.zip"
 

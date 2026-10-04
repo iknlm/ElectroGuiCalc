@@ -6711,7 +6711,7 @@ namespace menu {
                 // Название: иконка + "ElectroGuiCalc" цветом акцента + "by iknlm" приглушённо
                 {
                     const char* icon = ICON_FA_BOLT;
-                    const char* name = "ElectroGuiCalc";
+                    const char* name = "ElectroGuiCalc Pro";
                     const char* author = "by iknlm";
                     const float gap = 7.0f;
                     const ImVec2 si = ImGui::CalcTextSize(icon);
@@ -7170,7 +7170,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     }
 
     HWND hwnd = ::CreateWindowExW(
-        0L, wc.lpszClassName, L"ElectroGuiCalc by iknlm",
+        0L, wc.lpszClassName, L"ElectroGuiCalc Pro by iknlm",
         // WS_MINIMIZEBOX | WS_SYSMENU - чтобы клик по значку на панели задач сворачивал окно,
         // работали Win+Down и меню по правому клику на панели задач. Рамки при этом не появляется.
         WS_POPUP | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU, 100, 100, 1400, 900,

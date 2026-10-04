@@ -39,18 +39,28 @@ jobs:
       - name: Package
         shell: pwsh
         run: |
-          # Отдельная папка, чтобы в архив не попали промежуточные файлы сборки
-          $out = "pkg/ElectroGuiCalc"
-          New-Item -ItemType Directory -Force -Path $out, "$out/fonts", "$out/lectures" | Out-Null
-          Copy-Item "x64/Release/ElectroGuiCalc.exe" $out
-          Copy-Item "fonts/fa-solid-900.ttf" "$out/fonts"
-          Copy-Item "lectures/*.pdf" "$out/lectures"
+          $ver = "${{ steps.ver.outputs.version }}"
           # d3dcompiler_47.dll - нужен ImGui для DirectX 11. В Windows 8.1-11 он встроен,
           # а в Windows 7 бывает только с обновлениями - кладём рядом с программой.
           $dll = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\Redist\D3D\x64\d3dcompiler_47.dll" -ErrorAction SilentlyContinue | Select-Object -First 1
           if (-not $dll) { $dll = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\Redist" -Recurse -Filter d3dcompiler_47.dll -ErrorAction SilentlyContinue | Where-Object { $_.FullName -match "x64" } | Select-Object -First 1 }
-          if ($dll) { Copy-Item $dll.FullName $out; Write-Host "added $($dll.FullName)" } else { Write-Warning "d3dcompiler_47.dll not found in Windows SDK" }
-          Compress-Archive -Path $out -DestinationPath "ElectroGuiCalc-${{ steps.ver.outputs.version }}.zip"
+          if (-not $dll) { Write-Warning "d3dcompiler_47.dll not found in Windows SDK" }
+
+          # Pro: отдельная папка, чтобы в архив не попали промежуточные файлы сборки
+          $pro = "pkg/ElectroGuiCalc-Pro"
+          New-Item -ItemType Directory -Force -Path $pro, "$pro/fonts", "$pro/lectures" | Out-Null
+          Copy-Item "x64/Release/ElectroGuiCalc.exe" "$pro/ElectroGuiCalc-Pro.exe"
+          Copy-Item "fonts/fa-solid-900.ttf" "$pro/fonts"
+          Copy-Item "lectures/*.pdf" "$pro/lectures"
+          if ($dll) { Copy-Item $dll.FullName $pro }
+          Compress-Archive -Path $pro -DestinationPath "ElectroGuiCalc-Pro-$ver.zip"
+
+          # Lite: один exe, шрифты и лекции ему не нужны
+          $lite = "pkg/ElectroGuiCalc-Lite"
+          New-Item -ItemType Directory -Force -Path $lite | Out-Null
+          Copy-Item "x64/Release/ElectroGuiCalcLite.exe" "$lite/ElectroGuiCalc-Lite.exe"
+          if ($dll) { Copy-Item $dll.FullName $lite }
+          Compress-Archive -Path $lite -DestinationPath "ElectroGuiCalc-Lite-$ver.zip"
 
       - name: Upload build
         uses: actions/upload-artifact@v4

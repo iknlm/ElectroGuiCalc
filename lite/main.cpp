@@ -671,6 +671,48 @@ namespace i18n {
 { "Fill:", "Заполнение:" },
 { "Cables will jam when pulled. Take a larger conduit.", "Кабели заклинит при протяжке. Возьмите трубу большего диаметра." },
 { "limit", "лимит" },
+{ "Conductor:", "Что прокладываем:" },
+{ "Cable (VVG, NYM)", "Кабель (ВВГ, NYM)" },
+{ "Single wires (PV, PuGV)", "Отдельные провода (ПВ, ПуГВ)" },
+{ "Heat-resistant PVC 90C", "ПВХ теплостойкий 90°C" },
+{ "Mica tape under polymer 70C", "Слюдяная лента под полимером 70°C" },
+{ "Mineral (MgO), sheathed 70C", "Минеральная (MgO) в оболочке 70°C" },
+{ "Current is counted for 90 C. For this insulation take it from the cable catalogue.", "Ток посчитан для 90 °C. Для такой изоляции берите допустимый ток из каталога марки." },
+{ "The breaker clears a short circuit instantly (under 0.1 s), which meets PUE 1.7.79: 0.4 s at 220 V. Margin 1.1 per PUE 6th ed.", "Автомат отключает КЗ мгновенно (быстрее 0,1 с), этим выполняется ПУЭ 1.7.79: 0,4 с при 220 В. Запас 1,1 - по ПУЭ 6-го изд." },
+{ "Multi-core cable: PUE 1.3.6-1.3.7 in air and earth, 1.3.4-1.3.5 in a pipe. 4-5 core cable for three phases x0.92.", "Многожильный кабель: ПУЭ 1.3.6-1.3.7 в воздухе и земле, 1.3.4-1.3.5 в трубе. 4-5-жильный кабель для трёх фаз x0,92." },
+{ "Breakers side by side:", "Автоматов вплотную друг к другу:" },
+{ "Real rating in the panel:", "Реальный номинал в щите:" },
+{ "Breakers are calibrated at +30 C, about 0.5% per degree. Side by side: 2-3 pcs x0.85, 4-7 x0.8, more x0.7 (typical manufacturer data).", "Автоматы калибруют при +30 C, около 0,5% на градус. Вплотную: 2-3 шт. x0,85, 4-7 x0,8, больше x0,7 (типовые данные изготовителя)." },
+{ "modular, GOST IEC 60898-1", "модульный, ГОСТ IEC 60898-1" },
+{ "moulded case, by catalogue", "в литом корпусе, по каталогу" },
+{ "A breaker protects the motor only from short circuits. A thermal relay against overload is required.", "Автомат защищает двигатель только от КЗ. От перегрузки нужно тепловое реле - оно обязательно." },
+{ "Layout:", "Расположение:" },
+{ "In a row", "В ряд" },
+{ "Around a contour", "По контуру" },
+{ "Count the connecting strip", "Учитывать соединительную полосу" },
+{ "Connecting strip:", "Соединительная полоса:" },
+{ "Rods in a row joined by a 40x4 strip, or around a contour (strip not counted, margin). Utilization factors from reference tables.", "Штыри в ряд, соединённые полосой 40x4, или по контуру (полоса не учитывается, с запасом). Коэффициенты использования - по справочным таблицам." },
+{ "Up to 16 mm2 the density is raised by 40% (PUE 1.3.27).", "До 16 мм2 плотность увеличена на 40% (ПУЭ 1.3.27)." },
+{ "Wire, open", "Провод откр." },
+{ "Cable, air", "Кабель, возд." },
+{ "PUE 1.3.4 (single wire) and 1.3.6 (3-core cable). Breaker - nearest rating not above the cable current.", "ПУЭ 1.3.4 (одиночный провод) и 1.3.6 (трёхжильный кабель). Автомат - ближайший номинал не выше тока кабеля." },
+{ "Power cables (GOST 31996)", "Силовые кабели (ГОСТ 31996)" },
+{ "PVC insulation or sheath", "изоляция или оболочка из ПВХ" },
+{ "cross-linked polyethylene insulation", "изоляция из сшитого полиэтилена" },
+{ "halogen-free polymer", "безгалогенная полимерная композиция" },
+{ "no protective cover", "без защитного покрова" },
+{ "steel tape armour", "броня из стальных лент" },
+{ "round steel wire armour", "броня из круглых стальных проволок" },
+{ "PVC / polyethylene hose", "защитный шланг из ПВХ / полиэтилена" },
+{ "copper screen", "медный экран" },
+{ "does not spread fire in bundles", "не распространяет горение в пучках" },
+{ "low smoke, halogen-free", "мало дыма, без галогенов" },
+{ "fire resistant", "огнестойкий" },
+{ "Example: VVGng(A)-LS = copper, PVC, no armour, low smoke.", "Пример: ВВГнг(А)-LS - медь, ПВХ, без брони, мало дыма." },
+{ "230/400 V network, GOST IEC 60664-1", "Сеть 230/400 В, ГОСТ IEC 60664-1" },
+{ "9 hot high-pressure jets", "9 горячие струи под давлением" },
+{ "asin/acos: A from -1 to 1", "arcsin/arccos: A от -1 до 1" },
+{ "Degrees (sin/cos/tan input, asin/acos/atan answer)", "Градусы (вход sin/cos/tg, ответ arcsin/arccos/arctg)" },
 { "Cable and wire marking", "Маркировка кабеля и провода" },
 { "Letters: metal, type, insulation, design. Digits: cores x section - voltage.", "Буквы: металл, тип, изоляция, конструкция. Цифры: число жил x сечение - напряжение." },
 { "1st letter - core metal", "1-я буква - металл жилы" },
@@ -1438,6 +1480,11 @@ namespace calc_data {
     float result_k_temp = 1.0f;  // итоговый температурный коэффициент
     int   cable_group = 1;       // сколько кабелей лежит вместе (пучок, лоток, траншея)
     float cable_altitude = 0.0f; // высота площадки над уровнем моря, м
+    int   cable_kind = 0;        // 0 = многожильный кабель, 1 = отдельные провода
+    int   breaker_adjacent = 1;  // сколько автоматов стоит вплотную
+    int   ground_layout = 0;     // штыри: 0 = в ряд, 1 = по контуру
+    bool  ground_with_strip = true; // учитывать соединительную полосу (для ряда)
+    float result_ground_strip = 0.0f; // сопротивление соединительной полосы, Ом (0 = не считалась)
     float result_k_alt = 1.0f;   // коэффициент высоты
     float motor_cos_target = 0.95f;
     float load_kc = 1.0f;
@@ -1631,6 +1678,10 @@ namespace config {
         fprintf(f, "cable_install=%d\n", calc_data::cable_install);
         fprintf(f, "cable_group=%d\n", calc_data::cable_group);
         fprintf(f, "cable_altitude=%.1f\n", calc_data::cable_altitude);
+        fprintf(f, "cable_kind=%d\n", calc_data::cable_kind);
+        fprintf(f, "breaker_adjacent=%d\n", calc_data::breaker_adjacent);
+        fprintf(f, "ground_layout=%d\n", calc_data::ground_layout);
+        fprintf(f, "ground_with_strip=%d\n", calc_data::ground_with_strip ? 1 : 0);
         fprintf(f, "motor_cos_target=%.4f\n", calc_data::motor_cos_target);
         fprintf(f, "load_kc=%.4f\n", calc_data::load_kc);
         fprintf(f, "load_ko=%.4f\n", calc_data::load_ko);
@@ -1738,6 +1789,10 @@ namespace config {
             else if (key == "cable_install")      calc_data::cable_install = atoi(val.c_str());
             else if (key == "cable_group")        calc_data::cable_group = atoi(val.c_str());
             else if (key == "cable_altitude")     calc_data::cable_altitude = (float)atof(val.c_str());
+            else if (key == "cable_kind")         calc_data::cable_kind = atoi(val.c_str());
+            else if (key == "breaker_adjacent")   calc_data::breaker_adjacent = atoi(val.c_str());
+            else if (key == "ground_layout")      calc_data::ground_layout = atoi(val.c_str());
+            else if (key == "ground_with_strip")  calc_data::ground_with_strip = atoi(val.c_str()) != 0;
             else if (key == "motor_cos_target") calc_data::motor_cos_target = (float)atof(val.c_str());
             else if (key == "load_kc") calc_data::load_kc = (float)atof(val.c_str());
             else if (key == "load_ko") calc_data::load_ko = (float)atof(val.c_str());
@@ -2811,6 +2866,24 @@ inline bool ExportHistoryToCSV() {
 
 // ======================= MATH & LOGIC =======================
 namespace menu {
+    // === LITE: состояние вкладок, которым управляют вопросы (namespace wiz ниже) ===
+    namespace lite_state {
+        // математика
+        static double math_a = 0.0, math_b = 0.0;
+        static int    math_op = 0;
+        static bool   math_deg = false;
+        // "посчитать сразу" после последнего вопроса
+        static bool   run_math = false, run_conv = false, run_date = false;
+        // какие разделы раскрыты: справочник, формулы, справка
+        static bool s_colors = true, s_ip = true, s_cat = true, s_motor = true,
+            s_sections = true, s_awg = true, s_symbols = true, s_mark = true,
+            s_metal = true, s_pipe = true, s_alt = true;
+        static bool s_el = true, s_al = true, s_ge = true;
+        static bool s_pw = false, s_vd = false, s_kz = false, s_gr = false, s_mo = false, s_en = false;
+        static bool s_howto = true, s_links = true, s_files = true;
+        static int  pick_formulas = 0, pick_reference = 0, pick_help = 0;
+    }
+
 
     // === NEW: температурный коэффициент по типу изоляции и ambient ===
     // 
@@ -2983,7 +3056,7 @@ namespace menu {
         { "PE 70C", 70.0f },
         { "PVC ng-LS 70C", 65.0f },
         { "PVC ng-FRLS 70C", 65.0f },
-        { "Heat-resistant PVC 105C", 105.0f },
+        { "Heat-resistant PVC 90C", 90.0f },
         { "Halogen-free (HF) 70C", 70.0f },
         { "Fire-resistant halogen-free (FRHF) 70C", 70.0f },
         { "Cross-linked polyolefin (XLPO) 90C", 90.0f },
@@ -3001,9 +3074,9 @@ namespace menu {
         { "Paper, non-draining compound 80C", 80.0f },
         { "Oil-filled, low pressure 85C", 85.0f },
         { "Oil-filled, high pressure 85C", 85.0f },
-        { "Mica tape 400C", 400.0f },
+        { "Mica tape under polymer 70C", 70.0f },
         { "Fiberglass 180C", 180.0f },
-        { "Mineral (MgO) 250C", 250.0f },
+        { "Mineral (MgO), sheathed 70C", 70.0f },
     };
     constexpr int INS_N = 27;
     // порядок в выпадающем списке: пластмассы, резины, фторопласты, бумага, особые
@@ -3044,6 +3117,16 @@ namespace menu {
     static const float AL_PIPE3[PUE_N]  = { 0, 19, 28, 32, 47, 60,  80,  95, 130, 165, 200, 220, 255 };
     static const float AL_EARTH2[PUE_N] = { 0, 34, 42, 55, 80, 105, 135, 160, 205, 245, 295, 340, 390 };
     static const float AL_EARTH3[PUE_N] = { 0, 29, 38, 46, 70,  90, 115, 140, 175, 210, 255, 295, 335 };
+    // Многожильные кабели (ВВГ и подобные): табл. 1.3.6 и 1.3.7 - в воздухе,
+    // табл. 1.3.4 и 1.3.5 - один двух- или трёхжильный в трубе (150 мм2 в таблице нет)
+    static const float CU_AIR2[PUE_N]   = { 19, 27, 38, 50, 70,  90, 115, 140, 175, 215, 260, 300, 350 };
+    static const float CU_AIR3[PUE_N]   = { 19, 25, 35, 42, 55,  75,  95, 120, 145, 180, 220, 260, 305 };
+    static const float CU_PIPEC2[PUE_N] = { 18, 25, 32, 40, 55,  80, 100, 125, 160, 195, 245, 295, 0 };
+    static const float CU_PIPEC3[PUE_N] = { 15, 21, 27, 34, 50,  70,  85, 100, 135, 175, 215, 250, 0 };
+    static const float AL_AIR2[PUE_N]   = { 0, 21, 29, 38, 55,  70,  90, 105, 135, 165, 200, 230, 270 };
+    static const float AL_AIR3[PUE_N]   = { 0, 19, 27, 32, 42,  60,  75,  90, 110, 140, 170, 200, 235 };
+    static const float AL_PIPEC2[PUE_N] = { 0, 19, 25, 31, 42,  60,  75,  95, 125, 150, 190, 230, 0 };
+    static const float AL_PIPEC3[PUE_N] = { 0, 16, 21, 26, 38,  55,  65,  75, 105, 135, 165, 190, 0 };
 
     // Трансформаторы ТП (схема Y/Yн-0): полное сопротивление при однофазном КЗ, Zт/3, Ом
     static const int   TRAFO_KVA[] = { 0, 100, 160, 250, 400, 630, 1000 };
@@ -3057,18 +3140,29 @@ namespace menu {
     inline float PueTableCurrent(int i) {
         const bool cu = (calc_data::cable_material == 0);
         const bool three = (calc_data::phases == 3);
+        const bool wires = (calc_data::cable_kind == 1);
+        // четырёх- и пятижильный кабель для трёх фаз - как трёхжильный с коэффициентом 0,92 (примечание к табл. 1.3.7)
+        const float k4 = (three && !wires) ? 0.92f : 1.0f;
         switch (calc_data::cable_install) {
-        case 0:  return cu ? CU_OPEN[i] : AL_OPEN[i];                                   // открыто (воздух)
-        case 1:  return cu ? (three ? CU_PIPE3[i] : CU_PIPE2[i]) : (three ? AL_PIPE3[i] : AL_PIPE2[i]); // в трубе
+        case 0:                                                                          // в воздухе
+            if (wires) return cu ? CU_OPEN[i] : AL_OPEN[i];                              // провод открыто
+            return k4 * (cu ? (three ? CU_AIR3[i] : CU_AIR2[i]) : (three ? AL_AIR3[i] : AL_AIR2[i]));
+        case 1:                                                                          // в трубе
+            if (wires) return cu ? (three ? CU_PIPE3[i] : CU_PIPE2[i]) : (three ? AL_PIPE3[i] : AL_PIPE2[i]);
+            return cu ? (three ? CU_PIPEC3[i] : CU_PIPEC2[i]) : (three ? AL_PIPEC3[i] : AL_PIPEC2[i]);
         case 2:                                                                          // в земле
-        case 3:  return cu ? (three ? CU_EARTH3[i] : CU_EARTH2[i]) : (three ? AL_EARTH3[i] : AL_EARTH2[i]); // вода: как в земле (с запасом)
+        case 3:                                                                          // вода: как в земле (с запасом)
+            return k4 * (cu ? (three ? CU_EARTH3[i] : CU_EARTH2[i]) : (three ? AL_EARTH3[i] : AL_EARTH2[i]));
         default: return cu ? CU_OPEN[i] : AL_OPEN[i];
         }
     }
 
     // Поправка на температуру среды (ПУЭ табл. 1.3.3): k = sqrt((t_жилы - t_среды) / (65 - t_табл))
     inline float PueTempFactor() {
-        const float t_max = INS_TABLE[InsClamp(calc_data::insulation_type)].t_max;
+        float t_max = INS_TABLE[InsClamp(calc_data::insulation_type)].t_max;
+        // таблицы ПУЭ составлены для обычной изоляции; пересчёт выше 90 °C даёт нереальный ток,
+        // поэтому для нагревостойких проводов считаем по 90 °C и советуем каталог марки
+        if (t_max > 90.0f) t_max = 90.0f;
         const float t_ref = (calc_data::cable_install >= 2) ? 15.0f : 25.0f;  // земля/вода : воздух
         const float num = t_max - calc_data::ambient_temp;
         if (num <= 0.0f) return 0.0f;
@@ -3081,6 +3175,9 @@ namespace menu {
         static const float K[9] = { 1.00f, 0.80f, 0.70f, 0.65f, 0.60f, 0.57f, 0.54f, 0.52f, 0.50f };
         int n = calc_data::cable_group;
         if (n < 1) n = 1;
+        if (n >= 20) return 0.38f;
+        if (n >= 16) return 0.41f;
+        if (n >= 12) return 0.45f;
         if (n > 9) n = 9;
         return K[n - 1];
     }
@@ -3122,9 +3219,9 @@ namespace menu {
     // Сечение нулевой жилы: у кабелей 3+1 оно меньше фазного (3x120+1x70)
     inline float MarkNeutral(float S) {
         if (!calc_data::mark_reduced || calc_data::phases != 3) return S;
-        static const float PH[] = { 25.0f, 35.0f, 50.0f, 70.0f, 95.0f, 120.0f, 150.0f };
-        static const float NE[] = { 16.0f, 16.0f, 25.0f, 35.0f, 50.0f, 70.0f, 70.0f };
-        for (int i = 0; i < 7; ++i)
+        static const float PH[] = { 25.0f, 35.0f, 50.0f, 70.0f, 95.0f, 120.0f, 150.0f, 185.0f, 240.0f };
+        static const float NE[] = { 16.0f, 16.0f, 25.0f, 35.0f, 50.0f, 70.0f, 70.0f, 95.0f, 120.0f };
+        for (int i = 0; i < 9; ++i)
             if (fabsf(S - PH[i]) < 0.01f) return NE[i];
         return S;   // до 16 мм2 ноль равен фазе
     }
@@ -3308,7 +3405,7 @@ namespace menu {
 
         ImGui::SameLine(0.0f, 15.0f);
 
-        gui.group_box(T("RESULT"), ImVec2(side_w, 580)); {
+        gui.group_box(T("RESULT"), ImVec2(side_w, 640)); {
             RecalcMotor();
 
             const ImVec4 col_ok = g_theme.res_good;
@@ -3344,8 +3441,9 @@ namespace menu {
                 int best = 0, curve = 1;
                 for (int r : ratings) {
                     if ((float)r < In_m * 1.25f) continue;
-                    if (1.2f * Ist <= 5.0f * (float)r) { best = r; curve = 1; break; }
-                    if (1.2f * Ist <= 10.0f * (float)r) { best = r; curve = 2; break; }
+                    // отсечка с запасом 1,25 к пусковому току: нижняя граница зоны C - 5 In, D - 10 In
+                    if (1.25f * Ist <= 5.0f * (float)r) { best = r; curve = 1; break; }
+                    if (1.25f * Ist <= 10.0f * (float)r) { best = r; curve = 2; break; }
                 }
                 calc_data::result_motor_breaker = best;
                 calc_data::result_motor_curve = curve;
@@ -3354,12 +3452,12 @@ namespace menu {
                 ResultRow(T("Recommended breaker:"), buf, col_ok);
 
                 // Контактор: номинальный ток в категории AC-3 не меньше Iн
-                const int contactor[] = { 9,12,18,25,32,40,50,65,80,95,115,150,185,225,265,330 };
+                const int contactor[] = { 9,12,18,25,32,40,50,65,80,95,115,150,185,225,265,330,400,500,630 };
                 int c_best = 0;
                 for (int c : contactor) if ((float)c >= In_m) { c_best = c; break; }
                 calc_data::result_motor_contactor = c_best;
                 if (c_best > 0) snprintf(buf, sizeof(buf), "%d A (AC-3)", c_best);
-                else snprintf(buf, sizeof(buf), "> 330 A");
+                else snprintf(buf, sizeof(buf), "> 630 A");
                 ResultRow(T("Recommended contactor:"), buf, col_ok);
             }
 
@@ -3376,6 +3474,10 @@ namespace menu {
                 else if (ts <= 30.0f) ResultRow(T("Relay trip class:"), "Class 30", g_theme.res_warn);
                 else ResultRow(T("Relay trip class:"), T("special protection needed"), g_theme.res_bad);
             }
+            ImGui::PushTextWrapPos(0.0f);
+            ImGui::TextColored(g_theme.res_warn, "%s",
+                T("A breaker protects the motor only from short circuits. A thermal relay against overload is required."));
+            ImGui::PopTextWrapPos();
 
             // Компенсация реактивной мощности: Q = P * (tg(phi1) - tg(phi2))
             ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
@@ -3441,7 +3543,7 @@ namespace menu {
         // ==================== CONNECTION DIAGRAM ====================
         ImGui::SameLine(0.0f, 15.0f);
 
-        gui.group_box(T("CONNECTION DIAGRAM"), ImVec2(diag_w, 580)); {
+        gui.group_box(T("CONNECTION DIAGRAM"), ImVec2(diag_w, 640)); {
             static int diagram_side = 0; // 0 = STAR, 1 = DELTA
             ImGui::AlignTextToFramePadding();
             ImGui::TextColored(g_theme.text_dim, "%s", T("Show:")); ImGui::SameLine();
@@ -3455,12 +3557,10 @@ namespace menu {
     void RenderReferenceTab() {
         using i18n::T;
 
-        static bool s_colors = true, s_ip = true, s_cat = true, s_motor = true,
-            s_sections = true, s_awg = true, s_symbols = true, s_mark = true,
-            s_metal = true, s_pipe = true, s_alt = true;
+        using namespace lite_state;   // какие разделы раскрыты - общее с вопросами
 
         constexpr float COL_W = 380.0f;
-        constexpr float COL_H = 1700.0f;
+        constexpr float COL_H = 2000.0f;
         constexpr float GAP = 12.0f;
         const ImVec4 note_col = g_theme.res_warn;
 
@@ -3567,6 +3667,24 @@ namespace menu {
                 MRow("1", "number of cores; if absent - single core");
                 MRow("2", "core cross-section, mm2");
                 MRow("3", "rated voltage of the conductor");
+
+                // буквы силовых кабелей по ГОСТ 31996 (ВВГ, АВБШв и т.п.) - схема выше их не описывает
+                Head("Power cables (GOST 31996)");
+                MRow("А", "aluminium core");
+                MRow("В", "PVC insulation or sheath");
+                MRow("Пв", "cross-linked polyethylene insulation");
+                MRow("П", "halogen-free polymer");
+                MRow("Г", "no protective cover");
+                MRow("Б", "steel tape armour");
+                MRow("К", "round steel wire armour");
+                MRow("Шв, Шп", "PVC / polyethylene hose");
+                MRow("Э", "copper screen");
+                MRow("нг(A)", "does not spread fire in bundles");
+                MRow("LS, HF", "low smoke, halogen-free");
+                MRow("FR", "fire resistant");
+                ImGui::PushTextWrapPos(0.0f);
+                ImGui::TextColored(note_col, "%s", T("Example: VVGng(A)-LS = copper, PVC, no armour, low smoke."));
+                ImGui::PopTextWrapPos();
                 ImGui::Spacing();
             }
         } gui.end_group_box();
@@ -3587,6 +3705,7 @@ namespace menu {
                 ImGui::TextColored(g_theme.text_dim, "%s", T("3 spray  4 splash  5 jets"));
                 ImGui::TextColored(g_theme.text_dim, "%s", T("6 power jets  7 immersion 1m"));
                 ImGui::TextColored(g_theme.text_dim, "%s", T("8 continuous immersion"));
+                ImGui::TextColored(g_theme.text_dim, "%s", T("9 hot high-pressure jets"));
 
                 ImGui::Spacing();
                 ImGui::TextColored(g_theme.accent, "%s", T("Common"));
@@ -3596,6 +3715,8 @@ namespace menu {
             }
 
             if (SectionHeader(T("Overvoltage cat."), &s_cat)) {
+                ImGui::TextColored(g_theme.text_dim, "%s", T("230/400 V network, GOST IEC 60664-1"));
+                ImGui::Spacing();
                 ImGui::TextColored(g_theme.accent, "CAT I");
                 ImGui::TextColored(g_theme.text_dim, "  %s", T("Electronics, 1500 V"));
                 ImGui::Spacing();
@@ -3699,34 +3820,32 @@ namespace menu {
             }
 
             if (SectionHeader(T("Ampacity copper (PVC)"), &s_sections)) {
-                constexpr float X_1PH = 90.0f;
-                constexpr float X_3PH = 160.0f;
-
+                // допустимый ток и номинал автомата - разные величины, поэтому отдельные колонки
+                constexpr float X_C1 = 60.0f, X_C2 = 160.0f, X_C3 = 265.0f;
                 ImGui::TextColored(g_theme.text_dim, "%s", T("mm2"));
-                ImGui::SameLine(X_1PH);
-                ImGui::TextColored(g_theme.text_dim, "%s", T("1ph"));
-                ImGui::SameLine(X_3PH);
-                ImGui::TextColored(g_theme.text_dim, "%s", T("3ph"));
+                ImGui::SameLine(X_C1);
+                ImGui::TextColored(g_theme.text_dim, "%s", T("Wire, open"));
+                ImGui::SameLine(X_C2);
+                ImGui::TextColored(g_theme.text_dim, "%s", T("Cable, air"));
+                ImGui::SameLine(X_C3);
+                ImGui::TextColored(g_theme.text_dim, "%s", T("Breaker"));
 
-                auto Row2 = [](const char* s, const char* a1, const char* a3) {
-                    ImGui::TextColored(g_theme.text_main, "%s", s);
-                    ImGui::SameLine(90.0f);
-                    ImGui::TextColored(g_theme.text_main, "%s", a1);
-                    ImGui::SameLine(160.0f);
-                    ImGui::TextColored(g_theme.text_main, "%s", a3);
-                    };
-                Row2("1.5", "16", "14");
-                Row2("2.5", "20", "18");
-                Row2("4", "27", "24");
-                Row2("6", "34", "31");
-                Row2("10", "46", "42");
-                Row2("16", "62", "56");
-                Row2("25", "80", "73");
-                Row2("35", "99", "89");
-                Row2("50", "118", "108");
-                Row2("70", "149", "136");
+                static const int BRK[] = { 6, 10, 16, 20, 25, 32, 40, 50, 63, 80, 100, 125, 160, 200, 250 };
+                for (int i = 0; i < 10; ++i) {
+                    int brk = 0;
+                    for (int r : BRK) if ((float)r <= CU_AIR3[i]) brk = r;
+                    ImGui::TextColored(g_theme.text_main, "%g", (double)PUE_S[i]);
+                    ImGui::SameLine(X_C1);
+                    ImGui::TextColored(g_theme.text_main, "%.0f A", CU_OPEN[i]);
+                    ImGui::SameLine(X_C2);
+                    ImGui::TextColored(g_theme.text_main, "%.0f A", CU_AIR3[i]);
+                    ImGui::SameLine(X_C3);
+                    ImGui::TextColored(g_theme.accent, "%d A", brk);
+                }
                 ImGui::Spacing();
-                ImGui::TextColored(note_col, "%s", T("Approx. Verify vs local code."));
+                ImGui::PushTextWrapPos(0.0f);
+                ImGui::TextColored(note_col, "%s", T("PUE 1.3.4 (single wire) and 1.3.6 (3-core cable). Breaker - nearest rating not above the cable current."));
+                ImGui::PopTextWrapPos();
             }
 
             if (SectionHeader(T("AWG <-> mm^2"), &s_awg)) {
@@ -3823,6 +3942,11 @@ namespace menu {
         float k = 1.0f - 0.005f * (calc_data::breaker_temp - 30.0f);
         if (k < 0.7f) k = 0.7f;
         if (k > 1.1f) k = 1.1f;
+        // автоматы вплотную греют друг друга (типовые данные изготовителя: 2-3 шт. 0,85; 4-7 шт. 0,8; больше 0,7)
+        const int n = calc_data::breaker_adjacent;
+        if (n >= 8) k *= 0.7f;
+        else if (n >= 4) k *= 0.8f;
+        else if (n >= 2) k *= 0.85f;
         return k;
     }
 
@@ -3920,33 +4044,58 @@ namespace menu {
         calc_data::result_motor_start = calc_data::result_motor_flc * k;
     }
     // === NEW: заземление по методике для вертикальных электродов ===
-    // Коэффициент использования вертикальных электродов, расположенных в ряд
-    // (строки: a/L = 1, 2, 3; столбцы: n = 1, 2, 3, 5, 10, 15, 20). Табличные значения, ориентировочно.
-    inline float GroundEta(int n, float a_over_l) {
-        static const float N_PTS[7] = { 1, 2, 3, 5, 10, 15, 20 };
-        static const float ETA[3][7] = {
-            { 1.0f, 0.85f, 0.78f, 0.70f, 0.59f, 0.54f, 0.49f },   // a/L = 1
-            { 1.0f, 0.91f, 0.86f, 0.81f, 0.74f, 0.70f, 0.68f },   // a/L = 2
-            { 1.0f, 0.94f, 0.91f, 0.87f, 0.81f, 0.78f, 0.77f },   // a/L = 3
-        };
-        if (n <= 1) return 1.0f;
-        float fn = (float)n;
-        if (fn > 20.0f) fn = 20.0f;
-        auto row = [&](int r) {
-            for (int j = 0; j < 6; ++j) {
-                if (fn <= N_PTS[j + 1]) {
-                    const float t = (fn - N_PTS[j]) / (N_PTS[j + 1] - N_PTS[j]);
-                    return ETA[r][j] + (ETA[r][j + 1] - ETA[r][j]) * t;
-                }
+    // Линейная интерполяция по таблице (xs по возрастанию)
+    inline float TableInterp(const float* xs, const float* ys, int cnt, float x) {
+        if (x <= xs[0]) return ys[0];
+        for (int j = 0; j + 1 < cnt; ++j) {
+            if (x <= xs[j + 1]) {
+                const float t = (x - xs[j]) / (xs[j + 1] - xs[j]);
+                return ys[j] + (ys[j + 1] - ys[j]) * t;
             }
-            return ETA[r][6];
-            };
+        }
+        return ys[cnt - 1];
+    }
+    // То же по двум осям: строки a/l = 1, 2, 3
+    inline float TableInterpAL(const float* xs, const float (*rows)[7], int cnt, float x, float a_over_l) {
         float q = a_over_l;
         if (q < 1.0f) q = 1.0f;
         if (q > 3.0f) q = 3.0f;
         const int r0 = (q < 2.0f) ? 0 : 1;
         const float t = q - (float)(r0 + 1);
-        return row(r0) + (row(r0 + 1) - row(r0)) * t;
+        const float y0 = TableInterp(xs, rows[r0], cnt, x);
+        const float y1 = TableInterp(xs, rows[r0 + 1], cnt, x);
+        return y0 + (y1 - y0) * t;
+    }
+
+    // Коэффициент использования вертикальных электродов (справочная таблица, a/l = 1, 2, 3)
+    inline float GroundEta(int n, float a_over_l) {
+        if (n <= 1) return 1.0f;
+        static const float N_ROW[6] = { 1, 2, 4, 6, 10, 20 };          // в ряд
+        static const float ROW[3][7] = {
+            { 1.0f, 0.85f, 0.73f, 0.65f, 0.59f, 0.48f },
+            { 1.0f, 0.91f, 0.83f, 0.77f, 0.74f, 0.67f },
+            { 1.0f, 0.94f, 0.89f, 0.85f, 0.81f, 0.76f },
+        };
+        static const float N_CON[7] = { 4, 6, 10, 20, 40, 60, 100 };    // по контуру
+        static const float CON[3][7] = {
+            { 0.69f, 0.61f, 0.55f, 0.47f, 0.41f, 0.39f, 0.36f },
+            { 0.78f, 0.73f, 0.68f, 0.63f, 0.58f, 0.55f, 0.52f },
+            { 0.85f, 0.80f, 0.76f, 0.71f, 0.66f, 0.64f, 0.62f },
+        };
+        if (calc_data::ground_layout == 1 && n >= 4)
+            return TableInterpAL(N_CON, CON, 7, (float)n, a_over_l);
+        return TableInterpAL(N_ROW, ROW, 6, (float)n, a_over_l);
+    }
+
+    // Коэффициент использования соединительной полосы при штырях в ряд
+    inline float GroundStripEta(int n, float a_over_l) {
+        static const float N_PTS[5] = { 2, 4, 6, 10, 20 };
+        static const float ETA[3][7] = {
+            { 0.85f, 0.77f, 0.72f, 0.62f, 0.42f },
+            { 0.94f, 0.89f, 0.84f, 0.75f, 0.56f },
+            { 0.96f, 0.92f, 0.88f, 0.82f, 0.68f },
+        };
+        return TableInterpAL(N_PTS, ETA, 5, (float)n, a_over_l);
     }
 
     inline float GroundNorm() {
@@ -3957,10 +4106,9 @@ namespace menu {
         }
     }
 
-    // Сезонный коэффициент для вертикальных электродов: зимой грунт промерзает, летом сохнет
-    inline float GroundSeasonK() {
-        // полоса лежит неглубоко и сильнее зависит от промерзания, чем вертикальный электрод
-        const bool strip = (calc_data::ground_type == 1);
+    // Сезонный коэффициент: зимой грунт промерзает, летом сохнет.
+    // Полоса лежит неглубоко и сильнее зависит от промерзания, чем вертикальный электрод.
+    inline float GroundSeasonKFor(bool strip) {
         switch (calc_data::ground_season) {
         // берём верхнюю границу диапазона для зоны - расчёт на худшее время года
         case 1:  return strip ? 6.0f : 1.9f;    // зона I
@@ -3970,9 +4118,10 @@ namespace menu {
         default: return 1.0f;
         }
     }
+    inline float GroundSeasonK() { return GroundSeasonKFor(calc_data::ground_type == 1); }
 
     void RecalcGround() {
-        const float rho = calc_data::soil_resistivity * GroundSeasonK();
+        const float rho = calc_data::soil_resistivity * GroundSeasonK();   // для штырей - коэффициент штырей, для полосы - полосы
 
         // Горизонтальная полоса 40x4: R = rho / (2*pi*L) * ln(2*L^2 / (b*t))
         if (calc_data::ground_type == 1) {
@@ -4006,16 +4155,34 @@ namespace menu {
 
         int n = calc_data::ground_rods;
         if (n < 1) n = 1;
-        const float a_l = calc_data::ground_spacing / L;
-        const float eta = GroundEta(n, a_l);
-        calc_data::result_ground_eta = eta;
-        calc_data::result_ground = R1 / ((float)n * eta);
+        const float a = (calc_data::ground_spacing > 0.1f) ? calc_data::ground_spacing : 0.1f;
+        const float a_l = a / L;
+        const bool use_strip = calc_data::ground_with_strip && calc_data::ground_layout == 0;
+
+        // Полоса 40x4, соединяющая штыри в ряд: длина (n - 1) * a, лежит на глубине верха штырей
+        const float rho_h = calc_data::soil_resistivity * GroundSeasonKFor(true);
+        const float strip_t = (t > 0.1f) ? t : 0.1f;
+        auto strip_r = [&](int k) {
+            const float len = (float)(k - 1) * a;
+            return rho_h / (2.0f * 3.14159265f * len) * logf(2.0f * len * len / (0.04f * strip_t));
+            };
+        // Общее сопротивление k штырей: R = Rv*Rh / (Rv*eta_h + Rh*eta_v*k), без полосы - Rv / (k*eta_v)
+        auto total_r = [&](int k) {
+            const float eta_v = GroundEta(k, a_l);
+            if (!use_strip || k < 2) return R1 / ((float)k * eta_v);
+            const float rh = strip_r(k);
+            return R1 * rh / (R1 * GroundStripEta(k, a_l) + rh * eta_v * (float)k);
+            };
+
+        calc_data::result_ground_eta = GroundEta(n, a_l);
+        calc_data::result_ground_strip = (use_strip && n >= 2) ? strip_r(n) : 0.0f;
+        calc_data::result_ground = total_r(n);
 
         // Сколько электродов нужно для выбранной нормы
         const float norm = GroundNorm();
         calc_data::result_ground_need = 0;
         for (int k = 1; k <= 100; ++k) {
-            if (R1 / ((float)k * GroundEta(k, a_l)) <= norm) { calc_data::result_ground_need = k; break; }
+            if (total_r(k) <= norm) { calc_data::result_ground_need = k; break; }
         }
     }
 
@@ -4124,10 +4291,15 @@ namespace menu {
         using i18n::T;
         using i18n::L;
 
-        gui.group_box(T("PARAMETERS"), ImVec2(CARD_W_HALF, 1105)); {
+        gui.group_box(T("PARAMETERS"), ImVec2(CARD_W_HALF, 1215)); {
             ImGui::TextColored(g_theme.text_dim, "%s", T("Material:"));
             ImGui::RadioButton(L("Copper"), &calc_data::cable_material, 0); ImGui::SameLine();
             ImGui::RadioButton(L("Aluminum"), &calc_data::cable_material, 1);
+
+            ImGui::Spacing();
+            ImGui::TextColored(g_theme.text_dim, "%s", T("Conductor:"));
+            ImGui::RadioButton(L("Cable (VVG, NYM)"), &calc_data::cable_kind, 0); ImGui::SameLine();
+            ImGui::RadioButton(L("Single wires (PV, PuGV)"), &calc_data::cable_kind, 1);
 
             ImGui::Spacing();
             ImGui::TextColored(g_theme.text_dim, "%s", T("Phases:"));
@@ -4219,7 +4391,7 @@ namespace menu {
         ImGui::SameLine(0.0f, 15.0f);
 
         // ==================== RESULT ====================
-        gui.group_box(T("RESULT"), ImVec2(CARD_W_HALF, 1105)); {
+        gui.group_box(T("RESULT"), ImVec2(CARD_W_HALF, 1215)); {
             const ImVec4 col_ok = g_theme.res_good;
             const ImVec4 col_fail = g_theme.res_bad;
             char buf[64];
@@ -4265,6 +4437,12 @@ namespace menu {
             ResultRow(T("Altitude factor:"), buf, g_theme.res_warn);
             ResultRow(T("Insulation:"), T(InsulationName(calc_data::insulation_type)),
                 g_theme.res_warn);
+            if (INS_TABLE[InsClamp(calc_data::insulation_type)].t_max > 90.0f) {
+                ImGui::PushTextWrapPos(0.0f);
+                ImGui::TextColored(g_theme.res_warn, "%s",
+                    T("Current is counted for 90 C. For this insulation take it from the cable catalogue."));
+                ImGui::PopTextWrapPos();
+            }
 
             ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
 
@@ -4309,6 +4487,11 @@ namespace menu {
             ImGui::PushTextWrapPos(0.0f);
             ImGui::TextColored(g_theme.text_dim, "%s",
                 T("Per PUE tables 1.3.4-1.3.7, temperature per table 1.3.3. Contacts 0.03 Ohm included."));
+            if (calc_data::cable_kind == 0)
+                ImGui::TextColored(g_theme.text_dim, "%s",
+                    T("Multi-core cable: PUE 1.3.6-1.3.7 in air and earth, 1.3.4-1.3.5 in a pipe. 4-5 core cable for three phases x0.92."));
+            ImGui::TextColored(g_theme.text_dim, "%s",
+                T("The breaker clears a short circuit instantly (under 0.1 s), which meets PUE 1.7.79: 0.4 s at 220 V. Margin 1.1 per PUE 6th ed."));
             ImGui::PopTextWrapPos();
 
             ImGui::Spacing();
@@ -4454,7 +4637,7 @@ namespace menu {
         ImGui::Spacing();
 
         // ==================== ЭКОНОМИКА ====================
-        gui.group_box(T("ECONOMICS"), ImVec2(CARD_W_FULL, 500)); {
+        gui.group_box(T("ECONOMICS"), ImVec2(CARD_W_FULL, 530)); {
             ImGui::TextColored(g_theme.text_dim, "%s", T("Hours of maximum load per year:"));
             TextInputFloat("eco_tmax", &calc_data::cable_tmax);
             ImGui::TextColored(g_theme.text_dim, "%s", T("Price per kWh:"));
@@ -4484,14 +4667,19 @@ namespace menu {
                 if (tmax > 5000.0f) j = cu ? 2.7f : 1.6f;
                 else if (tmax > 3000.0f) j = cu ? 3.1f : 1.7f;
             }
-            snprintf(buf, sizeof(buf), "%.1f A/mm^2", j);
-            ResultRow(T("Economic current density:"), buf, g_theme.text_main);
-
             // экономическое сечение округляем до ближайшего стандартного
+            // для изолированных проводников до 16 мм2 плотность увеличивают на 40% (ПУЭ 1.3.27)
+            bool j_raised = false;
+            if (I / j <= 16.0f) { j *= 1.4f; j_raised = true; }
             const float s_calc = I / j;
             float s_eco = PUE_S[0];
             for (int i = 0; i < PUE_N; ++i)
                 if (fabsf(PUE_S[i] - s_calc) < fabsf(s_eco - s_calc)) s_eco = PUE_S[i];
+            snprintf(buf, sizeof(buf), "%.2f A/mm^2", j);
+            ResultRow(T("Economic current density:"), buf, g_theme.text_main);
+            if (j_raised) {
+                ImGui::TextColored(g_theme.text_dim, "%s", T("Up to 16 mm2 the density is raised by 40% (PUE 1.3.27)."));
+            }
             snprintf(buf, sizeof(buf), "%.1f -> %.1f mm^2", s_calc, s_eco);
             ResultRow(T("Economic section:"), buf, g_theme.accent);
 
@@ -4637,7 +4825,7 @@ namespace menu {
         using i18n::T;
         using i18n::L;
 
-        gui.group_box(T("EARTHING RESISTANCE"), ImVec2(CARD_W_FULL, 1050)); {
+        gui.group_box(T("EARTHING RESISTANCE"), ImVec2(CARD_W_FULL, 1160)); {
             ImGui::TextColored(g_theme.text_dim, "%s", T("Soil Resistivity, Ohm*m:"));
             TextInputFloat("soil", &calc_data::soil_resistivity);
             ImGui::TextColored(g_theme.text_dim, "%s", T("Earthing type:"));
@@ -4658,6 +4846,13 @@ namespace menu {
                 TextInputFloat("rodspace", &calc_data::ground_spacing);
                 ImGui::TextColored(g_theme.text_dim, "%s", T("Depth of rod top, m:"));
                 TextInputFloat("roddepth", &calc_data::ground_depth);
+
+                ImGui::Spacing();
+                ImGui::TextColored(g_theme.text_dim, "%s", T("Layout:"));
+                ImGui::RadioButton(L("In a row"), &calc_data::ground_layout, 0); ImGui::SameLine();
+                ImGui::RadioButton(L("Around a contour"), &calc_data::ground_layout, 1);
+                if (calc_data::ground_layout == 0)
+                    ToggleSwitch(T("Count the connecting strip"), &calc_data::ground_with_strip);
             }
             else {
                 ImGui::TextColored(g_theme.text_dim, "%s", T("Strip length, m:"));
@@ -4702,6 +4897,10 @@ namespace menu {
                 ResultRow(T("One rod:"), buf, g_theme.text_main);
                 snprintf(buf, sizeof(buf), "%.2f", calc_data::result_ground_eta);
                 ResultRow(T("Utilization factor:"), buf, g_theme.res_warn);
+                if (calc_data::result_ground_strip > 0.0f) {
+                    snprintf(buf, sizeof(buf), "%.2f Ohm", calc_data::result_ground_strip);
+                    ResultRow(T("Connecting strip:"), buf, g_theme.text_main);
+                }
             }
             snprintf(buf, sizeof(buf), "%.2f Ohm", calc_data::result_ground);
             ResultRow(T("Resistance:"), buf, calc_data::result_ground <= norm ? col_ok : col_fail);
@@ -4730,7 +4929,7 @@ namespace menu {
             ImGui::Spacing();
             ImGui::PushTextWrapPos(0.0f);
             ImGui::TextColored(g_theme.text_dim, "%s",
-                T("Vertical rods in a row, without the connecting strip (with margin). Utilization factors are approximate table values."));
+                T("Rods in a row joined by a 40x4 strip, or around a contour (strip not counted, margin). Utilization factors from reference tables."));
             ImGui::PopTextWrapPos();
 
             ImGui::Spacing();
@@ -4771,17 +4970,19 @@ namespace menu {
                 else if (calc_data::lp_rel == 1) {                         // 0,99
                     h0 = 0.8f * h;
                     r0 = (h <= 30.0f) ? 0.8f * h : (0.8f - 0.00143f * (h - 30.0f)) * h;
+                    if (h > 100.0f) { h0 = (0.8f - 0.001f * (h - 100.0f)) * h; r0 = 0.7f * h; }
                 }
                 else {                                                     // 0,999
                     h0 = (h <= 30.0f) ? 0.7f * h : (0.7f - 0.000714f * (h - 30.0f)) * h;
                     r0 = (h <= 30.0f) ? 0.6f * h : (0.6f - 0.00143f * (h - 30.0f)) * h;
+                    if (h > 100.0f) { h0 = (0.65f - 0.001f * (h - 100.0f)) * h; r0 = (0.5f - 0.002f * (h - 100.0f)) * h; }
                 }
                 if (h0_out) *h0_out = h0;
                 if (r0_out) *r0_out = r0;
                 return (hx < h0 && h0 > 0.0f) ? r0 * (h0 - hx) / h0 : 0.0f;
                 };
 
-            const float h_max = (calc_data::lp_rel == 0) ? 150.0f : 100.0f;   // границы применимости методики
+            const float h_max = 150.0f;   // граница применимости методики
             float h = calc_data::lp_h;
             if (h < 0.1f) h = 0.1f;
             if (h > h_max) h = h_max;
@@ -4828,7 +5029,7 @@ namespace menu {
         using i18n::T;
         using i18n::L;
 
-        gui.group_box(T("CIRCUIT BREAKER SELECTOR"), ImVec2(CARD_W_FULL, 720)); {
+        gui.group_box(T("CIRCUIT BREAKER SELECTOR"), ImVec2(CARD_W_FULL, 800)); {
             const float display_I = calc_data::total_current_a > 0
                 ? calc_data::total_current_a : calc_data::result_current;
 
@@ -4857,6 +5058,12 @@ namespace menu {
             ImGui::Spacing();
             ImGui::TextColored(g_theme.text_dim, "%s", T("Temperature in panel, C:"));
             TextInputFloat("brk_temp", &calc_data::breaker_temp);
+            ImGui::TextColored(g_theme.text_dim, "%s", T("Breakers side by side:"));
+            {
+                double adj = (double)calc_data::breaker_adjacent;
+                if (TextInputDouble("brk_adj", &adj))
+                    calc_data::breaker_adjacent = (adj < 1.0) ? 1 : (adj > 100.0 ? 100 : (int)adj);
+            }
             ImGui::TextColored(g_theme.text_dim, "%s", T("Short-circuit current at panel, kA:"));
             TextInputFloat("brk_ik", &calc_data::breaker_ik_ka);
 
@@ -4887,7 +5094,7 @@ namespace menu {
 
                 char rbuf[64];
                 snprintf(rbuf, sizeof(rbuf), "%.1f A", (float)calc_data::breaker_rating * BreakerTempK());
-                ResultRow(T("Real rating at this temperature:"), rbuf, g_theme.res_warn);
+                ResultRow(T("Real rating in the panel:"), rbuf, g_theme.res_warn);
             }
             else {
                 ImGui::TextColored(g_theme.text_dim, "%s", T("Click button to select breaker rating"));
@@ -4895,16 +5102,19 @@ namespace menu {
 
             // отключающая способность должна быть не меньше тока КЗ в месте установки
             {
-                static const float ICU[] = { 4.5f, 6.0f, 10.0f, 15.0f, 25.0f, 36.0f, 50.0f };
+                // модульные - ряд ГОСТ IEC 60898-1 (в продаже от 4,5 кА); выше 25 кА - автоматы в литом корпусе по каталогу
+                static const float ICU[] = { 4.5f, 6.0f, 10.0f, 20.0f, 25.0f, 36.0f, 50.0f, 70.0f, 100.0f };
                 float icu = 0.0f;
                 for (float v : ICU) if (v >= calc_data::breaker_ik_ka) { icu = v; break; }
-                char cbuf[64];
-                if (icu > 0.0f) snprintf(cbuf, sizeof(cbuf), "%g kA", (double)icu);
-                else snprintf(cbuf, sizeof(cbuf), "> 50 kA");
+                char cbuf[96];
+                if (icu > 0.0f)
+                    snprintf(cbuf, sizeof(cbuf), "%g kA (%s)", (double)icu,
+                        icu <= 25.0f ? T("modular, GOST IEC 60898-1") : T("moulded case, by catalogue"));
+                else snprintf(cbuf, sizeof(cbuf), "> 100 kA");
                 ResultRow(T("Breaking capacity needed:"), cbuf, icu > 0.0f ? g_theme.res_good : g_theme.res_bad);
             }
             ImGui::PushTextWrapPos(0.0f);
-            ImGui::TextColored(g_theme.text_dim, "%s", T("Breakers are calibrated at +30 C, about 0.5% per degree."));
+            ImGui::TextColored(g_theme.text_dim, "%s", T("Breakers are calibrated at +30 C, about 0.5% per degree. Side by side: 2-3 pcs x0.85, 4-7 x0.8, more x0.7 (typical manufacturer data)."));
             ImGui::PopTextWrapPos();
 
             ImGui::Spacing();
@@ -4917,9 +5127,13 @@ namespace menu {
         using i18n::T;
         using i18n::L;
 
-        static double a = 0.0, b = 0.0, result = 0.0;
-        static int op = 0;
-        static bool isDegrees = false;
+        static double result = 0.0;
+        double& a = lite_state::math_a;          // числа и операцию задают и вопросы тоже
+        double& b = lite_state::math_b;
+        int& op = lite_state::math_op;
+        bool& isDegrees = lite_state::math_deg;
+        const bool run_now = lite_state::run_math;   // после вопросов считаем сразу
+        lite_state::run_math = false;
         static const char* err = "";      // английский ключ, переводится при выводе
         static bool hasResult = false;
 
@@ -4950,10 +5164,10 @@ namespace menu {
             }
 
             ImGui::Spacing();
-            NiceCheckbox(L("Degrees mode (for sin/cos/tan)"), &isDegrees);
+            NiceCheckbox(L("Degrees (sin/cos/tan input, asin/acos/atan answer)"), &isDegrees);
 
             ImGui::Spacing();
-            if (OutlineButton(L("Calculate"), ImVec2(-1, 36))) {
+            if (OutlineButton(L("Calculate"), ImVec2(-1, 36)) || run_now) {
                 err = ""; hasResult = true;
                 double A = a, B = b;
                 if (isDegrees && (op == 7 || op == 8 || op == 9)) {
@@ -4970,8 +5184,8 @@ namespace menu {
                 else if (op == 7) result = sin(A);
                 else if (op == 8) result = cos(A);
                 else if (op == 9) result = tan(A);
-                else if (op == 10) result = asin(A);
-                else if (op == 11) result = acos(A);
+                else if (op == 10) { if (A >= -1.0 && A <= 1.0) result = asin(A); else err = "asin/acos: A from -1 to 1"; }
+                else if (op == 11) { if (A >= -1.0 && A <= 1.0) result = acos(A); else err = "asin/acos: A from -1 to 1"; }
                 else if (op == 12) result = atan(A);
                 else if (op == 13) { if (A > 0) result = log10(A); else err = "log of non-positive"; }
                 else if (op == 14) { if (A > 0) result = log(A); else err = "ln of non-positive"; }
@@ -4984,6 +5198,7 @@ namespace menu {
                     }
                     else err = "Factorial: integer 0..170 only";
                 }
+                if (isDegrees && op >= 10 && op <= 12 && strlen(err) == 0) result = result * 180.0 / PI;   // угол - в градусах
                 if (strlen(err) == 0) {
                     char hbuf[128];
                     snprintf(hbuf, sizeof(hbuf), "Result: %.6g", result);
@@ -5041,7 +5256,9 @@ namespace menu {
             TextInputDouble("##conv_in", &calc_data::conv_input);
 
             ImGui::Spacing();
-            if (OutlineButton(L("Convert"), ImVec2(-1, 36))) {
+            const bool run_now = lite_state::run_conv;   // после вопросов считаем сразу
+            lite_state::run_conv = false;
+            if (OutlineButton(L("Convert"), ImVec2(-1, 36)) || run_now) {
                 const double v = calc_data::conv_input;
                 double out = 0.0;
                 switch (calc_data::conv_type) {
@@ -5081,8 +5298,7 @@ namespace menu {
     void RenderFormulasTab() {
         using i18n::T;
 
-        static bool s_el = true, s_al = true, s_ge = true;
-        static bool s_pw = false, s_vd = false, s_kz = false, s_gr = false, s_mo = false, s_en = false;
+        using namespace lite_state;
 
         auto ShowResult = [](const char* label, double value, const char* unit) {
             char buf[64];
@@ -5664,7 +5880,9 @@ namespace menu {
             }
 
             ImGui::Spacing();
-            if (OutlineButton(L("Calculate"), ImVec2(-1, 40))) {
+            const bool run_now = lite_state::run_date;   // после вопросов считаем сразу
+            lite_state::run_date = false;
+            if (OutlineButton(L("Calculate"), ImVec2(-1, 40)) || run_now) {
                 if (calc_data::date_mode == 0) {
                     const long long d1 = DateDaysSinceEpoch(calc_data::date_y1, calc_data::date_m1, calc_data::date_d1);
                     const long long d2 = DateDaysSinceEpoch(calc_data::date_y2, calc_data::date_m2, calc_data::date_d2);
@@ -6365,9 +6583,7 @@ namespace menu {
         using i18n::T;
         using i18n::L;
 
-        static bool s_howto = true;
-        static bool s_links = true;
-        static bool s_files = true;
+        using namespace lite_state;
 
         if (!lectures::g_scanned) lectures::Scan();
         // Высота = реальная высота содержимого с прошлого кадра (без пустоты внизу)
@@ -6614,8 +6830,8 @@ namespace menu {
             return i18n::g_lang == i18n::LANG_RU ? ru : en;
         }
 
-        enum class Kind { Float, Int, Choice };
-        struct Opt { const char* en; const char* ru; int value; };
+        enum class Kind { Float, Int, Choice, Double, Bool, Info };
+        struct Opt { const char* en; const char* ru; int value; const char* desc_en = nullptr; const char* desc_ru = nullptr; };   // desc - пояснение к варианту
         struct Step {
             const char* q_en;      // вопрос
             const char* q_ru;
@@ -6629,6 +6845,9 @@ namespace menu {
             const char* unit_en;
             const char* unit_ru;
             bool (*show)();        // nullptr = шаг показывается всегда
+            double* d;             // Kind::Double
+            bool* b;               // Kind::Bool (да / нет)
+            int imin, imax;        // границы для Kind::Int
         };
         struct Flow {
             const char* title_en;
@@ -6638,18 +6857,36 @@ namespace menu {
             void (*finish)();
         };
 
-#define WIZ_FLOAT(qe, qr, he, hr, var, ue, ur, show) { qe, qr, he, hr, Kind::Float, &var, nullptr, nullptr, 0, ue, ur, show }
-#define WIZ_INT(qe, qr, he, hr, var, ue, ur, show) { qe, qr, he, hr, Kind::Int, nullptr, &var, nullptr, 0, ue, ur, show }
-#define WIZ_CHOICE(qe, qr, he, hr, var, opts, show) { qe, qr, he, hr, Kind::Choice, nullptr, &var, opts, (int)(sizeof(opts) / sizeof(opts[0])), "", "", show }
+#define WIZ_FLOAT(qe, qr, he, hr, var, ue, ur, show) { qe, qr, he, hr, Kind::Float, &var, nullptr, nullptr, 0, ue, ur, show, nullptr, nullptr, 1, 1000 }
+#define WIZ_INT(qe, qr, he, hr, var, ue, ur, show) { qe, qr, he, hr, Kind::Int, nullptr, &var, nullptr, 0, ue, ur, show, nullptr, nullptr, 1, 1000 }
+#define WIZ_CHOICE(qe, qr, he, hr, var, opts, show) { qe, qr, he, hr, Kind::Choice, nullptr, &var, opts, (int)(sizeof(opts) / sizeof(opts[0])), "", "", show, nullptr, nullptr, 0, 0 }
+
+#define WIZ_INTR(qe, qr, he, hr, var, mn, mx, show) { qe, qr, he, hr, Kind::Int, nullptr, &var, nullptr, 0, "", "", show, nullptr, nullptr, mn, mx }
+#define WIZ_DOUBLE(qe, qr, he, hr, var, show) { qe, qr, he, hr, Kind::Double, nullptr, nullptr, nullptr, 0, "", "", show, &var, nullptr, 0, 0 }
+#define WIZ_BOOL(qe, qr, he, hr, var, show) { qe, qr, he, hr, Kind::Bool, nullptr, nullptr, nullptr, 0, "", "", show, nullptr, &var, 0, 0 }
+#define WIZ_INFO(qe, qr, he, hr) { qe, qr, he, hr, Kind::Info, nullptr, nullptr, nullptr, 0, "", "", nullptr, nullptr, nullptr, 0, 0 }
 
         // ---------- варианты ответов ----------
         static const Opt O_MATERIAL[] = { { "Copper", "Медь", 0 }, { "Aluminium", "Алюминий", 1 } };
+        static const Opt O_KIND[] = { { "A cable: several cores in one sheath (VVG, NYM)", "Кабель: несколько жил в общей оболочке (ВВГ, NYM)", 0 },
+            { "Separate single wires (PV, PuGV)", "Отдельные провода (ПВ, ПуГВ)", 1 } };
+        static const Opt O_LAYOUT[] = { { "In a row, joined by a steel strip", "В ряд, соединены стальной полосой", 0 }, { "Around the building (contour)", "Вокруг здания (по контуру)", 1 } };
         static const Opt O_PHASES[] = { { "One phase (220 V: flat, house)", "Одна фаза (220 В: квартира, дом)", 1 }, { "Three phases (380 V)", "Три фазы (380 В)", 3 } };
         static const Opt O_INSTALL[] = { { "In the air: on a wall, in a tray", "По воздуху: по стене, в лотке", 0 }, { "In a pipe, corrugated tube or trunking", "В трубе, гофре или кабель-канале", 1 },
             { "In the ground", "В земле", 2 }, { "In water", "В воде", 3 } };
-        static const Opt O_INSUL[] = { { "PVC - ordinary cable (VVG and similar)", "ПВХ - обычный кабель (ВВГ и похожие)", 0 }, { "Cross-linked polyethylene (XLPE)", "Сшитый полиэтилен (СПЭ)", 1 },
-            { "Rubber - flexible cable", "Резина - гибкий кабель", 2 } };
-        static const Opt O_TRAFO[] = { { "Don't know / not considered", "Не знаю / не учитывать", 0 }, { "100 kVA", "100 кВА", 1 }, { "160 kVA", "160 кВА", 2 }, { "250 kVA", "250 кВА", 3 },
+        static const Opt O_INSUL[] = {
+            { "PVC - ordinary cable (VVG and similar)", "ПВХ - обычный кабель (ВВГ и похожие)", 0,
+                "The most common insulation: VVG and NYM cables, PV wires. If you don't know, it is most likely this one.",
+                "Самая обычная изоляция: кабели ВВГ и NYM, провода ПВ. Если не знаете, скорее всего это она." },
+            { "Cross-linked polyethylene (XLPE)", "Сшитый полиэтилен (СПЭ)", 1,
+                "Cables with \"Pv\" in the mark, for example PvVG. Withstands heating up to 90 C, so it carries more current.",
+                "Кабели с буквами «Пв» в марке, например ПвВГ. Выдерживает нагрев до 90 C, поэтому держит больший ток." },
+            { "Rubber - flexible cable", "Резина - гибкий кабель", 2,
+                "Flexible cables KG, RPSh and extension cords. Rubber withstands less heat.",
+                "Гибкие кабели КГ, РПШ, удлинители. Резина выдерживает меньший нагрев." } };
+        static const Opt O_TRAFO[] = { { "Don't know / not considered", "Не знаю / не учитывать", 0,
+                "Then the short-circuit current is counted by the cable only. kVA is the transformer power written on the substation plate.",
+                "Тогда ток короткого замыкания считается только по кабелю. кВА - мощность трансформатора, она написана на табличке подстанции." }, { "100 kVA", "100 кВА", 1 }, { "160 kVA", "160 кВА", 2 }, { "250 kVA", "250 кВА", 3 },
             { "400 kVA", "400 кВА", 4 }, { "630 kVA", "630 кВА", 5 }, { "1000 kVA", "1000 кВА", 6 } };
         static const Opt O_CURVE[] = { { "B - lighting, heaters", "B - освещение, нагреватели", 0 }, { "C - sockets, ordinary appliances", "C - розетки, обычная техника", 1 },
             { "D - motors, transformers, welding", "D - двигатели, трансформаторы, сварка", 2 } };
@@ -6660,14 +6897,28 @@ namespace menu {
         static const Opt O_NORM[] = { { "4 Ohm - substation neutral", "4 Ом - нейтраль подстанции", 0 }, { "10 Ohm", "10 Ом", 1 }, { "30 Ohm - repeated earthing of a house", "30 Ом - повторное заземление дома", 2 } };
         static const Opt O_MMODE[] = { { "I know the power, find the current", "Знаю мощность, найти ток", 0 }, { "I know the current, find the power", "Знаю ток, найти мощность", 1 } };
         static const Opt O_MPHASES[] = { { "One phase", "Одна фаза", 1 }, { "Three phases", "Три фазы", 3 } };
-        static const Opt O_MSTART[] = { { "Direct start (just a contactor)", "Прямой пуск (просто пускатель)", 0 }, { "Star-delta", "Звезда-треугольник", 1 },
-            { "Soft starter", "Устройство плавного пуска", 2 }, { "Frequency converter (VFD)", "Частотный преобразователь", 3 } };
+        static const Opt O_MSTART[] = {
+            { "Direct start (just a contactor)", "Прямой пуск (просто пускатель)", 0,
+                "The motor gets full voltage at once. The simplest way, but the starting current is 5-7 times the working one.",
+                "Двигатель сразу получает полное напряжение. Самый простой способ, но пусковой ток в 5-7 раз больше рабочего." },
+            { "Star-delta", "Звезда-треугольник", 1,
+                "The windings start in star and then switch to delta. The starting current is 3 times lower.",
+                "Обмотки сначала включаются звездой, потом переключаются на треугольник. Пусковой ток в 3 раза меньше." },
+            { "Soft starter", "Устройство плавного пуска", 2,
+                "An electronic unit raises the voltage smoothly during start. The current is limited to 2-4 times the rated one.",
+                "Электронный блок плавно поднимает напряжение при пуске. Ток ограничен 2-4 номинальными." },
+            { "Frequency converter (VFD)", "Частотный преобразователь", 3,
+                "An electronic unit controls the frequency and speed of the motor. The softest start.",
+                "Электронный блок управляет частотой и скоростью двигателя. Самый мягкий пуск." } };
 
         // ---------- вопросы: кабель ----------
         static const Step S_CABLE[] = {
             WIZ_CHOICE("What are the cable cores made of?", "Из какого металла жилы кабеля?",
                 "Copper conducts better and is used for new wiring. Aluminium is cheaper, but needs a thicker cable for the same current.",
                 "Медь лучше проводит ток, её берут для новой проводки. Алюминий дешевле, но при том же токе кабель нужен толще.", calc_data::cable_material, O_MATERIAL, nullptr),
+            WIZ_CHOICE("What will you lay?", "Что будете прокладывать?",
+                "Cores inside one cable heat each other, so a cable carries less current than a single wire of the same section.",
+                "Жилы внутри одного кабеля греют друг друга, поэтому кабель держит меньший ток, чем отдельный провод того же сечения.", calc_data::cable_kind, O_KIND, nullptr),
             WIZ_CHOICE("How many phases does the network have?", "Сколько фаз в сети?",
                 "A flat or an ordinary house has one phase. Workshops and powerful equipment use three.",
                 "В квартире и обычном доме одна фаза. В цехах и для мощного оборудования - три.", calc_data::phases, O_PHASES, nullptr),
@@ -6733,6 +6984,9 @@ namespace menu {
             WIZ_FLOAT("What is the temperature inside the panel?", "Какая температура в щите?",
                 "Breakers are calibrated at +30 C. In a hot panel they trip earlier. If unsure, leave 30.",
                 "Автоматы настроены на +30 C. В жарком щите они срабатывают раньше. Не знаете - оставьте 30.", calc_data::breaker_temp, "C", "C", nullptr),
+            WIZ_INTR("How many breakers stand side by side?", "Сколько автоматов стоит вплотную рядом?",
+                "Breakers in a row heat each other. Count this one together with its neighbours. If it stands alone, enter 1.",
+                "Автоматы в ряд греют друг друга. Посчитайте этот вместе с соседями. Если он стоит один, введите 1.", calc_data::breaker_adjacent, 1, 100, nullptr),
             WIZ_FLOAT("What is the short-circuit current at the panel?", "Какой ток короткого замыкания в щите?",
                 "The breaker must be able to break this current. In a flat it is usually up to 4.5 kA. If unsure, leave 3.",
                 "Автомат должен суметь разорвать такой ток. В квартире обычно до 4.5 кА. Не знаете - оставьте 3.", calc_data::breaker_ik_ka, "kA", "кА", nullptr),
@@ -6744,8 +6998,8 @@ namespace menu {
                 "Rods go deep, where the soil is wet and does not freeze. A strip is easier to lay but works worse in winter.",
                 "Штыри уходят вглубь, где грунт влажный и не промерзает. Полосу проще уложить, но зимой она работает хуже.", calc_data::ground_type, O_GTYPE, nullptr),
             WIZ_FLOAT("What is the soil resistivity?", "Какое удельное сопротивление грунта?",
-                "It depends on the soil: black earth 50, clay 60, loam 100, sandy loam 300, sand 500 Ohm*m.",
-                "Зависит от грунта: чернозём 50, глина 60, суглинок 100, супесь 300, песок 500 Ом*м.", calc_data::soil_resistivity, "Ohm*m", "Ом*м", nullptr),
+                "It depends on the soil: peat 20, black earth 20-50, clay 40-60, loam 100, sandy loam 300, sand 500 Ohm*m. For a project it is measured on site.",
+                "Зависит от грунта: торф 20, чернозём 20-50, глина 40-60, суглинок 100, супесь 300, песок 500 Ом*м. Для проекта его измеряют на месте.", calc_data::soil_resistivity, "Ohm*m", "Ом*м", nullptr),
             WIZ_FLOAT("How long is one rod?", "Какой длины один штырь?",
                 "Usually 2-3 m. The longer the rod, the lower the resistance.", "Обычно 2-3 м. Чем длиннее штырь, тем меньше сопротивление.",
                 calc_data::ground_rod_len, "m", "м", []() { return calc_data::ground_type != 1; }),
@@ -6757,6 +7011,13 @@ namespace menu {
                 "Штыри, стоящие близко, мешают друг другу. Обычно расстояние равно длине штыря.", calc_data::ground_spacing, "m", "м", []() { return calc_data::ground_type != 1; }),
             WIZ_FLOAT("How deep is the top of the rod?", "На какой глубине верх штыря?",
                 "The trench depth. Usually 0.5-0.7 m.", "Глубина траншеи. Обычно 0.5-0.7 м.", calc_data::ground_depth, "m", "м", []() { return calc_data::ground_type != 1; }),
+            WIZ_CHOICE("How are the rods placed?", "Как расставлены штыри?",
+                "Rods placed around the building hinder each other more than rods in a row.",
+                "Штыри вокруг здания мешают друг другу сильнее, чем в ряд.", calc_data::ground_layout, O_LAYOUT, []() { return calc_data::ground_type != 1; }),
+            WIZ_BOOL("Count the steel strip that joins the rods?", "Учитывать стальную полосу, которая соединяет штыри?",
+                "The strip lying in the ground also drains current and lowers the resistance. Answer Yes if the rods are joined by a strip in the trench.",
+                "Полоса в земле тоже отводит ток и уменьшает сопротивление. Ответьте «Да», если штыри соединены полосой в траншее.",
+                calc_data::ground_with_strip, []() { return calc_data::ground_type != 1 && calc_data::ground_layout == 0; }),
             WIZ_CHOICE("What are the rods made of?", "Из чего штыри?", "", "", calc_data::ground_electrode, O_ELECTRODE, []() { return calc_data::ground_type != 1; }),
             WIZ_FLOAT("How long is the strip?", "Какая длина полосы?",
                 "The total length of the steel strip 40x4 in the trench.", "Общая длина стальной полосы 40x4 в траншее.",
@@ -6782,22 +7043,186 @@ namespace menu {
                 "Usually 380 V for three phases and 220 V for one.", "Обычно 380 В для трёх фаз и 220 В для одной.", calc_data::motor_voltage, "V", "В", nullptr),
             WIZ_CHOICE("How many phases does the motor have?", "Сколько фаз у двигателя?", "", "", calc_data::motor_phases, O_MPHASES, nullptr),
             WIZ_FLOAT("What is the power factor (cos φ)?", "Какой cos φ у двигателя?",
-                "From the nameplate. If it is not there, leave 0.85.", "С шильдика. Если его там нет, оставьте 0.85.", calc_data::motor_cos_phi, "", "", nullptr),
+                "From the nameplate. If it is missing: up to 1.5 kW about 0.75, from 5.5 kW about 0.85.",
+                "С шильдика. Если его там нет: до 1,5 кВт около 0.75, от 5,5 кВт около 0.85.", calc_data::motor_cos_phi, "", "", nullptr),
             WIZ_FLOAT("What is the efficiency?", "Какой КПД у двигателя?",
-                "As a fraction from 0.5 to 1. 90% is written as 0.9.", "Доля от 0.5 до 1. 90% записывается как 0.9.", calc_data::motor_efficiency, "", "", nullptr),
+                "As a fraction from 0.5 to 1: 90% is written as 0.9. If unknown: up to 1.5 kW about 0.75, from 5.5 kW about 0.9.",
+                "Доля от 0.5 до 1: 90% записывается как 0.9. Если неизвестен: до 1,5 кВт около 0.75, от 5,5 кВт около 0.9.", calc_data::motor_efficiency, "", "", nullptr),
             WIZ_FLOAT("What cos φ do you want to reach?", "Какой cos φ хотите получить?",
                 "Capacitors raise the power factor and cut reactive power. Usually 0.95.",
                 "Конденсаторы поднимают cos φ и убирают лишнюю реактивную мощность. Обычно 0.95.", calc_data::motor_cos_target, "", "", nullptr),
             WIZ_CHOICE("How is the motor started?", "Как запускается двигатель?",
                 "The starting current depends on this.", "От этого зависит пусковой ток.", calc_data::motor_start_type, O_MSTART, nullptr),
             WIZ_FLOAT("How many times is the starting current above the rated one?", "Во сколько раз пусковой ток больше номинального?",
-                "For a direct start, usually 5-7. If unsure, leave 6.5.", "При прямом пуске обычно 5-7. Не знаете - оставьте 6.5.", calc_data::motor_start_ratio, "x", "x", nullptr),
+                "For a direct start: up to 1.5 kW about 5, from 5.5 kW 6.5-7.5. If unsure, leave 6.5.",
+                "При прямом пуске: до 1,5 кВт около 5, от 5,5 кВт 6.5-7.5. Не знаете - оставьте 6.5.", calc_data::motor_start_ratio, "x", "x", nullptr),
             WIZ_FLOAT("What current limit is set on the soft starter?", "Какое ограничение тока выставлено на плавном пуске?",
                 "In multiples of the rated current, usually 2-4.", "В долях номинального тока, обычно 2-4.", calc_data::motor_soft_limit, "x In", "x Iн", []() { return calc_data::motor_start_type == 2; }),
             WIZ_FLOAT("How long does the motor take to start?", "Сколько секунд разгоняется двигатель?",
                 "Fans and pumps: 2-5 s. Heavy machines: 10-30 s. The thermal relay class depends on this.",
                 "Вентиляторы и насосы: 2-5 с. Тяжёлые механизмы: 10-30 с. От этого зависит класс теплового реле.", calc_data::motor_start_time, "s", "с", nullptr),
         };
+
+        // ---------- вопросы: математика ----------
+        static const Opt O_MATHOP[] = {
+            { "+   Add", "+   Сложить", 0, "A + B. Example: 2 + 3 = 5.", "A + B. Пример: 2 + 3 = 5." },
+            { "-   Subtract", "-   Вычесть", 1, "A - B. Example: 7 - 3 = 4.", "A - B. Пример: 7 - 3 = 4." },
+            { "*   Multiply", "*   Умножить", 2, "A x B. Example: 4 x 5 = 20.", "A x B. Пример: 4 x 5 = 20." },
+            { "/   Divide", "/   Разделить", 3, "A : B. Example: 10 : 4 = 2.5. You cannot divide by zero.", "A : B. Пример: 10 : 4 = 2,5. Делить на ноль нельзя." },
+            { "^   Power", "^   Степень", 4, "A multiplied by itself B times. Example: 2 to the power 3 = 2 x 2 x 2 = 8.",
+                "A, умноженное само на себя B раз. Пример: 2 в степени 3 = 2 x 2 x 2 = 8." },
+            { "Square root", "Квадратный корень", 5, "The number that gives A when multiplied by itself. Example: root of 9 = 3, because 3 x 3 = 9.",
+                "Число, которое при умножении само на себя даёт A. Пример: корень из 9 = 3, потому что 3 x 3 = 9." },
+            { "%   Remainder", "%   Остаток от деления", 6, "What is left after dividing A by B in whole parts. Example: 7 : 3 = 2 and 1 left, so the answer is 1.",
+                "Что остаётся, если делить A на B целыми частями. Пример: 7 : 3 = 2 и остаток 1, ответ 1." },
+            { "sin - sine", "sin - синус", 7, "In a right triangle: the side opposite the angle divided by the longest side. Example: sin 30 degrees = 0.5.",
+                "В прямоугольном треугольнике: сторона напротив угла, делённая на самую длинную сторону. Пример: sin 30 градусов = 0,5." },
+            { "cos - cosine", "cos - косинус", 8, "In a right triangle: the side next to the angle divided by the longest side. Example: cos 60 degrees = 0.5.",
+                "В прямоугольном треугольнике: сторона рядом с углом, делённая на самую длинную сторону. Пример: cos 60 градусов = 0,5." },
+            { "tan - tangent", "tg - тангенс", 9, "The side opposite the angle divided by the side next to it. Example: tg 45 degrees = 1.",
+                "Сторона напротив угла, делённая на сторону рядом с ним. Пример: tg 45 градусов = 1." },
+            { "arcsin - angle by sine", "arcsin - угол по синусу", 10, "The reverse of sine: finds the angle whose sine is A. A must be from -1 to 1. Example: arcsin 0.5 = 30 degrees.",
+                "Обратно синусу: находит угол, синус которого равен A. A должно быть от -1 до 1. Пример: arcsin 0,5 = 30 градусов." },
+            { "arccos - angle by cosine", "arccos - угол по косинусу", 11, "Finds the angle whose cosine is A. A must be from -1 to 1. Example: arccos 0.5 = 60 degrees.",
+                "Находит угол, косинус которого равен A. A должно быть от -1 до 1. Пример: arccos 0,5 = 60 градусов." },
+            { "arctg - angle by tangent", "arctg - угол по тангенсу", 12, "Finds the angle whose tangent is A. Example: arctg 1 = 45 degrees.",
+                "Находит угол, тангенс которого равен A. Пример: arctg 1 = 45 градусов." },
+            { "lg - decimal logarithm", "lg - десятичный логарифм", 13, "To what power 10 must be raised to get A. Example: lg 1000 = 3, because 10 x 10 x 10 = 1000.",
+                "В какую степень надо возвести 10, чтобы получить A. Пример: lg 1000 = 3, потому что 10 x 10 x 10 = 1000." },
+            { "ln - natural logarithm", "ln - натуральный логарифм", 14, "The same as lg, but for the number e = 2.718. Used in physics and in charging and discharging capacitors.",
+                "То же, что lg, но для числа e = 2,718. Встречается в физике, например при заряде и разряде конденсатора." },
+            { "e to the power A", "e в степени A", 15, "The number e = 2.718 multiplied by itself A times. The reverse of ln.",
+                "Число e = 2,718, умноженное само на себя A раз. Обратно ln." },
+            { "|A| - absolute value", "|A| - модуль числа", 16, "The number without the minus sign. Example: |-5| = 5, |5| = 5.",
+                "Число без знака минус. Пример: |-5| = 5, |5| = 5." },
+            { "A! - factorial", "A! - факториал", 17, "All whole numbers from 1 to A multiplied together. Example: 4! = 1 x 2 x 3 x 4 = 24.",
+                "Все целые числа от 1 до A, перемноженные между собой. Пример: 4! = 1 x 2 x 3 x 4 = 24." } };
+        inline bool MathNeedsB() { const int op = lite_state::math_op; return (op >= 0 && op <= 4) || op == 6; }
+        static const Step S_MATH[] = {
+            WIZ_CHOICE("What do you want to do?", "Что нужно сделать?",
+                "A is the first number, B is the second. Under the list is an explanation of the chosen action.",
+                "A - первое число, B - второе. Под списком - объяснение выбранного действия.", lite_state::math_op, O_MATHOP, nullptr),
+            WIZ_DOUBLE("Enter the number A", "Введите число A", "A decimal point is typed as a dot or a comma.", "Дробную часть можно писать через точку или запятую.", lite_state::math_a, nullptr),
+            WIZ_DOUBLE("Enter the number B", "Введите число B", "", "", lite_state::math_b, []() { return MathNeedsB(); }),
+            WIZ_BOOL("Count angles in degrees?", "Считать углы в градусах?",
+                "For sin, cos and tg the angle A is entered in degrees; for arcsin, arccos and arctg the answer comes in degrees. A right angle is 90 degrees. Answer No only if you need radians.",
+                "Для sin, cos и tg угол A вводится в градусах, для arcsin, arccos и arctg ответ будет в градусах. Прямой угол - 90 градусов. Ответьте «Нет», только если нужны радианы.",
+                lite_state::math_deg, []() { return lite_state::math_op >= 7 && lite_state::math_op <= 12; }),
+        };
+
+        // ---------- вопросы: конвертер ----------
+        static const Opt O_CONV[] = {
+            { "Section: mm2 to AWG", "Сечение: мм2 в AWG", 0, "AWG (American Wire Gauge) is the American wire size number. The bigger the number, the thinner the wire. It is printed on imported wires, chargers and audio cables. Example: 2.5 mm2 is about 13 AWG.", "AWG (American Wire Gauge) - американский номер толщины провода. Чем больше номер, тем тоньше провод. Его пишут на импортных проводах, зарядках и аудиокабелях. Пример: 2,5 мм2 - это примерно 13 AWG." },
+            { "Section: AWG to mm2", "Сечение: AWG в мм2", 1, "AWG (American Wire Gauge) is the American wire size number. The bigger the number, the thinner the wire. It is printed on imported wires, chargers and audio cables. Example: 12 AWG is about 3.3 mm2.", "AWG (American Wire Gauge) - американский номер толщины провода. Чем больше номер, тем тоньше провод. Его пишут на импортных проводах, зарядках и аудиокабелях. Пример: 12 AWG - это примерно 3,3 мм2." },
+            { "Power: watts to horsepower", "Мощность: ватты в лошадиные силы", 2, "Horsepower is an old power unit still written on motors and cars. 1 hp = 735.5 W.",
+                "Лошадиная сила - старая единица мощности, её до сих пор пишут у двигателей и машин. 1 л.с. = 735,5 Вт." },
+            { "Power: horsepower to watts", "Мощность: лошадиные силы в ватты", 3, "1 hp = 735.5 W. Example: a 100 hp car engine is about 73.5 kW.",
+                "1 л.с. = 735,5 Вт. Пример: двигатель машины на 100 л.с. - это примерно 73,5 кВт." },
+            { "Temperature: Celsius to Fahrenheit", "Температура: Цельсий в Фаренгейт", 4, "Fahrenheit is the temperature scale used in the USA. Water freezes at 32 F and boils at 212 F. Example: 20 C = 68 F.",
+                "Фаренгейт - шкала температуры в США. Вода замерзает при 32 F и кипит при 212 F. Пример: 20 C = 68 F." },
+            { "Temperature: Fahrenheit to Celsius", "Температура: Фаренгейт в Цельсий", 5, "Example: 100 F = 37.8 C, a high body temperature.",
+                "Пример: 100 F = 37,8 C, то есть температура тела при простуде." },
+            { "Length: metres to feet", "Длина: метры в футы", 6, "A foot is an American length unit: 1 foot = 0.3048 m, about 30 cm.",
+                "Фут - американская мера длины: 1 фут = 0,3048 м, примерно 30 см." },
+            { "Length: feet to metres", "Длина: футы в метры", 7, "1 foot = 0.3048 m. Example: 10 feet is about 3 m.", "1 фут = 0,3048 м. Пример: 10 футов - это примерно 3 м." },
+            { "Mass: kilograms to pounds", "Масса: килограммы в фунты", 8, "A pound is an American weight unit: 1 pound is about 0.454 kg.",
+                "Фунт - американская мера веса: 1 фунт - это примерно 0,454 кг." },
+            { "Mass: pounds to kilograms", "Масса: фунты в килограммы", 9, "1 pound is about 0.454 kg. Example: 10 pounds is about 4.5 kg.",
+                "1 фунт - это примерно 0,454 кг. Пример: 10 фунтов - это примерно 4,5 кг." },
+            { "Energy: kW to kcal/h", "Энергия: кВт в ккал/ч", 10, "Kilocalories per hour is an old heat power unit, written on boilers and heaters. 1 kW is about 860 kcal/h.",
+                "Килокалории в час - старая единица тепловой мощности, её пишут у котлов и обогревателей. 1 кВт - это примерно 860 ккал/ч." },
+            { "Energy: kcal/h to kW", "Энергия: ккал/ч в кВт", 11, "Example: a boiler of 20000 kcal/h is about 23 kW.", "Пример: котёл на 20000 ккал/ч - это примерно 23 кВт." },
+            { "Time: seconds to minutes", "Время: секунды в минуты", 12, "1 minute = 60 seconds.", "1 минута = 60 секунд." },
+            { "Time: minutes to seconds", "Время: минуты в секунды", 13, "1 minute = 60 seconds.", "1 минута = 60 секунд." },
+            { "Time: hours to seconds", "Время: часы в секунды", 14, "1 hour = 60 minutes = 3600 seconds.", "1 час = 60 минут = 3600 секунд." },
+            { "Time: seconds to hours", "Время: секунды в часы", 15, "1 hour = 3600 seconds.", "1 час = 3600 секунд." } };
+        static const Step S_CONV[] = {
+            WIZ_CHOICE("What do you want to convert?", "Что во что перевести?", "", "", calc_data::conv_type, O_CONV, nullptr),
+            WIZ_DOUBLE("What value do you convert?", "Какое значение переводим?", "", "", calc_data::conv_input, nullptr),
+        };
+
+        // ---------- вопросы: формулы ----------
+        static const Opt O_FORM[] = {
+            { "Electricity: Ohm's law, power, resistance", "Электричество: закон Ома, мощность, сопротивление", 0 },
+            { "Power and current (as in Cable and Load)", "Мощность и ток (как в «Кабеле» и «Нагрузке»)", 1 },
+            { "Cable: temperature and voltage drop", "Кабель: температура и падение напряжения", 2 },
+            { "Short circuit", "Короткое замыкание", 3 }, { "Earthing", "Заземление", 4 }, { "Motor", "Двигатель", 5 },
+            { "Energy and units", "Энергия и единицы", 6 }, { "Algebra", "Алгебра", 7 }, { "Geometry", "Геометрия", 8 } };
+        static const Step S_FORM[] = {
+            WIZ_CHOICE("Which formulas do you need?", "Какие формулы нужны?",
+                "The chosen section opens, the rest stay folded. They can be opened with a click.",
+                "Откроется выбранный раздел, остальные будут свёрнуты. Их можно раскрыть щелчком.", lite_state::pick_formulas, O_FORM, nullptr),
+        };
+
+        // ---------- вопросы: даты ----------
+        static const Opt O_DATE[] = { { "How many days are between two dates", "Сколько дней между двумя датами", 0 },
+            { "Add days to a date", "Прибавить дни к дате", 1 }, { "What day of the week a date is", "Какой день недели у даты", 2 } };
+        static const Step S_DATE[] = {
+            WIZ_CHOICE("What do you want to find?", "Что нужно узнать?", "", "", calc_data::date_mode, O_DATE, nullptr),
+            WIZ_INTR("First date: what year?", "Первая дата: какой год?", "", "", calc_data::date_y1, 1900, 2200, nullptr),
+            WIZ_INTR("First date: what month?", "Первая дата: какой месяц?", "A number from 1 to 12.", "Число от 1 до 12.", calc_data::date_m1, 1, 12, nullptr),
+            WIZ_INTR("First date: what day?", "Первая дата: какое число?", "", "", calc_data::date_d1, 1, 31, nullptr),
+            WIZ_INTR("Second date: what year?", "Вторая дата: какой год?", "", "", calc_data::date_y2, 1900, 2200, []() { return calc_data::date_mode == 0; }),
+            WIZ_INTR("Second date: what month?", "Вторая дата: какой месяц?", "A number from 1 to 12.", "Число от 1 до 12.", calc_data::date_m2, 1, 12, []() { return calc_data::date_mode == 0; }),
+            WIZ_INTR("Second date: what day?", "Вторая дата: какое число?", "", "", calc_data::date_d2, 1, 31, []() { return calc_data::date_mode == 0; }),
+            WIZ_INTR("How many days to add?", "Сколько дней прибавить?", "", "", calc_data::date_add_days, 0, 100000, []() { return calc_data::date_mode == 1; }),
+        };
+
+        // ---------- вопросы: справочник ----------
+        static const Opt O_REF[] = { { "Show everything", "Показать всё", 0 }, { "Wire colours", "Цвета проводов", 1 }, { "Cable marking letters", "Буквы в маркировке кабеля", 2 },
+            { "IP protection rating", "Степень защиты IP", 3 }, { "Overvoltage categories", "Категории перенапряжения", 4 }, { "Symbols on diagrams", "Обозначения на схемах", 5 },
+            { "Which metals can be joined", "Какие металлы можно соединять", 6 }, { "Motor: star and delta", "Двигатель: звезда и треугольник", 7 },
+            { "Allowable currents of copper cable", "Допустимые токи медного кабеля", 8 }, { "AWG and mm2", "AWG и мм2", 9 },
+            { "Conduit fill", "Заполнение труб", 10 }, { "Altitude correction", "Поправка на высоту", 11 } };
+        static const Step S_REF[] = {
+            WIZ_CHOICE("What do you want to look up?", "Что хотите посмотреть?",
+                "The chosen section opens, the rest stay folded.", "Откроется выбранный раздел, остальные будут свёрнуты.", lite_state::pick_reference, O_REF, nullptr),
+        };
+
+        // ---------- история и окна: только объяснение ----------
+        static const Step S_HISTORY[] = {
+            WIZ_INFO("History of calculations", "История расчётов",
+                "Every calculation you saved is kept here. It can be copied or exported to a CSV file for Excel.",
+                "Здесь хранится каждый расчёт, который вы сохранили. Его можно скопировать или выгрузить в файл CSV для Excel."),
+        };
+        static const Step S_WINDOWS[] = {
+            WIZ_INFO("Windows of other programs", "Окна других программ",
+                "This tab controls the windows of other programs: move, resize, minimize, keep on top or close. It has nothing to do with the calculations.",
+                "Эта вкладка управляет окнами других программ: передвинуть, изменить размер, свернуть, закрепить поверх всех или закрыть. К расчётам она не относится."),
+        };
+
+        // ---------- вопросы: настройки ----------
+        static const Step S_SETTINGS[] = {
+            WIZ_BOOL("Turn on the animated background?", "Включить анимированный фон?", "Moving dots behind the window. Turn it off on a weak computer.",
+                "Движущиеся точки позади окна. На слабом компьютере лучше выключить.", g_theme.bg_animated, nullptr),
+            WIZ_BOOL("Show the clock and date?", "Показывать часы и дату?", "In the top left corner.", "В левом верхнем углу.", g_theme.show_clock, nullptr),
+            WIZ_BOOL("Play the animation when the program starts?", "Показывать анимацию при запуске?", "", "", g_theme.intro_animation, nullptr),
+            WIZ_BOOL("Animate minimizing the window?", "Анимировать сворачивание окна?", "", "", g_theme.minimize_animation, nullptr),
+            WIZ_BOOL("Crumble the window to dust on close?", "Рассыпать окно в пыль при закрытии?", "", "", g_theme.close_animation, nullptr),
+        };
+
+        // ---------- вопросы: справка ----------
+        static const Opt O_HELP[] = { { "Show everything", "Показать всё", 0 }, { "How to use the program", "Как пользоваться программой", 1 },
+            { "Lectures and links", "Лекции и ссылки", 2 }, { "Lecture files without the internet", "Файлы лекций без интернета", 3 } };
+        static const Step S_HELP[] = {
+            WIZ_CHOICE("What do you need?", "Что вам нужно?", "", "", lite_state::pick_help, O_HELP, nullptr),
+        };
+
+        // после вопроса "какой раздел" открываем только его
+        inline void OpenFormulas() {
+            bool* const flags[9] = { &lite_state::s_el, &lite_state::s_pw, &lite_state::s_vd, &lite_state::s_kz, &lite_state::s_gr,
+                &lite_state::s_mo, &lite_state::s_en, &lite_state::s_al, &lite_state::s_ge };
+            for (int k = 0; k < 9; ++k) *flags[k] = (k == lite_state::pick_formulas);
+        }
+        inline void OpenReference() {
+            bool* const flags[11] = { &lite_state::s_colors, &lite_state::s_mark, &lite_state::s_ip, &lite_state::s_cat, &lite_state::s_symbols,
+                &lite_state::s_metal, &lite_state::s_motor, &lite_state::s_sections, &lite_state::s_awg, &lite_state::s_pipe, &lite_state::s_alt };
+            for (int k = 0; k < 11; ++k) *flags[k] = (lite_state::pick_reference == 0 || k == lite_state::pick_reference - 1);
+        }
+        inline void OpenHelp() {
+            bool* const flags[3] = { &lite_state::s_howto, &lite_state::s_links, &lite_state::s_files };
+            for (int k = 0; k < 3; ++k) *flags[k] = (lite_state::pick_help == 0 || k == lite_state::pick_help - 1);
+        }
 
 #define WIZ_COUNT(a) (int)(sizeof(a) / sizeof(a[0]))
         static const Flow FLOWS[] = {
@@ -6806,8 +7231,19 @@ namespace menu {
             { "BREAKER: QUESTIONS", "АВТОМАТ: ВОПРОСЫ", S_BREAKER, WIZ_COUNT(S_BREAKER), []() { RecalcBreaker(); } },
             { "EARTHING: QUESTIONS", "ЗАЗЕМЛЕНИЕ: ВОПРОСЫ", S_GROUND, WIZ_COUNT(S_GROUND), []() { RecalcGround(); } },
             { "MOTOR: QUESTIONS", "ДВИГАТЕЛЬ: ВОПРОСЫ", S_MOTOR, WIZ_COUNT(S_MOTOR), []() { RecalcMotor(); } },
+            { "MATH: QUESTIONS", "МАТЕМАТИКА: ВОПРОСЫ", S_MATH, WIZ_COUNT(S_MATH), []() { lite_state::run_math = true; } },
+            { "CONVERTER: QUESTIONS", "КОНВЕРТЕР: ВОПРОСЫ", S_CONV, WIZ_COUNT(S_CONV), []() { lite_state::run_conv = true; } },
+            { "FORMULAS: QUESTIONS", "ФОРМУЛЫ: ВОПРОСЫ", S_FORM, WIZ_COUNT(S_FORM), []() { OpenFormulas(); } },
+            { "DATES: QUESTIONS", "ДАТЫ: ВОПРОСЫ", S_DATE, WIZ_COUNT(S_DATE), []() { lite_state::run_date = true; } },
+            { "REFERENCE: QUESTIONS", "СПРАВОЧНИК: ВОПРОСЫ", S_REF, WIZ_COUNT(S_REF), []() { OpenReference(); } },
+            { "HISTORY", "ИСТОРИЯ", S_HISTORY, WIZ_COUNT(S_HISTORY), []() {} },
+            { "WINDOWS", "ОКНА", S_WINDOWS, WIZ_COUNT(S_WINDOWS), []() {} },
+            { "SETTINGS: QUESTIONS", "НАСТРОЙКИ: ВОПРОСЫ", S_SETTINGS, WIZ_COUNT(S_SETTINGS), []() {} },
+            { "HELP: QUESTIONS", "СПРАВКА: ВОПРОСЫ", S_HELP, WIZ_COUNT(S_HELP), []() { OpenHelp(); } },
         };
-        static int s_step[5] = { 0, 0, 0, 0, 0 };   // номер вопроса; равен числу вопросов - показана полная вкладка
+        constexpr int FLOWS_N = 14;
+        static int s_step[FLOWS_N] = {};   // номер вопроса; равен числу вопросов - показана полная вкладка
+        static float s_card_h = 420.0f;             // высота блока: подстраивается под число вариантов ответа
 
         inline bool Visible(const Step& s) { return s.show == nullptr || s.show(); }
 
@@ -6822,10 +7258,16 @@ namespace menu {
 
             // ----- вопросы пройдены: полная вкладка и кнопка "заново" -----
             if (step >= flow.count) {
-                gui.group_box(W("QUESTIONS", "ВОПРОСЫ"), ImVec2(CARD_W_FULL, 104)); {
+                if (flow.steps[0].kind == Kind::Info) {   // вкладка без вопросов: объяснение показали один раз
+                    ImGui::PopID();
+                    full_tab();
+                    return;
+                }
+                gui.group_box(W("QUESTIONS", "ВОПРОСЫ"), ImVec2(CARD_W_FULL, 146)); {
                     ImGui::TextColored(g_theme.text_dim, "%s",
                         W("All questions are answered. Below is the full calculator: every value can be changed there.",
                             "На все вопросы ответили. Ниже полный калькулятор: любое значение там можно поменять."));
+                    ImGui::Spacing();
                     snprintf(label, sizeof(label), "%s###wiz_again", W("Answer the questions again", "Ответить на вопросы заново"));
                     if (OutlineButton(label, ImVec2(300, 32))) step = 0;
                 } gui.end_group_box();
@@ -6846,7 +7288,7 @@ namespace menu {
             const Step& s = flow.steps[step];
             bool go_next = false, go_back = false, skip_all = false;
 
-            gui.group_box(W(flow.title_en, flow.title_ru), ImVec2(CARD_W_FULL, 560)); {
+            gui.group_box(W(flow.title_en, flow.title_ru), ImVec2(CARD_W_FULL, s_card_h)); {
                 // прогресс
                 ImGui::TextColored(g_theme.accent, "%s %d %s %d", W("Question", "Вопрос"), shown_index + 1, W("of", "из"), shown_total);
                 {
@@ -6875,20 +7317,56 @@ namespace menu {
 
                 // ответ
                 if (s.kind == Kind::Choice) {
+                    // длинный список - в две колонки, чтобы блок с кнопками помещался на экране
+                    const bool two_cols = (s.opts_count > 8);
+                    const int per_col = two_cols ? (s.opts_count + 1) / 2 : s.opts_count;
+                    const float col_x = ImGui::GetCursorPosX();
+                    const float col_w = ImGui::GetContentRegionAvail().x * 0.5f;
+                    const float top_y = ImGui::GetCursorPosY();
+                    float bottom_y = top_y;
+                    const Opt* chosen = nullptr;
                     for (int k = 0; k < s.opts_count; ++k) {
+                        if (two_cols && k == per_col) {
+                            bottom_y = ImGui::GetCursorPosY();
+                            ImGui::SetCursorPos(ImVec2(col_x + col_w, top_y));
+                        }
+                        if (two_cols && k >= per_col) ImGui::SetCursorPosX(col_x + col_w);
                         snprintf(label, sizeof(label), "%s###wiz_opt%d", W(s.opts[k].en, s.opts[k].ru), k);
                         ImGui::RadioButton(label, s.i, s.opts[k].value);
                         ImGui::Spacing();
+                        if (*s.i == s.opts[k].value) chosen = &s.opts[k];
+                    }
+                    if (two_cols && ImGui::GetCursorPosY() < bottom_y) ImGui::SetCursorPosY(bottom_y);
+                    ImGui::SetCursorPosX(col_x);
+                    // пояснение к выбранному варианту
+                    if (chosen && chosen->desc_en) {
+                        ImGui::Spacing();
+                        ImGui::PushTextWrapPos(0.0f);
+                        ImGui::TextColored(g_theme.accent, "%s", W(chosen->en, chosen->ru));
+                        ImGui::TextColored(g_theme.text_main, "%s", W(chosen->desc_en, chosen->desc_ru));
+                        ImGui::PopTextWrapPos();
                     }
                 }
-                else {
+                else if (s.kind == Kind::Bool) {
+                    int yes = *s.b ? 1 : 0;
+                    snprintf(label, sizeof(label), "%s###wiz_yes", W("Yes", "Да"));
+                    ImGui::RadioButton(label, &yes, 1);
+                    ImGui::Spacing();
+                    snprintf(label, sizeof(label), "%s###wiz_no", W("No", "Нет"));
+                    ImGui::RadioButton(label, &yes, 0);
+                    *s.b = (yes == 1);
+                }
+                else if (s.kind != Kind::Info) {
                     if (s.kind == Kind::Float) {
                         TextInputFloat("wiz_value", s.f, 260.0f);
+                    }
+                    else if (s.kind == Kind::Double) {
+                        TextInputDouble("wiz_value", s.d, 260.0f);
                     }
                     else {
                         double d = (double)*s.i;
                         if (TextInputDouble("wiz_value", &d, 260.0f))
-                            *s.i = (d < 1.0) ? 1 : (d > 1000.0 ? 1000 : (int)d);
+                            *s.i = (d < (double)s.imin) ? s.imin : (d > (double)s.imax ? s.imax : (int)d);
                     }
                     const char* unit = W(s.unit_en, s.unit_ru);
                     if (unit[0]) {
@@ -6898,20 +7376,28 @@ namespace menu {
                     }
                 }
 
-                // кнопки внизу блока
+                // кнопки внизу блока; высота блока на следующий кадр - по содержимому,
+                // чтобы длинный список вариантов не обрезался
+                const float content_end = ImGui::GetCursorPosY();
                 const float bottom = ImGui::GetWindowHeight() - 58.0f;
-                if (ImGui::GetCursorPosY() < bottom) ImGui::SetCursorPosY(bottom);
+                ImGui::SetCursorPosY(content_end + 16.0f > bottom ? content_end + 16.0f : bottom);
+                if (!ImGui::GetCurrentWindow()->SkipItems) {
+                    const float need = content_end + 16.0f + 38.0f + 20.0f;
+                    s_card_h = (need > 420.0f) ? need : 420.0f;
+                }
                 const bool last = (shown_index == shown_total - 1);
                 snprintf(label, sizeof(label), "%s###wiz_back", W("Back", "Назад"));
                 if (shown_index > 0) {
                     if (OutlineButton(label, ImVec2(160, 38))) go_back = true;
                     ImGui::SameLine(0.0f, 10.0f);
                 }
-                snprintf(label, sizeof(label), "%s###wiz_next", last ? W("Calculate", "Рассчитать") : W("Next", "Далее"));
+                snprintf(label, sizeof(label), "%s###wiz_next", s.kind == Kind::Info ? W("Open", "Открыть") : (last ? W("Show", "Показать") : W("Next", "Далее")));
                 if (OutlineButton(label, ImVec2(220, 38), btn_col::success)) go_next = true;
-                ImGui::SameLine(0.0f, 10.0f);
-                snprintf(label, sizeof(label), "%s###wiz_skip", W("Skip the questions", "Пропустить вопросы"));
-                if (OutlineButton(label, ImVec2(220, 38))) skip_all = true;
+                if (s.kind != Kind::Info) {
+                    ImGui::SameLine(0.0f, 10.0f);
+                    snprintf(label, sizeof(label), "%s###wiz_skip", W("Skip the questions", "Пропустить вопросы"));
+                    if (OutlineButton(label, ImVec2(220, 38))) skip_all = true;
+                }
             } gui.end_group_box();
             ImGui::PopID();
 
@@ -7109,7 +7595,7 @@ namespace menu {
                 }
             }
 
-            ImGui::SetCursorPos(ImVec2(12, g_theme.show_clock ? 110 : 60));
+            ImGui::SetCursorPos(ImVec2(12.0f, g_theme.show_clock ? 110.0f : 60.0f));
             ImGui::BeginChild("##tabs", ImVec2(170, size.y - (g_theme.show_clock ? 115 : 65)), false,
                 ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
             {
@@ -7186,20 +7672,20 @@ namespace menu {
 
                 BeginTabFade();
                 switch (gui.m_tab) {
-                case 0:  RenderMathTab();          break;
+                case 0: wiz::Tab(5, RenderMathTab);          break;
                 case 1: wiz::Tab(0, RenderCableTab);         break;
                 case 2: wiz::Tab(1, RenderLoadTab);          break;
                 case 3: wiz::Tab(2, RenderBreakerTab);       break;
                 case 4: wiz::Tab(3, RenderGroundTab);        break;
-                case 5:  RenderWindowControlTab(); break;
-                case 6:  RenderSettingsTab();      break;
-                case 7:  RenderConverterTab();     break;
-                case 8:  RenderFormulasTab();      break;
-                case 9:  RenderDateTab();          break;
-                case 10: RenderHistoryTab();       break;
+                case 5: wiz::Tab(11, RenderWindowControlTab); break;
+                case 6: wiz::Tab(12, RenderSettingsTab);      break;
+                case 7: wiz::Tab(6, RenderConverterTab);     break;
+                case 8: wiz::Tab(7, RenderFormulasTab);      break;
+                case 9: wiz::Tab(8, RenderDateTab);          break;
+                case 10: wiz::Tab(10, RenderHistoryTab);       break;
                 case 11: wiz::Tab(4, RenderMotorTab);         break;
-                case 12: RenderReferenceTab();     break;
-                case 13: RenderHelpTab();          break;
+                case 12: wiz::Tab(9, RenderReferenceTab);     break;
+                case 13: wiz::Tab(13, RenderHelpTab);          break;
                 }
                 EndTabFade();
             }

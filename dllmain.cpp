@@ -668,6 +668,48 @@ namespace i18n {
 { "Fill:", "Заполнение:" },
 { "Cables will jam when pulled. Take a larger conduit.", "Кабели заклинит при протяжке. Возьмите трубу большего диаметра." },
 { "limit", "лимит" },
+{ "Conductor:", "Что прокладываем:" },
+{ "Cable (VVG, NYM)", "Кабель (ВВГ, NYM)" },
+{ "Single wires (PV, PuGV)", "Отдельные провода (ПВ, ПуГВ)" },
+{ "Heat-resistant PVC 90C", "ПВХ теплостойкий 90°C" },
+{ "Mica tape under polymer 70C", "Слюдяная лента под полимером 70°C" },
+{ "Mineral (MgO), sheathed 70C", "Минеральная (MgO) в оболочке 70°C" },
+{ "Current is counted for 90 C. For this insulation take it from the cable catalogue.", "Ток посчитан для 90 °C. Для такой изоляции берите допустимый ток из каталога марки." },
+{ "The breaker clears a short circuit instantly (under 0.1 s), which meets PUE 1.7.79: 0.4 s at 220 V. Margin 1.1 per PUE 6th ed.", "Автомат отключает КЗ мгновенно (быстрее 0,1 с), этим выполняется ПУЭ 1.7.79: 0,4 с при 220 В. Запас 1,1 - по ПУЭ 6-го изд." },
+{ "Multi-core cable: PUE 1.3.6-1.3.7 in air and earth, 1.3.4-1.3.5 in a pipe. 4-5 core cable for three phases x0.92.", "Многожильный кабель: ПУЭ 1.3.6-1.3.7 в воздухе и земле, 1.3.4-1.3.5 в трубе. 4-5-жильный кабель для трёх фаз x0,92." },
+{ "Breakers side by side:", "Автоматов вплотную друг к другу:" },
+{ "Real rating in the panel:", "Реальный номинал в щите:" },
+{ "Breakers are calibrated at +30 C, about 0.5% per degree. Side by side: 2-3 pcs x0.85, 4-7 x0.8, more x0.7 (typical manufacturer data).", "Автоматы калибруют при +30 C, около 0,5% на градус. Вплотную: 2-3 шт. x0,85, 4-7 x0,8, больше x0,7 (типовые данные изготовителя)." },
+{ "modular, GOST IEC 60898-1", "модульный, ГОСТ IEC 60898-1" },
+{ "moulded case, by catalogue", "в литом корпусе, по каталогу" },
+{ "A breaker protects the motor only from short circuits. A thermal relay against overload is required.", "Автомат защищает двигатель только от КЗ. От перегрузки нужно тепловое реле - оно обязательно." },
+{ "Layout:", "Расположение:" },
+{ "In a row", "В ряд" },
+{ "Around a contour", "По контуру" },
+{ "Count the connecting strip", "Учитывать соединительную полосу" },
+{ "Connecting strip:", "Соединительная полоса:" },
+{ "Rods in a row joined by a 40x4 strip, or around a contour (strip not counted, margin). Utilization factors from reference tables.", "Штыри в ряд, соединённые полосой 40x4, или по контуру (полоса не учитывается, с запасом). Коэффициенты использования - по справочным таблицам." },
+{ "Up to 16 mm2 the density is raised by 40% (PUE 1.3.27).", "До 16 мм2 плотность увеличена на 40% (ПУЭ 1.3.27)." },
+{ "Wire, open", "Провод откр." },
+{ "Cable, air", "Кабель, возд." },
+{ "PUE 1.3.4 (single wire) and 1.3.6 (3-core cable). Breaker - nearest rating not above the cable current.", "ПУЭ 1.3.4 (одиночный провод) и 1.3.6 (трёхжильный кабель). Автомат - ближайший номинал не выше тока кабеля." },
+{ "Power cables (GOST 31996)", "Силовые кабели (ГОСТ 31996)" },
+{ "PVC insulation or sheath", "изоляция или оболочка из ПВХ" },
+{ "cross-linked polyethylene insulation", "изоляция из сшитого полиэтилена" },
+{ "halogen-free polymer", "безгалогенная полимерная композиция" },
+{ "no protective cover", "без защитного покрова" },
+{ "steel tape armour", "броня из стальных лент" },
+{ "round steel wire armour", "броня из круглых стальных проволок" },
+{ "PVC / polyethylene hose", "защитный шланг из ПВХ / полиэтилена" },
+{ "copper screen", "медный экран" },
+{ "does not spread fire in bundles", "не распространяет горение в пучках" },
+{ "low smoke, halogen-free", "мало дыма, без галогенов" },
+{ "fire resistant", "огнестойкий" },
+{ "Example: VVGng(A)-LS = copper, PVC, no armour, low smoke.", "Пример: ВВГнг(А)-LS - медь, ПВХ, без брони, мало дыма." },
+{ "230/400 V network, GOST IEC 60664-1", "Сеть 230/400 В, ГОСТ IEC 60664-1" },
+{ "9 hot high-pressure jets", "9 горячие струи под давлением" },
+{ "asin/acos: A from -1 to 1", "arcsin/arccos: A от -1 до 1" },
+{ "Degrees (sin/cos/tan input, asin/acos/atan answer)", "Градусы (вход sin/cos/tg, ответ arcsin/arccos/arctg)" },
 { "Cable and wire marking", "Маркировка кабеля и провода" },
 { "Letters: metal, type, insulation, design. Digits: cores x section - voltage.", "Буквы: металл, тип, изоляция, конструкция. Цифры: число жил x сечение - напряжение." },
 { "1st letter - core metal", "1-я буква - металл жилы" },
@@ -1435,6 +1477,11 @@ namespace calc_data {
     float result_k_temp = 1.0f;  // итоговый температурный коэффициент
     int   cable_group = 1;       // сколько кабелей лежит вместе (пучок, лоток, траншея)
     float cable_altitude = 0.0f; // высота площадки над уровнем моря, м
+    int   cable_kind = 0;        // 0 = многожильный кабель, 1 = отдельные провода
+    int   breaker_adjacent = 1;  // сколько автоматов стоит вплотную
+    int   ground_layout = 0;     // штыри: 0 = в ряд, 1 = по контуру
+    bool  ground_with_strip = true; // учитывать соединительную полосу (для ряда)
+    float result_ground_strip = 0.0f; // сопротивление соединительной полосы, Ом (0 = не считалась)
     float result_k_alt = 1.0f;   // коэффициент высоты
     float motor_cos_target = 0.95f;
     float load_kc = 1.0f;
@@ -1628,6 +1675,10 @@ namespace config {
         fprintf(f, "cable_install=%d\n", calc_data::cable_install);
         fprintf(f, "cable_group=%d\n", calc_data::cable_group);
         fprintf(f, "cable_altitude=%.1f\n", calc_data::cable_altitude);
+        fprintf(f, "cable_kind=%d\n", calc_data::cable_kind);
+        fprintf(f, "breaker_adjacent=%d\n", calc_data::breaker_adjacent);
+        fprintf(f, "ground_layout=%d\n", calc_data::ground_layout);
+        fprintf(f, "ground_with_strip=%d\n", calc_data::ground_with_strip ? 1 : 0);
         fprintf(f, "motor_cos_target=%.4f\n", calc_data::motor_cos_target);
         fprintf(f, "load_kc=%.4f\n", calc_data::load_kc);
         fprintf(f, "load_ko=%.4f\n", calc_data::load_ko);
@@ -1735,6 +1786,10 @@ namespace config {
             else if (key == "cable_install")      calc_data::cable_install = atoi(val.c_str());
             else if (key == "cable_group")        calc_data::cable_group = atoi(val.c_str());
             else if (key == "cable_altitude")     calc_data::cable_altitude = (float)atof(val.c_str());
+            else if (key == "cable_kind")         calc_data::cable_kind = atoi(val.c_str());
+            else if (key == "breaker_adjacent")   calc_data::breaker_adjacent = atoi(val.c_str());
+            else if (key == "ground_layout")      calc_data::ground_layout = atoi(val.c_str());
+            else if (key == "ground_with_strip")  calc_data::ground_with_strip = atoi(val.c_str()) != 0;
             else if (key == "motor_cos_target") calc_data::motor_cos_target = (float)atof(val.c_str());
             else if (key == "load_kc") calc_data::load_kc = (float)atof(val.c_str());
             else if (key == "load_ko") calc_data::load_ko = (float)atof(val.c_str());
@@ -2980,7 +3035,7 @@ namespace menu {
         { "PE 70C", 70.0f },
         { "PVC ng-LS 70C", 65.0f },
         { "PVC ng-FRLS 70C", 65.0f },
-        { "Heat-resistant PVC 105C", 105.0f },
+        { "Heat-resistant PVC 90C", 90.0f },
         { "Halogen-free (HF) 70C", 70.0f },
         { "Fire-resistant halogen-free (FRHF) 70C", 70.0f },
         { "Cross-linked polyolefin (XLPO) 90C", 90.0f },
@@ -2998,9 +3053,9 @@ namespace menu {
         { "Paper, non-draining compound 80C", 80.0f },
         { "Oil-filled, low pressure 85C", 85.0f },
         { "Oil-filled, high pressure 85C", 85.0f },
-        { "Mica tape 400C", 400.0f },
+        { "Mica tape under polymer 70C", 70.0f },
         { "Fiberglass 180C", 180.0f },
-        { "Mineral (MgO) 250C", 250.0f },
+        { "Mineral (MgO), sheathed 70C", 70.0f },
     };
     constexpr int INS_N = 27;
     // порядок в выпадающем списке: пластмассы, резины, фторопласты, бумага, особые
@@ -3041,6 +3096,16 @@ namespace menu {
     static const float AL_PIPE3[PUE_N]  = { 0, 19, 28, 32, 47, 60,  80,  95, 130, 165, 200, 220, 255 };
     static const float AL_EARTH2[PUE_N] = { 0, 34, 42, 55, 80, 105, 135, 160, 205, 245, 295, 340, 390 };
     static const float AL_EARTH3[PUE_N] = { 0, 29, 38, 46, 70,  90, 115, 140, 175, 210, 255, 295, 335 };
+    // Многожильные кабели (ВВГ и подобные): табл. 1.3.6 и 1.3.7 - в воздухе,
+    // табл. 1.3.4 и 1.3.5 - один двух- или трёхжильный в трубе (150 мм2 в таблице нет)
+    static const float CU_AIR2[PUE_N]   = { 19, 27, 38, 50, 70,  90, 115, 140, 175, 215, 260, 300, 350 };
+    static const float CU_AIR3[PUE_N]   = { 19, 25, 35, 42, 55,  75,  95, 120, 145, 180, 220, 260, 305 };
+    static const float CU_PIPEC2[PUE_N] = { 18, 25, 32, 40, 55,  80, 100, 125, 160, 195, 245, 295, 0 };
+    static const float CU_PIPEC3[PUE_N] = { 15, 21, 27, 34, 50,  70,  85, 100, 135, 175, 215, 250, 0 };
+    static const float AL_AIR2[PUE_N]   = { 0, 21, 29, 38, 55,  70,  90, 105, 135, 165, 200, 230, 270 };
+    static const float AL_AIR3[PUE_N]   = { 0, 19, 27, 32, 42,  60,  75,  90, 110, 140, 170, 200, 235 };
+    static const float AL_PIPEC2[PUE_N] = { 0, 19, 25, 31, 42,  60,  75,  95, 125, 150, 190, 230, 0 };
+    static const float AL_PIPEC3[PUE_N] = { 0, 16, 21, 26, 38,  55,  65,  75, 105, 135, 165, 190, 0 };
 
     // Трансформаторы ТП (схема Y/Yн-0): полное сопротивление при однофазном КЗ, Zт/3, Ом
     static const int   TRAFO_KVA[] = { 0, 100, 160, 250, 400, 630, 1000 };
@@ -3054,18 +3119,29 @@ namespace menu {
     inline float PueTableCurrent(int i) {
         const bool cu = (calc_data::cable_material == 0);
         const bool three = (calc_data::phases == 3);
+        const bool wires = (calc_data::cable_kind == 1);
+        // четырёх- и пятижильный кабель для трёх фаз - как трёхжильный с коэффициентом 0,92 (примечание к табл. 1.3.7)
+        const float k4 = (three && !wires) ? 0.92f : 1.0f;
         switch (calc_data::cable_install) {
-        case 0:  return cu ? CU_OPEN[i] : AL_OPEN[i];                                   // открыто (воздух)
-        case 1:  return cu ? (three ? CU_PIPE3[i] : CU_PIPE2[i]) : (three ? AL_PIPE3[i] : AL_PIPE2[i]); // в трубе
+        case 0:                                                                          // в воздухе
+            if (wires) return cu ? CU_OPEN[i] : AL_OPEN[i];                              // провод открыто
+            return k4 * (cu ? (three ? CU_AIR3[i] : CU_AIR2[i]) : (three ? AL_AIR3[i] : AL_AIR2[i]));
+        case 1:                                                                          // в трубе
+            if (wires) return cu ? (three ? CU_PIPE3[i] : CU_PIPE2[i]) : (three ? AL_PIPE3[i] : AL_PIPE2[i]);
+            return cu ? (three ? CU_PIPEC3[i] : CU_PIPEC2[i]) : (three ? AL_PIPEC3[i] : AL_PIPEC2[i]);
         case 2:                                                                          // в земле
-        case 3:  return cu ? (three ? CU_EARTH3[i] : CU_EARTH2[i]) : (three ? AL_EARTH3[i] : AL_EARTH2[i]); // вода: как в земле (с запасом)
+        case 3:                                                                          // вода: как в земле (с запасом)
+            return k4 * (cu ? (three ? CU_EARTH3[i] : CU_EARTH2[i]) : (three ? AL_EARTH3[i] : AL_EARTH2[i]));
         default: return cu ? CU_OPEN[i] : AL_OPEN[i];
         }
     }
 
     // Поправка на температуру среды (ПУЭ табл. 1.3.3): k = sqrt((t_жилы - t_среды) / (65 - t_табл))
     inline float PueTempFactor() {
-        const float t_max = INS_TABLE[InsClamp(calc_data::insulation_type)].t_max;
+        float t_max = INS_TABLE[InsClamp(calc_data::insulation_type)].t_max;
+        // таблицы ПУЭ составлены для обычной изоляции; пересчёт выше 90 °C даёт нереальный ток,
+        // поэтому для нагревостойких проводов считаем по 90 °C и советуем каталог марки
+        if (t_max > 90.0f) t_max = 90.0f;
         const float t_ref = (calc_data::cable_install >= 2) ? 15.0f : 25.0f;  // земля/вода : воздух
         const float num = t_max - calc_data::ambient_temp;
         if (num <= 0.0f) return 0.0f;
@@ -3078,6 +3154,9 @@ namespace menu {
         static const float K[9] = { 1.00f, 0.80f, 0.70f, 0.65f, 0.60f, 0.57f, 0.54f, 0.52f, 0.50f };
         int n = calc_data::cable_group;
         if (n < 1) n = 1;
+        if (n >= 20) return 0.38f;
+        if (n >= 16) return 0.41f;
+        if (n >= 12) return 0.45f;
         if (n > 9) n = 9;
         return K[n - 1];
     }
@@ -3119,9 +3198,9 @@ namespace menu {
     // Сечение нулевой жилы: у кабелей 3+1 оно меньше фазного (3x120+1x70)
     inline float MarkNeutral(float S) {
         if (!calc_data::mark_reduced || calc_data::phases != 3) return S;
-        static const float PH[] = { 25.0f, 35.0f, 50.0f, 70.0f, 95.0f, 120.0f, 150.0f };
-        static const float NE[] = { 16.0f, 16.0f, 25.0f, 35.0f, 50.0f, 70.0f, 70.0f };
-        for (int i = 0; i < 7; ++i)
+        static const float PH[] = { 25.0f, 35.0f, 50.0f, 70.0f, 95.0f, 120.0f, 150.0f, 185.0f, 240.0f };
+        static const float NE[] = { 16.0f, 16.0f, 25.0f, 35.0f, 50.0f, 70.0f, 70.0f, 95.0f, 120.0f };
+        for (int i = 0; i < 9; ++i)
             if (fabsf(S - PH[i]) < 0.01f) return NE[i];
         return S;   // до 16 мм2 ноль равен фазе
     }
@@ -3305,7 +3384,7 @@ namespace menu {
 
         ImGui::SameLine(0.0f, 15.0f);
 
-        gui.group_box(T("RESULT"), ImVec2(side_w, 580)); {
+        gui.group_box(T("RESULT"), ImVec2(side_w, 640)); {
             RecalcMotor();
 
             const ImVec4 col_ok = g_theme.res_good;
@@ -3341,8 +3420,9 @@ namespace menu {
                 int best = 0, curve = 1;
                 for (int r : ratings) {
                     if ((float)r < In_m * 1.25f) continue;
-                    if (1.2f * Ist <= 5.0f * (float)r) { best = r; curve = 1; break; }
-                    if (1.2f * Ist <= 10.0f * (float)r) { best = r; curve = 2; break; }
+                    // отсечка с запасом 1,25 к пусковому току: нижняя граница зоны C - 5 In, D - 10 In
+                    if (1.25f * Ist <= 5.0f * (float)r) { best = r; curve = 1; break; }
+                    if (1.25f * Ist <= 10.0f * (float)r) { best = r; curve = 2; break; }
                 }
                 calc_data::result_motor_breaker = best;
                 calc_data::result_motor_curve = curve;
@@ -3351,12 +3431,12 @@ namespace menu {
                 ResultRow(T("Recommended breaker:"), buf, col_ok);
 
                 // Контактор: номинальный ток в категории AC-3 не меньше Iн
-                const int contactor[] = { 9,12,18,25,32,40,50,65,80,95,115,150,185,225,265,330 };
+                const int contactor[] = { 9,12,18,25,32,40,50,65,80,95,115,150,185,225,265,330,400,500,630 };
                 int c_best = 0;
                 for (int c : contactor) if ((float)c >= In_m) { c_best = c; break; }
                 calc_data::result_motor_contactor = c_best;
                 if (c_best > 0) snprintf(buf, sizeof(buf), "%d A (AC-3)", c_best);
-                else snprintf(buf, sizeof(buf), "> 330 A");
+                else snprintf(buf, sizeof(buf), "> 630 A");
                 ResultRow(T("Recommended contactor:"), buf, col_ok);
             }
 
@@ -3373,6 +3453,10 @@ namespace menu {
                 else if (ts <= 30.0f) ResultRow(T("Relay trip class:"), "Class 30", g_theme.res_warn);
                 else ResultRow(T("Relay trip class:"), T("special protection needed"), g_theme.res_bad);
             }
+            ImGui::PushTextWrapPos(0.0f);
+            ImGui::TextColored(g_theme.res_warn, "%s",
+                T("A breaker protects the motor only from short circuits. A thermal relay against overload is required."));
+            ImGui::PopTextWrapPos();
 
             // Компенсация реактивной мощности: Q = P * (tg(phi1) - tg(phi2))
             ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
@@ -3438,7 +3522,7 @@ namespace menu {
         // ==================== CONNECTION DIAGRAM ====================
         ImGui::SameLine(0.0f, 15.0f);
 
-        gui.group_box(T("CONNECTION DIAGRAM"), ImVec2(diag_w, 580)); {
+        gui.group_box(T("CONNECTION DIAGRAM"), ImVec2(diag_w, 640)); {
             static int diagram_side = 0; // 0 = STAR, 1 = DELTA
             ImGui::AlignTextToFramePadding();
             ImGui::TextColored(g_theme.text_dim, "%s", T("Show:")); ImGui::SameLine();
@@ -3457,7 +3541,7 @@ namespace menu {
             s_metal = true, s_pipe = true, s_alt = true;
 
         constexpr float COL_W = 380.0f;
-        constexpr float COL_H = 1700.0f;
+        constexpr float COL_H = 2000.0f;
         constexpr float GAP = 12.0f;
         const ImVec4 note_col = g_theme.res_warn;
 
@@ -3564,6 +3648,24 @@ namespace menu {
                 MRow("1", "number of cores; if absent - single core");
                 MRow("2", "core cross-section, mm2");
                 MRow("3", "rated voltage of the conductor");
+
+                // буквы силовых кабелей по ГОСТ 31996 (ВВГ, АВБШв и т.п.) - схема выше их не описывает
+                Head("Power cables (GOST 31996)");
+                MRow("А", "aluminium core");
+                MRow("В", "PVC insulation or sheath");
+                MRow("Пв", "cross-linked polyethylene insulation");
+                MRow("П", "halogen-free polymer");
+                MRow("Г", "no protective cover");
+                MRow("Б", "steel tape armour");
+                MRow("К", "round steel wire armour");
+                MRow("Шв, Шп", "PVC / polyethylene hose");
+                MRow("Э", "copper screen");
+                MRow("нг(A)", "does not spread fire in bundles");
+                MRow("LS, HF", "low smoke, halogen-free");
+                MRow("FR", "fire resistant");
+                ImGui::PushTextWrapPos(0.0f);
+                ImGui::TextColored(note_col, "%s", T("Example: VVGng(A)-LS = copper, PVC, no armour, low smoke."));
+                ImGui::PopTextWrapPos();
                 ImGui::Spacing();
             }
         } gui.end_group_box();
@@ -3584,6 +3686,7 @@ namespace menu {
                 ImGui::TextColored(g_theme.text_dim, "%s", T("3 spray  4 splash  5 jets"));
                 ImGui::TextColored(g_theme.text_dim, "%s", T("6 power jets  7 immersion 1m"));
                 ImGui::TextColored(g_theme.text_dim, "%s", T("8 continuous immersion"));
+                ImGui::TextColored(g_theme.text_dim, "%s", T("9 hot high-pressure jets"));
 
                 ImGui::Spacing();
                 ImGui::TextColored(g_theme.accent, "%s", T("Common"));
@@ -3593,6 +3696,8 @@ namespace menu {
             }
 
             if (SectionHeader(T("Overvoltage cat."), &s_cat)) {
+                ImGui::TextColored(g_theme.text_dim, "%s", T("230/400 V network, GOST IEC 60664-1"));
+                ImGui::Spacing();
                 ImGui::TextColored(g_theme.accent, "CAT I");
                 ImGui::TextColored(g_theme.text_dim, "  %s", T("Electronics, 1500 V"));
                 ImGui::Spacing();
@@ -3696,34 +3801,32 @@ namespace menu {
             }
 
             if (SectionHeader(T("Ampacity copper (PVC)"), &s_sections)) {
-                constexpr float X_1PH = 90.0f;
-                constexpr float X_3PH = 160.0f;
-
+                // допустимый ток и номинал автомата - разные величины, поэтому отдельные колонки
+                constexpr float X_C1 = 60.0f, X_C2 = 160.0f, X_C3 = 265.0f;
                 ImGui::TextColored(g_theme.text_dim, "%s", T("mm2"));
-                ImGui::SameLine(X_1PH);
-                ImGui::TextColored(g_theme.text_dim, "%s", T("1ph"));
-                ImGui::SameLine(X_3PH);
-                ImGui::TextColored(g_theme.text_dim, "%s", T("3ph"));
+                ImGui::SameLine(X_C1);
+                ImGui::TextColored(g_theme.text_dim, "%s", T("Wire, open"));
+                ImGui::SameLine(X_C2);
+                ImGui::TextColored(g_theme.text_dim, "%s", T("Cable, air"));
+                ImGui::SameLine(X_C3);
+                ImGui::TextColored(g_theme.text_dim, "%s", T("Breaker"));
 
-                auto Row2 = [](const char* s, const char* a1, const char* a3) {
-                    ImGui::TextColored(g_theme.text_main, "%s", s);
-                    ImGui::SameLine(90.0f);
-                    ImGui::TextColored(g_theme.text_main, "%s", a1);
-                    ImGui::SameLine(160.0f);
-                    ImGui::TextColored(g_theme.text_main, "%s", a3);
-                    };
-                Row2("1.5", "16", "14");
-                Row2("2.5", "20", "18");
-                Row2("4", "27", "24");
-                Row2("6", "34", "31");
-                Row2("10", "46", "42");
-                Row2("16", "62", "56");
-                Row2("25", "80", "73");
-                Row2("35", "99", "89");
-                Row2("50", "118", "108");
-                Row2("70", "149", "136");
+                static const int BRK[] = { 6, 10, 16, 20, 25, 32, 40, 50, 63, 80, 100, 125, 160, 200, 250 };
+                for (int i = 0; i < 10; ++i) {
+                    int brk = 0;
+                    for (int r : BRK) if ((float)r <= CU_AIR3[i]) brk = r;
+                    ImGui::TextColored(g_theme.text_main, "%g", (double)PUE_S[i]);
+                    ImGui::SameLine(X_C1);
+                    ImGui::TextColored(g_theme.text_main, "%.0f A", CU_OPEN[i]);
+                    ImGui::SameLine(X_C2);
+                    ImGui::TextColored(g_theme.text_main, "%.0f A", CU_AIR3[i]);
+                    ImGui::SameLine(X_C3);
+                    ImGui::TextColored(g_theme.accent, "%d A", brk);
+                }
                 ImGui::Spacing();
-                ImGui::TextColored(note_col, "%s", T("Approx. Verify vs local code."));
+                ImGui::PushTextWrapPos(0.0f);
+                ImGui::TextColored(note_col, "%s", T("PUE 1.3.4 (single wire) and 1.3.6 (3-core cable). Breaker - nearest rating not above the cable current."));
+                ImGui::PopTextWrapPos();
             }
 
             if (SectionHeader(T("AWG <-> mm^2"), &s_awg)) {
@@ -3820,6 +3923,11 @@ namespace menu {
         float k = 1.0f - 0.005f * (calc_data::breaker_temp - 30.0f);
         if (k < 0.7f) k = 0.7f;
         if (k > 1.1f) k = 1.1f;
+        // автоматы вплотную греют друг друга (типовые данные изготовителя: 2-3 шт. 0,85; 4-7 шт. 0,8; больше 0,7)
+        const int n = calc_data::breaker_adjacent;
+        if (n >= 8) k *= 0.7f;
+        else if (n >= 4) k *= 0.8f;
+        else if (n >= 2) k *= 0.85f;
         return k;
     }
 
@@ -3917,33 +4025,58 @@ namespace menu {
         calc_data::result_motor_start = calc_data::result_motor_flc * k;
     }
     // === NEW: заземление по методике для вертикальных электродов ===
-    // Коэффициент использования вертикальных электродов, расположенных в ряд
-    // (строки: a/L = 1, 2, 3; столбцы: n = 1, 2, 3, 5, 10, 15, 20). Табличные значения, ориентировочно.
-    inline float GroundEta(int n, float a_over_l) {
-        static const float N_PTS[7] = { 1, 2, 3, 5, 10, 15, 20 };
-        static const float ETA[3][7] = {
-            { 1.0f, 0.85f, 0.78f, 0.70f, 0.59f, 0.54f, 0.49f },   // a/L = 1
-            { 1.0f, 0.91f, 0.86f, 0.81f, 0.74f, 0.70f, 0.68f },   // a/L = 2
-            { 1.0f, 0.94f, 0.91f, 0.87f, 0.81f, 0.78f, 0.77f },   // a/L = 3
-        };
-        if (n <= 1) return 1.0f;
-        float fn = (float)n;
-        if (fn > 20.0f) fn = 20.0f;
-        auto row = [&](int r) {
-            for (int j = 0; j < 6; ++j) {
-                if (fn <= N_PTS[j + 1]) {
-                    const float t = (fn - N_PTS[j]) / (N_PTS[j + 1] - N_PTS[j]);
-                    return ETA[r][j] + (ETA[r][j + 1] - ETA[r][j]) * t;
-                }
+    // Линейная интерполяция по таблице (xs по возрастанию)
+    inline float TableInterp(const float* xs, const float* ys, int cnt, float x) {
+        if (x <= xs[0]) return ys[0];
+        for (int j = 0; j + 1 < cnt; ++j) {
+            if (x <= xs[j + 1]) {
+                const float t = (x - xs[j]) / (xs[j + 1] - xs[j]);
+                return ys[j] + (ys[j + 1] - ys[j]) * t;
             }
-            return ETA[r][6];
-            };
+        }
+        return ys[cnt - 1];
+    }
+    // То же по двум осям: строки a/l = 1, 2, 3
+    inline float TableInterpAL(const float* xs, const float (*rows)[7], int cnt, float x, float a_over_l) {
         float q = a_over_l;
         if (q < 1.0f) q = 1.0f;
         if (q > 3.0f) q = 3.0f;
         const int r0 = (q < 2.0f) ? 0 : 1;
         const float t = q - (float)(r0 + 1);
-        return row(r0) + (row(r0 + 1) - row(r0)) * t;
+        const float y0 = TableInterp(xs, rows[r0], cnt, x);
+        const float y1 = TableInterp(xs, rows[r0 + 1], cnt, x);
+        return y0 + (y1 - y0) * t;
+    }
+
+    // Коэффициент использования вертикальных электродов (справочная таблица, a/l = 1, 2, 3)
+    inline float GroundEta(int n, float a_over_l) {
+        if (n <= 1) return 1.0f;
+        static const float N_ROW[6] = { 1, 2, 4, 6, 10, 20 };          // в ряд
+        static const float ROW[3][7] = {
+            { 1.0f, 0.85f, 0.73f, 0.65f, 0.59f, 0.48f },
+            { 1.0f, 0.91f, 0.83f, 0.77f, 0.74f, 0.67f },
+            { 1.0f, 0.94f, 0.89f, 0.85f, 0.81f, 0.76f },
+        };
+        static const float N_CON[7] = { 4, 6, 10, 20, 40, 60, 100 };    // по контуру
+        static const float CON[3][7] = {
+            { 0.69f, 0.61f, 0.55f, 0.47f, 0.41f, 0.39f, 0.36f },
+            { 0.78f, 0.73f, 0.68f, 0.63f, 0.58f, 0.55f, 0.52f },
+            { 0.85f, 0.80f, 0.76f, 0.71f, 0.66f, 0.64f, 0.62f },
+        };
+        if (calc_data::ground_layout == 1 && n >= 4)
+            return TableInterpAL(N_CON, CON, 7, (float)n, a_over_l);
+        return TableInterpAL(N_ROW, ROW, 6, (float)n, a_over_l);
+    }
+
+    // Коэффициент использования соединительной полосы при штырях в ряд
+    inline float GroundStripEta(int n, float a_over_l) {
+        static const float N_PTS[5] = { 2, 4, 6, 10, 20 };
+        static const float ETA[3][7] = {
+            { 0.85f, 0.77f, 0.72f, 0.62f, 0.42f },
+            { 0.94f, 0.89f, 0.84f, 0.75f, 0.56f },
+            { 0.96f, 0.92f, 0.88f, 0.82f, 0.68f },
+        };
+        return TableInterpAL(N_PTS, ETA, 5, (float)n, a_over_l);
     }
 
     inline float GroundNorm() {
@@ -3954,10 +4087,9 @@ namespace menu {
         }
     }
 
-    // Сезонный коэффициент для вертикальных электродов: зимой грунт промерзает, летом сохнет
-    inline float GroundSeasonK() {
-        // полоса лежит неглубоко и сильнее зависит от промерзания, чем вертикальный электрод
-        const bool strip = (calc_data::ground_type == 1);
+    // Сезонный коэффициент: зимой грунт промерзает, летом сохнет.
+    // Полоса лежит неглубоко и сильнее зависит от промерзания, чем вертикальный электрод.
+    inline float GroundSeasonKFor(bool strip) {
         switch (calc_data::ground_season) {
         // берём верхнюю границу диапазона для зоны - расчёт на худшее время года
         case 1:  return strip ? 6.0f : 1.9f;    // зона I
@@ -3967,9 +4099,10 @@ namespace menu {
         default: return 1.0f;
         }
     }
+    inline float GroundSeasonK() { return GroundSeasonKFor(calc_data::ground_type == 1); }
 
     void RecalcGround() {
-        const float rho = calc_data::soil_resistivity * GroundSeasonK();
+        const float rho = calc_data::soil_resistivity * GroundSeasonK();   // для штырей - коэффициент штырей, для полосы - полосы
 
         // Горизонтальная полоса 40x4: R = rho / (2*pi*L) * ln(2*L^2 / (b*t))
         if (calc_data::ground_type == 1) {
@@ -4003,16 +4136,34 @@ namespace menu {
 
         int n = calc_data::ground_rods;
         if (n < 1) n = 1;
-        const float a_l = calc_data::ground_spacing / L;
-        const float eta = GroundEta(n, a_l);
-        calc_data::result_ground_eta = eta;
-        calc_data::result_ground = R1 / ((float)n * eta);
+        const float a = (calc_data::ground_spacing > 0.1f) ? calc_data::ground_spacing : 0.1f;
+        const float a_l = a / L;
+        const bool use_strip = calc_data::ground_with_strip && calc_data::ground_layout == 0;
+
+        // Полоса 40x4, соединяющая штыри в ряд: длина (n - 1) * a, лежит на глубине верха штырей
+        const float rho_h = calc_data::soil_resistivity * GroundSeasonKFor(true);
+        const float strip_t = (t > 0.1f) ? t : 0.1f;
+        auto strip_r = [&](int k) {
+            const float len = (float)(k - 1) * a;
+            return rho_h / (2.0f * 3.14159265f * len) * logf(2.0f * len * len / (0.04f * strip_t));
+            };
+        // Общее сопротивление k штырей: R = Rv*Rh / (Rv*eta_h + Rh*eta_v*k), без полосы - Rv / (k*eta_v)
+        auto total_r = [&](int k) {
+            const float eta_v = GroundEta(k, a_l);
+            if (!use_strip || k < 2) return R1 / ((float)k * eta_v);
+            const float rh = strip_r(k);
+            return R1 * rh / (R1 * GroundStripEta(k, a_l) + rh * eta_v * (float)k);
+            };
+
+        calc_data::result_ground_eta = GroundEta(n, a_l);
+        calc_data::result_ground_strip = (use_strip && n >= 2) ? strip_r(n) : 0.0f;
+        calc_data::result_ground = total_r(n);
 
         // Сколько электродов нужно для выбранной нормы
         const float norm = GroundNorm();
         calc_data::result_ground_need = 0;
         for (int k = 1; k <= 100; ++k) {
-            if (R1 / ((float)k * GroundEta(k, a_l)) <= norm) { calc_data::result_ground_need = k; break; }
+            if (total_r(k) <= norm) { calc_data::result_ground_need = k; break; }
         }
     }
 
@@ -4121,10 +4272,15 @@ namespace menu {
         using i18n::T;
         using i18n::L;
 
-        gui.group_box(T("PARAMETERS"), ImVec2(CARD_W_HALF, 1105)); {
+        gui.group_box(T("PARAMETERS"), ImVec2(CARD_W_HALF, 1215)); {
             ImGui::TextColored(g_theme.text_dim, "%s", T("Material:"));
             ImGui::RadioButton(L("Copper"), &calc_data::cable_material, 0); ImGui::SameLine();
             ImGui::RadioButton(L("Aluminum"), &calc_data::cable_material, 1);
+
+            ImGui::Spacing();
+            ImGui::TextColored(g_theme.text_dim, "%s", T("Conductor:"));
+            ImGui::RadioButton(L("Cable (VVG, NYM)"), &calc_data::cable_kind, 0); ImGui::SameLine();
+            ImGui::RadioButton(L("Single wires (PV, PuGV)"), &calc_data::cable_kind, 1);
 
             ImGui::Spacing();
             ImGui::TextColored(g_theme.text_dim, "%s", T("Phases:"));
@@ -4216,7 +4372,7 @@ namespace menu {
         ImGui::SameLine(0.0f, 15.0f);
 
         // ==================== RESULT ====================
-        gui.group_box(T("RESULT"), ImVec2(CARD_W_HALF, 1105)); {
+        gui.group_box(T("RESULT"), ImVec2(CARD_W_HALF, 1215)); {
             const ImVec4 col_ok = g_theme.res_good;
             const ImVec4 col_fail = g_theme.res_bad;
             char buf[64];
@@ -4262,6 +4418,12 @@ namespace menu {
             ResultRow(T("Altitude factor:"), buf, g_theme.res_warn);
             ResultRow(T("Insulation:"), T(InsulationName(calc_data::insulation_type)),
                 g_theme.res_warn);
+            if (INS_TABLE[InsClamp(calc_data::insulation_type)].t_max > 90.0f) {
+                ImGui::PushTextWrapPos(0.0f);
+                ImGui::TextColored(g_theme.res_warn, "%s",
+                    T("Current is counted for 90 C. For this insulation take it from the cable catalogue."));
+                ImGui::PopTextWrapPos();
+            }
 
             ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
 
@@ -4306,6 +4468,11 @@ namespace menu {
             ImGui::PushTextWrapPos(0.0f);
             ImGui::TextColored(g_theme.text_dim, "%s",
                 T("Per PUE tables 1.3.4-1.3.7, temperature per table 1.3.3. Contacts 0.03 Ohm included."));
+            if (calc_data::cable_kind == 0)
+                ImGui::TextColored(g_theme.text_dim, "%s",
+                    T("Multi-core cable: PUE 1.3.6-1.3.7 in air and earth, 1.3.4-1.3.5 in a pipe. 4-5 core cable for three phases x0.92."));
+            ImGui::TextColored(g_theme.text_dim, "%s",
+                T("The breaker clears a short circuit instantly (under 0.1 s), which meets PUE 1.7.79: 0.4 s at 220 V. Margin 1.1 per PUE 6th ed."));
             ImGui::PopTextWrapPos();
 
             ImGui::Spacing();
@@ -4451,7 +4618,7 @@ namespace menu {
         ImGui::Spacing();
 
         // ==================== ЭКОНОМИКА ====================
-        gui.group_box(T("ECONOMICS"), ImVec2(CARD_W_FULL, 500)); {
+        gui.group_box(T("ECONOMICS"), ImVec2(CARD_W_FULL, 530)); {
             ImGui::TextColored(g_theme.text_dim, "%s", T("Hours of maximum load per year:"));
             TextInputFloat("eco_tmax", &calc_data::cable_tmax);
             ImGui::TextColored(g_theme.text_dim, "%s", T("Price per kWh:"));
@@ -4481,14 +4648,19 @@ namespace menu {
                 if (tmax > 5000.0f) j = cu ? 2.7f : 1.6f;
                 else if (tmax > 3000.0f) j = cu ? 3.1f : 1.7f;
             }
-            snprintf(buf, sizeof(buf), "%.1f A/mm^2", j);
-            ResultRow(T("Economic current density:"), buf, g_theme.text_main);
-
             // экономическое сечение округляем до ближайшего стандартного
+            // для изолированных проводников до 16 мм2 плотность увеличивают на 40% (ПУЭ 1.3.27)
+            bool j_raised = false;
+            if (I / j <= 16.0f) { j *= 1.4f; j_raised = true; }
             const float s_calc = I / j;
             float s_eco = PUE_S[0];
             for (int i = 0; i < PUE_N; ++i)
                 if (fabsf(PUE_S[i] - s_calc) < fabsf(s_eco - s_calc)) s_eco = PUE_S[i];
+            snprintf(buf, sizeof(buf), "%.2f A/mm^2", j);
+            ResultRow(T("Economic current density:"), buf, g_theme.text_main);
+            if (j_raised) {
+                ImGui::TextColored(g_theme.text_dim, "%s", T("Up to 16 mm2 the density is raised by 40% (PUE 1.3.27)."));
+            }
             snprintf(buf, sizeof(buf), "%.1f -> %.1f mm^2", s_calc, s_eco);
             ResultRow(T("Economic section:"), buf, g_theme.accent);
 
@@ -4634,7 +4806,7 @@ namespace menu {
         using i18n::T;
         using i18n::L;
 
-        gui.group_box(T("EARTHING RESISTANCE"), ImVec2(CARD_W_FULL, 1050)); {
+        gui.group_box(T("EARTHING RESISTANCE"), ImVec2(CARD_W_FULL, 1160)); {
             ImGui::TextColored(g_theme.text_dim, "%s", T("Soil Resistivity, Ohm*m:"));
             TextInputFloat("soil", &calc_data::soil_resistivity);
             ImGui::TextColored(g_theme.text_dim, "%s", T("Earthing type:"));
@@ -4655,6 +4827,13 @@ namespace menu {
                 TextInputFloat("rodspace", &calc_data::ground_spacing);
                 ImGui::TextColored(g_theme.text_dim, "%s", T("Depth of rod top, m:"));
                 TextInputFloat("roddepth", &calc_data::ground_depth);
+
+                ImGui::Spacing();
+                ImGui::TextColored(g_theme.text_dim, "%s", T("Layout:"));
+                ImGui::RadioButton(L("In a row"), &calc_data::ground_layout, 0); ImGui::SameLine();
+                ImGui::RadioButton(L("Around a contour"), &calc_data::ground_layout, 1);
+                if (calc_data::ground_layout == 0)
+                    ToggleSwitch(T("Count the connecting strip"), &calc_data::ground_with_strip);
             }
             else {
                 ImGui::TextColored(g_theme.text_dim, "%s", T("Strip length, m:"));
@@ -4699,6 +4878,10 @@ namespace menu {
                 ResultRow(T("One rod:"), buf, g_theme.text_main);
                 snprintf(buf, sizeof(buf), "%.2f", calc_data::result_ground_eta);
                 ResultRow(T("Utilization factor:"), buf, g_theme.res_warn);
+                if (calc_data::result_ground_strip > 0.0f) {
+                    snprintf(buf, sizeof(buf), "%.2f Ohm", calc_data::result_ground_strip);
+                    ResultRow(T("Connecting strip:"), buf, g_theme.text_main);
+                }
             }
             snprintf(buf, sizeof(buf), "%.2f Ohm", calc_data::result_ground);
             ResultRow(T("Resistance:"), buf, calc_data::result_ground <= norm ? col_ok : col_fail);
@@ -4727,7 +4910,7 @@ namespace menu {
             ImGui::Spacing();
             ImGui::PushTextWrapPos(0.0f);
             ImGui::TextColored(g_theme.text_dim, "%s",
-                T("Vertical rods in a row, without the connecting strip (with margin). Utilization factors are approximate table values."));
+                T("Rods in a row joined by a 40x4 strip, or around a contour (strip not counted, margin). Utilization factors from reference tables."));
             ImGui::PopTextWrapPos();
 
             ImGui::Spacing();
@@ -4768,17 +4951,19 @@ namespace menu {
                 else if (calc_data::lp_rel == 1) {                         // 0,99
                     h0 = 0.8f * h;
                     r0 = (h <= 30.0f) ? 0.8f * h : (0.8f - 0.00143f * (h - 30.0f)) * h;
+                    if (h > 100.0f) { h0 = (0.8f - 0.001f * (h - 100.0f)) * h; r0 = 0.7f * h; }
                 }
                 else {                                                     // 0,999
                     h0 = (h <= 30.0f) ? 0.7f * h : (0.7f - 0.000714f * (h - 30.0f)) * h;
                     r0 = (h <= 30.0f) ? 0.6f * h : (0.6f - 0.00143f * (h - 30.0f)) * h;
+                    if (h > 100.0f) { h0 = (0.65f - 0.001f * (h - 100.0f)) * h; r0 = (0.5f - 0.002f * (h - 100.0f)) * h; }
                 }
                 if (h0_out) *h0_out = h0;
                 if (r0_out) *r0_out = r0;
                 return (hx < h0 && h0 > 0.0f) ? r0 * (h0 - hx) / h0 : 0.0f;
                 };
 
-            const float h_max = (calc_data::lp_rel == 0) ? 150.0f : 100.0f;   // границы применимости методики
+            const float h_max = 150.0f;   // граница применимости методики
             float h = calc_data::lp_h;
             if (h < 0.1f) h = 0.1f;
             if (h > h_max) h = h_max;
@@ -4825,7 +5010,7 @@ namespace menu {
         using i18n::T;
         using i18n::L;
 
-        gui.group_box(T("CIRCUIT BREAKER SELECTOR"), ImVec2(CARD_W_FULL, 720)); {
+        gui.group_box(T("CIRCUIT BREAKER SELECTOR"), ImVec2(CARD_W_FULL, 800)); {
             const float display_I = calc_data::total_current_a > 0
                 ? calc_data::total_current_a : calc_data::result_current;
 
@@ -4854,6 +5039,12 @@ namespace menu {
             ImGui::Spacing();
             ImGui::TextColored(g_theme.text_dim, "%s", T("Temperature in panel, C:"));
             TextInputFloat("brk_temp", &calc_data::breaker_temp);
+            ImGui::TextColored(g_theme.text_dim, "%s", T("Breakers side by side:"));
+            {
+                double adj = (double)calc_data::breaker_adjacent;
+                if (TextInputDouble("brk_adj", &adj))
+                    calc_data::breaker_adjacent = (adj < 1.0) ? 1 : (adj > 100.0 ? 100 : (int)adj);
+            }
             ImGui::TextColored(g_theme.text_dim, "%s", T("Short-circuit current at panel, kA:"));
             TextInputFloat("brk_ik", &calc_data::breaker_ik_ka);
 
@@ -4884,7 +5075,7 @@ namespace menu {
 
                 char rbuf[64];
                 snprintf(rbuf, sizeof(rbuf), "%.1f A", (float)calc_data::breaker_rating * BreakerTempK());
-                ResultRow(T("Real rating at this temperature:"), rbuf, g_theme.res_warn);
+                ResultRow(T("Real rating in the panel:"), rbuf, g_theme.res_warn);
             }
             else {
                 ImGui::TextColored(g_theme.text_dim, "%s", T("Click button to select breaker rating"));
@@ -4892,16 +5083,19 @@ namespace menu {
 
             // отключающая способность должна быть не меньше тока КЗ в месте установки
             {
-                static const float ICU[] = { 4.5f, 6.0f, 10.0f, 15.0f, 25.0f, 36.0f, 50.0f };
+                // модульные - ряд ГОСТ IEC 60898-1 (в продаже от 4,5 кА); выше 25 кА - автоматы в литом корпусе по каталогу
+                static const float ICU[] = { 4.5f, 6.0f, 10.0f, 20.0f, 25.0f, 36.0f, 50.0f, 70.0f, 100.0f };
                 float icu = 0.0f;
                 for (float v : ICU) if (v >= calc_data::breaker_ik_ka) { icu = v; break; }
-                char cbuf[64];
-                if (icu > 0.0f) snprintf(cbuf, sizeof(cbuf), "%g kA", (double)icu);
-                else snprintf(cbuf, sizeof(cbuf), "> 50 kA");
+                char cbuf[96];
+                if (icu > 0.0f)
+                    snprintf(cbuf, sizeof(cbuf), "%g kA (%s)", (double)icu,
+                        icu <= 25.0f ? T("modular, GOST IEC 60898-1") : T("moulded case, by catalogue"));
+                else snprintf(cbuf, sizeof(cbuf), "> 100 kA");
                 ResultRow(T("Breaking capacity needed:"), cbuf, icu > 0.0f ? g_theme.res_good : g_theme.res_bad);
             }
             ImGui::PushTextWrapPos(0.0f);
-            ImGui::TextColored(g_theme.text_dim, "%s", T("Breakers are calibrated at +30 C, about 0.5% per degree."));
+            ImGui::TextColored(g_theme.text_dim, "%s", T("Breakers are calibrated at +30 C, about 0.5% per degree. Side by side: 2-3 pcs x0.85, 4-7 x0.8, more x0.7 (typical manufacturer data)."));
             ImGui::PopTextWrapPos();
 
             ImGui::Spacing();
@@ -4947,7 +5141,7 @@ namespace menu {
             }
 
             ImGui::Spacing();
-            NiceCheckbox(L("Degrees mode (for sin/cos/tan)"), &isDegrees);
+            NiceCheckbox(L("Degrees (sin/cos/tan input, asin/acos/atan answer)"), &isDegrees);
 
             ImGui::Spacing();
             if (OutlineButton(L("Calculate"), ImVec2(-1, 36))) {
@@ -4967,8 +5161,8 @@ namespace menu {
                 else if (op == 7) result = sin(A);
                 else if (op == 8) result = cos(A);
                 else if (op == 9) result = tan(A);
-                else if (op == 10) result = asin(A);
-                else if (op == 11) result = acos(A);
+                else if (op == 10) { if (A >= -1.0 && A <= 1.0) result = asin(A); else err = "asin/acos: A from -1 to 1"; }
+                else if (op == 11) { if (A >= -1.0 && A <= 1.0) result = acos(A); else err = "asin/acos: A from -1 to 1"; }
                 else if (op == 12) result = atan(A);
                 else if (op == 13) { if (A > 0) result = log10(A); else err = "log of non-positive"; }
                 else if (op == 14) { if (A > 0) result = log(A); else err = "ln of non-positive"; }
@@ -4981,6 +5175,7 @@ namespace menu {
                     }
                     else err = "Factorial: integer 0..170 only";
                 }
+                if (isDegrees && op >= 10 && op <= 12 && strlen(err) == 0) result = result * 180.0 / PI;   // угол - в градусах
                 if (strlen(err) == 0) {
                     char hbuf[128];
                     snprintf(hbuf, sizeof(hbuf), "Result: %.6g", result);
@@ -6779,7 +6974,7 @@ namespace menu {
                 }
             }
 
-            ImGui::SetCursorPos(ImVec2(12, g_theme.show_clock ? 110 : 60));
+            ImGui::SetCursorPos(ImVec2(12.0f, g_theme.show_clock ? 110.0f : 60.0f));
             ImGui::BeginChild("##tabs", ImVec2(170, size.y - (g_theme.show_clock ? 115 : 65)), false,
                 ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
             {
